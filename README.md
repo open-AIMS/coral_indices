@@ -1,25 +1,47 @@
 # Coral Indicators
-by Murray Logan
+by Manuel Gonzalez Rivero, Angus Thompson, Kerryn Crossman, Murray Logan
 
 # About
 
+# Dependencies
+
+Although this codebase has been tested and runs on a 2023 R runtime
+environment, there is no guarantee that underlying changes to either R
+or the necessary R packages will preserve the stability of these
+codes.  As a result, it is strongly recommended that these codes be
+run via _containerisation_.
+
+
+
 # Building the docker container image
+
+It the underlying system contains the `make` tools, a Docker image can
+be generated via the following:
 
 ```{build docker, engine='bash', results='markdown', eval=FALSE}
 make build
 ```
 
-Alternatively,
+Alternatively, the following command can be issued in a terminal
+within the project root folder.
 
 ```{build docker alt, engine='bash', results='markdown', eval=FALSE}
 docker build . --tag coral_indicators
 ```
 
-You can then confirm that the docker image has been built by looking
-at a list of all docker images on your local machine.  There should be
-a "REPOSITORY" called `coral_indicators` with a "TAG" of `latest`.
+Either way, you can then confirm that the Docker image has been built
+by looking at a list of all Docker images on your local machine.
+
+```{build docker images, engine='bash', results='markdown', eval=FALSE}
+docker images
+```
+
+There should be a "REPOSITORY" called `coral_indicators` with a "TAG"
+of `latest`.
 
 # Running R in the docker container (interactively)
+
+If you have the `make` tools:
 
 ```{run docker, engine='bash', results='markdown', eval=FALSE}
 make R_container
@@ -33,6 +55,8 @@ docker run --rm -v -it "$(pwd):/home/Project" coral_indicators R
 
 # Running the code in the docker container
 
+If you have the `make` tools:
+
 ```{run docker code container, engine='bash', results='markdown', eval=FALSE}
 make code_container
 ```
@@ -44,6 +68,8 @@ docker run --rm -v -it "$(pwd):/home/Project" coral_indicators Rscript R/00_main
 ```
 
 # Compiling documents in the docker container
+
+If you have the `make` tools:
 
 ```{run docker docs container, engine='bash', results='markdown', eval=FALSE}
 make docs_container
@@ -57,11 +83,15 @@ docker run --rm -v -it "$(pwd):/home/Project" coral_indicators Rscript docs/00_m
 
 # Running the code locally 
 
+If you have the `make` tools:
+
 ```{run docker code local, engine='bash', results='markdown', eval=FALSE}
 make code_local
 ```
 
 # Compiling the documents locally 
+
+If you have the `make` tools:
 
 ```{run docker docs local, engine='bash', results='markdown', eval=FALSE}
 make docs_local
