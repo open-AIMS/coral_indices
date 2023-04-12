@@ -65,13 +65,28 @@ CI__add_setting <- function(item, value) {
     }
 }
 
-CI__add_status <- function(stage, item, label, status) {
-    CI[[stage]]$items <- c(CI[[stage]]$items, item)
-    CI[[stage]]$labels <- c(CI[[stage]]$labels, label)
-    CI[[stage]]$status <- c(CI[[stage]]$status, status)
-    CI[[stage]]$predicate <- c(CI[[stage]]$predicate, NA)
-    CI[[stage]]$predicate_value <- c(CI[[stage]]$predicate_value, NA)
+CI__change_setting <- function(item, value) {
+    CI$setting[[item]] <- value
+    assign('CI', CI, env = globalenv())
+}
+
+CI__change_status <- function(stage, item, status, update_display = TRUE) {
+    if (!any(str_detect(names(CI$status), stage))) CI$status[[stage]] <- list()
+    CI$status[[stage]]$status[which(CI$status[[stage]]$item == item)] <- status
     assign("CI", CI, env = globalenv())
+    if (update_display) CI_openingBanner()
+}
+
+
+CI__add_status <- function(stage, item, label, status, update_display = TRUE) {
+    if (!any(str_detect(names(CI$status), stage))) CI$status[[stage]] <- list()
+    CI$status[[stage]]$items <- c(CI$status[[stage]]$items, item)
+    CI$status[[stage]]$labels <- c(CI$status[[stage]]$labels, label)
+    CI$status[[stage]]$status <- c(CI$status[[stage]]$status, status)
+    CI$status[[stage]]$predicate <- c(CI$status[[stage]]$predicate, NA)
+    CI$status[[stage]]$predicate_value <- c(CI$status[[stage]]$predicate_value, NA)
+    assign("CI", CI, env = globalenv())
+    if (update_display) CI_openingBanner()
 }
 
 
@@ -81,6 +96,7 @@ CI_initialise <- function() {
     CI <- vector('list', 2)
     CI <- setNames(CI, c('setting', 'status'))
     CI$setting <- list()
+    CI$status <- list()
     CI <<- CI
 }
 
@@ -138,8 +154,10 @@ CI_generateSettings <- function() {
     ## purrr::map(.x = c('DATA_PATH', 'PRIMARY_DATA_PATH'),
     ##     .f = ~ CI__add_setting(item = .x, value = eval(sym(.x))))
     runStage <<- 0
+    DEBUG_MODE <<- TRUE
     lapply(c('DATA_PATH', 'PRIMARY_DATA_PATH', 'PARS_DATA_PATH',
-             'OUTPUT_PATH','FIGS_PATH', 'TABS_PATH', 'runStage'),
+             'OUTPUT_PATH','FIGS_PATH', 'TABS_PATH', 'runStage',
+             'DEBUG_MODE'),
            function(x) CI__add_setting(item = x, value = eval(sym(x)))) 
 }
 
@@ -259,3 +277,101 @@ CI_log <- function(status, logFile, Category, msg=NULL) {
     CI_openingBanner()
 }
 
+CI_tryCatch <- function(expr, logFile,Category, expectedClass=NULL,
+                        msg=NULL, return=NULL, showWarnings=FALSE,
+                        stage = NULL, item = NULL) {                                                                   
+    if (DEBUG_MODE & !is.null(stage)) CI__change_status(stage = stage, item = item, status = "progress")
+    if (!exists('PROGRESS')) PROGRESS=NULL
+    max.warnings<-4
+    warnings<-0
+    W <- NULL
+    w.handler <- function(w){ # warning handler
+        m<-w$message
+        if ((warnings < max.warnings) && (grepl ('ReefCloud_WARNING', m)>0)) {
+            CI_log('WARNING', logFile, Category, paste(warnings, msg, m))
+            warnings<<-warnings+1
+        }
+        invokeRestart("muffleWarning")
+    }
+    ret <- list(value = withCallingHandlers(tryCatch(expr, error = function(e) e),
+                                            warning = w.handler),warning = W)
+    if(!is.atomic(ret$value) && any(class(ret$value) %in% c("simpleError", "error", "rlang_error"))){
+        ## An error occurred
+        PROGRESS <<- c(PROGRESS,'Fail')
+        class(ret) <- "try-error"
+        if (DEBUG_MODE & !is.null(stage)) CI__change_status(stage = stage, item = item, status = "failure")
+        CI_log('ERROR', logFile, Category, paste(msg, ret$value$message))
+        if(!is.null(return)) {
+            FALSE
+        }else {
+            if (DEBUG_MODE) {
+                "An error occured, please refer to the status line above..."
+            } else {
+                quit(status=-1,save="no")
+            }
+        }
+    } else {    #no error check for warning                                                                                                                                                                          
+        PROGRESS <<- c(PROGRESS,'Pass')
+        if (DEBUG_MODE & !is.null(stage)) CI__change_status(stage = stage, item = item, status = "success")
+        CI_log('SUCCESS', logFile, Category, msg)
+        if(!is.null(return)) {
+            TRUE
+        }
+    }
+}
+
+
+###############################################################################################
+## Get data functions
+###############################################################################################
+CI_get_names_lookups <- function() {
+    CI__add_status(stage = "Stage1", item = 'names_lookup',
+                   label = "Names lookup", status = 'pending')
+    CI_tryCatch({
+
+        ## MMP
+        writeLines("select p_code, min(lat_dd), min(long_dd), nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name as reef,AIMS_REEF_NAME,reef_zone         
+          from v_in_sample
+           where p_code in('IN','AP','RR','GH')
+            and sample_type= 'PPOINT'
+            and visit_no >0
+            and mmp_site_name not like 'Cape%'
+            group by p_code,nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name,AIMS_REEF_NAME,reef_zone",
+          paste0(PRIMARY_DATA_PATH, "name.lookup.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "name.lookup.sql ",
+                      PRIMARY_DATA_PATH, "mmp.name.lookup.csv reef reefmon"),
+               ignore.stdout = TRUE )
+
+        mmp_names_lookup <- read.csv(paste0(PRIMARY_DATA_PATH, "mmp.name.lookup.csv"))
+
+        ## LTMP
+        writeLines("select p_code, min(lat_dd), min(long_dd), nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name as reef,AIMS_REEF_NAME,reef_zone         
+          from v_in_sample
+           where p_code in('RM','RAP','RMRAP')
+            and sample_type= 'PPOINT'
+            and visit_no >0
+            and mmp_site_name not like 'Cape%'
+            group by p_code,nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name,AIMS_REEF_NAME,reef_zone",
+          paste0(PRIMARY_DATA_PATH, "name.lookup.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "name.lookup.sql ",
+                      PRIMARY_DATA_PATH, "name.lookup.csv reef reefmon"),
+               ignore.stdout = TRUE)
+        ltmp_names_lookup<-read.csv(paste0(PRIMARY_DATA_PATH, "name.lookup.csv"))
+
+        ## Combine
+        names.lookup<-mmp_names_lookup %>% 
+            dplyr::select(AIMS_REEF_NAME, REEF_ZONE,REEF) %>%
+            full_join(ltmp_names_lookup %>%
+                      dplyr::select(AIMS_REEF_NAME, REEF,REEF_ZONE)) %>%
+            distinct %>%
+            suppressMessages() %>%
+            suppressWarnings()
+            save(names.lookup, file = paste0(DATA_PATH, "processed/names.lookup.RData"))
+            
+            CI__change_status(stage = "Stage1", item = 'names_lookup',status = 'success')
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('names lookups.'), return=NULL)
+
+}
