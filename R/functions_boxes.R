@@ -58,28 +58,29 @@ CI__mainBox <- function(settings.box.text, box.width, settings.box.width, box.ma
         main.box.text[i] <- cli::ansi_align(main.box.text[i],
                                             width = box.width - settings.box.width - 1,
                                             align = 'center')
-    if (all(runStage > 0)) {
+    if (all(runStage != 0)) {
         ## add the stages as left justified
         for (j in 1:length(runStage)) {
+            if (!any(names(CI$status) == paste0('STAGE', runStage[j]))) next
             main.box.text <- c(main.box.text,
-                               cli::ansi_align(STATUS[[paste0("STAGE",runStage[j])]]$title,
+                               cli::ansi_align(CI$status[[paste0("STAGE",runStage[j])]]$title,
                                                width = box.width - settings.box.width - 1,
                                                align = 'left')
                                )
-            if (length(STATUS[[paste0("STAGE", runStage[j])]]$items) == 0) next
-            for (i in 1:length(STATUS[[paste0("STAGE",runStage[j])]]$items)) {
+            if (length(CI$status[[paste0("STAGE", runStage[j])]]$items) == 0) next
+            for (i in 1:length(CI$status[[paste0("STAGE",runStage[j])]]$items)) {
                 if (runStage[j] == CURRENT_STAGE |
-                    STATUS[[paste0("STAGE",runStage[j])]]$status[i] == 'failure') {
+                    CI$status[[paste0("STAGE",runStage[j])]]$status[i] == 'failure') {
                     main.box.text <- c(main.box.text,
                                        cli::ansi_align(
                                                 paste0(strrep(" ", box.margins),
-                                                       switch(STATUS[[paste0("STAGE",runStage[j])]]$status[i],
+                                                       switch(CI$status[[paste0("STAGE",runStage[j])]]$status[i],
                                                               'pending' = crayon::white(cli::symbol$line),
                                                               'progress' = crayon::magenta("\u23F1"),
                                                               'success' = crayon::green(cli::symbol$tick),
                                                               'failure' = crayon::red(cli::symbol$cross)
                                                               ),
-                                                       " ", crayon::blue(STATUS[[paste0("STAGE",runStage[j])]]$label[i])
+                                                       " ", crayon::blue(CI$status[[paste0("STAGE",runStage[j])]]$label[i])
                                                        ),
                                                 width = box.width - settings.box.width - 1,
                                                 align = 'left'

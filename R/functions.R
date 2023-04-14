@@ -4,6 +4,7 @@ library(tidyverse)
 library(assertthat)
 library(purrr)
 library(rlang)
+library(lubridate)
 ## ----end
 
 source('../R/functions_boxes.R')
@@ -23,7 +24,8 @@ CI_isParent <- function() {
 CI_fakeArgs <- function(type) {
     switch(type,
            CI_startMatter(args = c("--final_year=2023",
-                                          "--fresh_start=true")),
+                                   "--fresh_start=true",
+                                   "--runStage=1:2")),
            CI_startMatter(args = c("--final_year=2023"))
            )
 }
@@ -56,11 +58,24 @@ CI_startMatter <- function(args = commandArgs()) {
            msg=NULL)
 }
 
+#########################################################################
+## The following function selects specific key files that mark the     ##
+## start of major analysis stages and thus determines the total        ##
+## number of analysis stages.  The function returns a vector from 1 to ##
+## the maximum number of stages.                                       ##
+#########################################################################
+CI_get_stages <- function() {
+    ## files <- list.files(path='.', pattern = "ReefCloud_(31|32|40|44).*\\.R")
+    ## return(1:length(files))
+    return(1:(length(CI$status)-1))
+}
+
+
 CI__add_setting <- function(item, value) {
     if(any(grep(item, names(CI$setting)))) {
         print('This setting already exists, if you would like to modify it, try CI__change_setting()')
     } else {
-        CI$setting <- append(CI$setting, setNames(value, item))
+        CI$setting <- append(CI$setting, setNames(list(value), item))
         assign('CI', CI, env = globalenv())
     }
 }
@@ -68,6 +83,11 @@ CI__add_setting <- function(item, value) {
 CI__change_setting <- function(item, value) {
     CI$setting[[item]] <- value
     assign('CI', CI, env = globalenv())
+}
+
+CI__add_stage <- function(stage, title) {
+    CI$status[[stage]]$title <- title
+    assign("CI", CI, env = globalenv())
 }
 
 CI__change_status <- function(stage, item, status, update_display = TRUE) {
@@ -111,10 +131,11 @@ CI_initialise <- function() {
 ####################################################################################
 CI_parseCLA <- function(args) {
     valid_cla <- paste0("\n\nThe call must be of the form:\n",
-                        "00_main.R --final_year=<YEAR> --fresh_start=<true|false>",
+                        "00_main.R --final_year=<YEAR> --fresh_start=<true|false> --runStage=<NUM>",
                         "\n<YEAR>:  \ta valid four digit year representing the final",
                         "\n\t\t(maximum) year of reporting",
-                        "\n<true|false> \twhether to start by clearing all stored data (true).\n\n")
+                        "\n<true|false> \twhether to start by clearing all stored data (true).",
+                        "\n<NUM> \twhich stages (single integer) or vector of integers) of the analysis to run (-1 or missing is all stages).\n\n")
     ## Ensure that a final year is supplied
     final_year <- grep('--final_year=.*', args)
     assertthat::assert_that(length(final_year)>0,
@@ -137,7 +158,16 @@ CI_parseCLA <- function(args) {
         FRESH_START <- FALSE
     }
     CI__add_setting(item = 'FRESH_START', FRESH_START)
-    
+
+    stage <- grep('--runStage ?=.*', args, perl = TRUE)
+    if (length(stage)>0) {
+        stage <- str_replace(args[stage], ".*=([0-9]|[0-9]:[0-9])", "\\1")
+        runStage <<- eval(parse(text = stage))
+    } else {
+        runStage <<- -1
+    }
+    CI__add_setting(item = 'runStage', runStage)
+
 }
 
 CI_generateSettings <- function() {
@@ -153,10 +183,10 @@ CI_generateSettings <- function() {
     TABS_PATH <<- paste0(OUTPUT_PATH, "tables")
     ## purrr::map(.x = c('DATA_PATH', 'PRIMARY_DATA_PATH'),
     ##     .f = ~ CI__add_setting(item = .x, value = eval(sym(.x))))
-    runStage <<- 0
+    ## runStage <<- 0
     DEBUG_MODE <<- TRUE
     lapply(c('DATA_PATH', 'PRIMARY_DATA_PATH', 'PARS_DATA_PATH',
-             'OUTPUT_PATH','FIGS_PATH', 'TABS_PATH', 'runStage',
+             'OUTPUT_PATH','FIGS_PATH', 'TABS_PATH',
              'DEBUG_MODE'),
            function(x) CI__add_setting(item = x, value = eval(sym(x)))) 
 }
@@ -321,57 +351,3 @@ CI_tryCatch <- function(expr, logFile,Category, expectedClass=NULL,
 }
 
 
-###############################################################################################
-## Get data functions
-###############################################################################################
-CI_get_names_lookups <- function() {
-    CI__add_status(stage = "Stage1", item = 'names_lookup',
-                   label = "Names lookup", status = 'pending')
-    CI_tryCatch({
-
-        ## MMP
-        writeLines("select p_code, min(lat_dd), min(long_dd), nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name as reef,AIMS_REEF_NAME,reef_zone         
-          from v_in_sample
-           where p_code in('IN','AP','RR','GH')
-            and sample_type= 'PPOINT'
-            and visit_no >0
-            and mmp_site_name not like 'Cape%'
-            group by p_code,nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name,AIMS_REEF_NAME,reef_zone",
-          paste0(PRIMARY_DATA_PATH, "name.lookup.sql"))
-
-        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "name.lookup.sql ",
-                      PRIMARY_DATA_PATH, "mmp.name.lookup.csv reef reefmon"),
-               ignore.stdout = TRUE )
-
-        mmp_names_lookup <- read.csv(paste0(PRIMARY_DATA_PATH, "mmp.name.lookup.csv"))
-
-        ## LTMP
-        writeLines("select p_code, min(lat_dd), min(long_dd), nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name as reef,AIMS_REEF_NAME,reef_zone         
-          from v_in_sample
-           where p_code in('RM','RAP','RMRAP')
-            and sample_type= 'PPOINT'
-            and visit_no >0
-            and mmp_site_name not like 'Cape%'
-            group by p_code,nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name,AIMS_REEF_NAME,reef_zone",
-          paste0(PRIMARY_DATA_PATH, "name.lookup.sql"))
-
-        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "name.lookup.sql ",
-                      PRIMARY_DATA_PATH, "name.lookup.csv reef reefmon"),
-               ignore.stdout = TRUE)
-        ltmp_names_lookup<-read.csv(paste0(PRIMARY_DATA_PATH, "name.lookup.csv"))
-
-        ## Combine
-        names.lookup<-mmp_names_lookup %>% 
-            dplyr::select(AIMS_REEF_NAME, REEF_ZONE,REEF) %>%
-            full_join(ltmp_names_lookup %>%
-                      dplyr::select(AIMS_REEF_NAME, REEF,REEF_ZONE)) %>%
-            distinct %>%
-            suppressMessages() %>%
-            suppressWarnings()
-            save(names.lookup, file = paste0(DATA_PATH, "processed/names.lookup.RData"))
-            
-            CI__change_status(stage = "Stage1", item = 'names_lookup',status = 'success')
-    }, logFile=LOG_FILE, Category='--Data extraction--',
-    msg=paste0('names lookups.'), return=NULL)
-
-}

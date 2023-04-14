@@ -1,14 +1,6 @@
 source("../R/functions.R")
 
-## Clear the /data/primary folder
-unlink("../data/primary/*.csv")
-unlink("../data/primary/*.zip")
-unlink("../data/primary/*.RData")
-unlink("../data/primary/*.geojson")
-unlink("../data/primary/*.json")
-unlink("../data/primary/GIS/*.*", recursive = TRUE)
 
-unlink("../data/processed/*.*", recursive = TRUE)
 unlink("../data/modelled/*.*", recursive = TRUE)
 unlink("../data/summarised/*.*", recursive = TRUE)
 

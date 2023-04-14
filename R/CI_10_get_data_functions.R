@@ -1,0 +1,417 @@
+######################################################################
+## Notes made by Angus                                              ##
+##                                                                  ##
+## For all mmp data use mmp_site_name as REEF                       ##
+## For al LTMP data use AIMS_REEF_NAME as REEF                      ##
+######################################################################
+
+CI_clear_primary_data <- function() {
+    ## Clear the /data/primary folder
+    unlink("../data/primary/*.csv")
+    unlink("../data/primary/*.sql")
+    unlink("../data/primary/*.zip")
+    unlink("../data/primary/*.RData")
+    unlink("../data/primary/*.geojson")
+    unlink("../data/primary/*.json")
+    unlink("../data/primary/GIS/*.*", recursive = TRUE)
+}
+
+
+###############################################################################################
+## Get data functions
+###############################################################################################
+CI_get_names_lookups <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'names_lookup',
+                   label = "Names lookup", status = 'pending')
+    CI_tryCatch({
+
+        ## MMP
+        writeLines("select p_code, min(lat_dd), min(long_dd), nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name as reef,AIMS_REEF_NAME,reef_zone         
+          from v_in_sample
+           where p_code in('IN','AP','RR','GH')
+            and sample_type= 'PPOINT'
+            and visit_no >0
+            and mmp_site_name not like 'Cape%'
+            group by p_code,nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name,AIMS_REEF_NAME,reef_zone",
+          paste0(PRIMARY_DATA_PATH, "name.lookup.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "name.lookup.sql ",
+                      PRIMARY_DATA_PATH, "mmp.name.lookup.csv reef reefmon"),
+               ignore.stdout = TRUE )
+
+        mmp_names_lookup <- read.csv(paste0(PRIMARY_DATA_PATH, "mmp.name.lookup.csv"))
+
+        ## LTMP
+        writeLines("select p_code, min(lat_dd), min(long_dd), nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name as reef,AIMS_REEF_NAME,reef_zone         
+          from v_in_sample
+           where p_code in('RM','RAP','RMRAP')
+            and sample_type= 'PPOINT'
+            and visit_no >0
+            and mmp_site_name not like 'Cape%'
+            group by p_code,nrm_region, shelf,catchment,fullreef_id,reef_id,reef_name,mmp_site_name,AIMS_REEF_NAME,reef_zone",
+          paste0(PRIMARY_DATA_PATH, "name.lookup.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "name.lookup.sql ",
+                      PRIMARY_DATA_PATH, "name.lookup.csv reef reefmon"),
+               ignore.stdout = TRUE)
+        ltmp_names_lookup<-read.csv(paste0(PRIMARY_DATA_PATH, "name.lookup.csv"))
+
+        ## Combine
+        names.lookup<-mmp_names_lookup %>% 
+            dplyr::select(AIMS_REEF_NAME, REEF_ZONE,REEF) %>%
+            full_join(ltmp_names_lookup %>%
+                      dplyr::select(AIMS_REEF_NAME, REEF,REEF_ZONE)) %>%
+            distinct() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(names.lookup, file = paste0(DATA_PATH, "primary/names.lookup.RData"))
+            
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'names_lookup',status = 'success')
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('names lookups.'), return=NULL)
+
+}
+
+CI_get_mmp_samples_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'mmp_samples',
+                   label = "MMP samples", status = 'pending')
+    CI_tryCatch({
+        writeLines("select p_code, min(lat_dd), min(long_dd), mmp_site_name as reef,site_no,depth,
+          visit_no, to_char(min(sample_date),'DD/MM/YYYY') as sample_date      
+          from v_in_sample
+           where p_code in ('IN','AP','RR','GH')
+            and visit_no >0
+            group by p_code,mmp_site_name,site_no,depth,visit_no",
+          paste0(PRIMARY_DATA_PATH, "mmp.sample.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "mmp.sample.sql ",
+                      PRIMARY_DATA_PATH, "mmp.sample.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        sample.reef.mmp  <- read.csv(paste0(PRIMARY_DATA_PATH, "mmp.sample.csv")) %>%
+            mutate(LATITUDE = as.numeric(as.character(MIN.LAT_DD.)),
+                   LONGITUDE = as.numeric(as.character(MIN.LONG_DD.)),
+                   Date = as.Date(SAMPLE_DATE, format='%d/%m/%Y')
+                   ) %>%
+            dplyr::select(-MIN.LONG_DD.,-MIN.LAT_DD.,-SAMPLE_DATE)
+
+        save(sample.reef.mmp, file = paste0(DATA_PATH, 'primary/sample.reef.mmp.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'mmp_samples',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('MMP samples.'), return=NULL)
+}
+
+CI_get_ltmp_samples_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'ltmp_samples',
+                   label = "LTMP samples", status = 'pending')
+    CI_tryCatch({
+        writeLines("select p_code, min(lat_dd), min(long_dd),aims_reef_name as reef, site_no,visit_no, to_char(min(sample_date),'DD/MM/YYYY') as sample_date  
+           from v_in_sample 
+           where p_code in ('RM','RAP','RMRAP')
+            and visit_no >0
+            and sample_type in ('PPOINT', 'VPOINT','VPOINTNOB')
+            group by p_code, aims_reef_name,site_no,visit_no",
+          paste0(PRIMARY_DATA_PATH, "ltmp.sample.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "ltmp.sample.sql ",
+                      PRIMARY_DATA_PATH, "ltmp.sample.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        sample.reef.ltmp <- read.csv(paste0(PRIMARY_DATA_PATH, "ltmp.sample.csv")) %>%
+            mutate(DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8)),
+                   LATITUDE = as.numeric(as.character(MIN.LAT_DD.)),
+                   LONGITUDE = as.numeric(as.character(MIN.LONG_DD.)),
+                   Date = as.Date(SAMPLE_DATE, format = '%d/%m/%Y'),
+                   P_CODE = 'RM') %>%
+            dplyr::select(-MIN.LONG_DD., -MIN.LAT_DD., -SAMPLE_DATE) 
+
+        save(sample.reef.ltmp, file = paste0(DATA_PATH, 'primary/sample.reef.ltmp.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'ltmp_samples',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('LTMP samples.'), return=NULL)
+}
+
+CI_combine_samples_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'combine_samples',
+                   label = "Combine samples", status = 'pending')
+    CI_tryCatch({
+        load(file = paste0(DATA_PATH, 'primary/sample.reef.mmp.RData'))
+        load(file = paste0(DATA_PATH, 'primary/sample.reef.ltmp.RData'))
+
+        sample.reef <- sample.reef.mmp %>%
+            rbind(sample.reef.ltmp) %>%
+            mutate(P_CODE = factor(P_CODE),
+                   REEF = factor(REEF),
+                   DEPTH = as.integer(ifelse(P_CODE == 'RM', '8',
+                                      ifelse(REEF == 'Middle Reef','2', DEPTH))))
+
+        save(sample.reef, file = paste0(DATA_PATH, 'primary/sample.reef.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'combine_samples',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('Combine samples.'), return=NULL)
+}
+
+###########################################################################
+## Extract  disturbances data...    
+## uses new disturbance table for 2021 "DISTURBANCES2"
+###########################################################################
+
+CI_get_disturbances_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'disturbances_samples',
+                   label = "Disturbances data", status = 'pending')
+    CI_tryCatch({
+        writeLines("select aims_reef_name, depth, reef_zone,p_code, visit_no, rank, disturbance_type as disturbance, storm_name,to_char(distrubance_date,'DD/MM/YYYY') as disturbance_date
+  from disturbances2
+   where p_code in ('IN', 'RM','RMRAP','RAP','AP','GH','RR')
+           and sample_type in ('PPOINT','VPOINT')",
+          paste0(PRIMARY_DATA_PATH, "disturbance.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "disturbance.sql ",
+                      PRIMARY_DATA_PATH, "disturbance.csv reef disturbance"),
+               ignore.stdout = TRUE)
+
+        load(file = paste0(DATA_PATH, "primary/names.lookup.RData"))
+
+        disturbance.reef <- read.csv(paste0(PRIMARY_DATA_PATH, "disturbance.csv")) %>%
+            mutate(P_CODE = ifelse(P_CODE %in% c('RM', 'RMRAP', 'RAP'), 'RM', P_CODE)) %>%
+            full_join(names.lookup) %>%
+            mutate(REEF = ifelse(P_CODE == "RM", as.character(AIMS_REEF_NAME), REEF)) %>%
+            dplyr::select(-AIMS_REEF_NAME, -REEF_ZONE) %>%
+            mutate(DISTURBANCE_DATE = as.Date(DISTURBANCE_DATE, format = '%d/%m/%Y'),
+                   DEPTH = as.integer(ifelse(P_CODE == "RM", '8',
+                                      ifelse(REEF == 'Middle Reef', '2', DEPTH)))) %>%
+            suppressMessages() %>%
+            suppressWarnings()
+  
+                                 
+        save(disturbance.reef, file = paste0(DATA_PATH, 'primary/disturbances.RData'))
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'disturbances_samples',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('Disturbances data.'), return=NULL)
+}
+
+
+##################################
+## Extract video code lookup ##
+##################################
+CI_get_video_code_lookup <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'video_lookup',
+                   label = "Video code lookup", status = 'pending')
+    CI_tryCatch({
+
+        writeLines("select video_code, b.benthos_code, b.benthos_desc, v.group_code, group_desc,genus_2021, family_2021, comp_2021, comp_2021_description, AI_CODE_2021
+          from vpoint_codes v, benthos b
+          where b.benthos_code=v.benthos_code",
+          paste0(PRIMARY_DATA_PATH, "video_codes.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "video_codes.sql ",
+                      PRIMARY_DATA_PATH, "video_codes.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        video_codes <- read.csv(paste0(PRIMARY_DATA_PATH, "video_codes.csv"))
+                                 
+        save(video_codes, file = paste0(DATA_PATH, 'primary/video_codes.RData'))
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'video_lookup',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('Video code lookup.'), return=NULL)
+}
+
+
+CI_get_mmp_juveniles_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'mmp_juv',
+                   label = "MMP juveniles", status = 'pending')
+    CI_tryCatch({
+
+        writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no,genus,sum(abundance) abundance
+           from v_in_sample s, v_demog_zeros b
+           where s.sample_id = b.sample_id
+           and p_code  in('IN','RR','AP','GH') 
+           and visit_no >0 
+           and family_group = 'Hard Coral'
+           and size_class in ('000-002','002-005')
+           and s.mmp_site_name not like 'Cape%'
+           group by p_code, mmp_site_name, depth, visit_no, site_no, genus",
+          paste0(PRIMARY_DATA_PATH, "juv.mmp.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "juv.mmp.sql ",
+                      PRIMARY_DATA_PATH, "juv.mmp.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        juv.mmp <- read.csv(paste0(PRIMARY_DATA_PATH, 'juv.mmp.csv'), as.is = TRUE) %>%
+            filter(SITE_NO != '3') # remove the only place with a site 3 in the mmp dataset
+
+        save(juv.mmp, file = paste0(DATA_PATH, 'primary/juv.mmp.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'mmp_juv',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('MMP juveniles.'), return=NULL)
+}
+
+CI_get_ltmp_juveniles_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'ltmp_juv',
+                   label = "LTMP juveniles", status = 'pending')
+    CI_tryCatch({
+
+        writeLines("select p_code,aims_reef_name as reef, visit_no, site_no, genus,sum(abundance) abundance
+           from v_in_sample s, v_demog_zeros b 
+           where s.sample_id = b.sample_id
+           and p_code in ('RM','RMRAP','RAP') 
+           and visit_no >0
+           and family_group = 'Hard Coral'
+           and transect_no<6
+           group by p_code,aims_reef_name,visit_no, site_no, genus",
+          paste0(PRIMARY_DATA_PATH, "juv.ltmp.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "juv.ltmp.sql ",
+                      PRIMARY_DATA_PATH, "juv.ltmp.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        juv.ltmp = read.csv(paste0(PRIMARY_DATA_PATH, 'juv.ltmp.csv'), as.is=TRUE) %>%
+            mutate(DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8)),
+                   P_CODE = ifelse(P_CODE %in% c('RM', 'RMRAP', 'RAP'), 'RM', P_CODE))
+
+        save(juv.ltmp, file = paste0(DATA_PATH, 'primary/juv.ltmp.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'ltmp_juv',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('LTMP juveniles.'), return=NULL)
+}
+
+
+CI_combine_juveniles_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'combine_juv',
+                   label = "Combine juveniles", status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, 'primary/juv.mmp.RData'))
+        load(file = paste0(DATA_PATH, 'primary/juv.ltmp.RData'))
+
+        juveniles <- juv.mmp %>%
+            rbind(juv.ltmp)
+
+        save(juveniles, file = paste0(PRIMARY_DATA_PATH, 'juveniles.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'combine_juv',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('Combine juveniles.'), return=NULL)
+}
+
+
+CI_get_mmp_point_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'mmp_points',
+                   label = "MMP points", status = 'pending')
+    CI_tryCatch({
+
+        writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no, transect_no, b.video_code, count(point_no) points
+           from v_in_sample s, v_all_vpoint_codes c, rm_vpoint b
+           where s.sample_id = b.sample_id
+           and b.video_code=c.video_code
+            and p_code in ('IN','AP','GH','RR') 
+           and visit_no >0 
+           and s.mmp_site_name not like 'Cape%'
+           and s.mmp_site_name not like 'Connor%'
+           and group_code not like 'IN'
+           group by p_code, mmp_site_name, depth, visit_no,site_no,transect_no, b.video_code",
+          paste0(PRIMARY_DATA_PATH, "mmp.points.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "mmp.points.sql ",
+                      PRIMARY_DATA_PATH, "mmp.points.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        mmp.points <- read.csv(paste0(PRIMARY_DATA_PATH, 'mmp.points.csv')) 
+
+        save(mmp.points, file = paste0(DATA_PATH, 'primary/mmp.points.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'mmp_points',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('MMP points.'), return=NULL)
+}
+
+
+CI_get_ltmp_point_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'ltmp_points',
+                   label = "LTMP points", status = 'pending')
+    CI_tryCatch({
+
+        writeLines("select p_code, aims_reef_name as reef, depth, visit_no, site_no, transect_no, b.video_code, count(point_no) points
+           from v_in_sample s, v_all_vpoint_codes c, rm_vpoint b
+           where s.sample_id = b.sample_id
+           and b.video_code=c.video_code
+           and p_code in ('RAP', 'RM','RMRAP') 
+           and visit_no >0 
+           and transect_no<6
+           and group_code not like 'IN'
+           group by p_code, aims_reef_name, depth, visit_no,site_no, transect_no,b.video_code",
+          paste0(PRIMARY_DATA_PATH, "ltmp.points.sql"))
+
+        system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "ltmp.points.sql ",
+                      PRIMARY_DATA_PATH, "ltmp.points.csv reef reefmon"),
+               ignore.stdout = TRUE)
+
+        ltmp.points <- read.csv(paste0(PRIMARY_DATA_PATH, 'ltmp.points.csv')) 
+
+        save(ltmp.points, file = paste0(DATA_PATH, 'primary/ltmp.points.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'ltmp_points',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('LTMP points.'), return=NULL)
+}
+
+CI_combine_point_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'combine_points',
+                   label = "Combine points", status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, 'primary/mmp.points.RData'))
+        load(file = paste0(DATA_PATH, 'primary/ltmp.points.RData'))
+
+        points.raw <- ltmp.points %>% 
+            mutate(DEPTH = ifelse(REEF == "Middle Reef", 2, 8) ,
+                   P_CODE = ifelse(P_CODE %in% c('RM', 'RMRAP', 'RAP'), 'RM', P_CODE)) %>%
+            rbind(mmp.points)
+
+        save(points.raw, file = paste0(PRIMARY_DATA_PATH, 'points.raw.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'combine_points',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('Combine points.'), return=NULL)
+}
