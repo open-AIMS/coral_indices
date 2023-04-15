@@ -40,9 +40,9 @@ CI__settingsBox <- function(settings, box.width, box.nchar, box.margins, current
                                   ##        'success' = crayon::green(cli::symbol$tick),
                                   ##        'failure' = crayon::red(cli::symbol$cross)
                                   ##        ),
-                                  " ", crayon::blue(keys[i]), ": ",
+                                  "", crayon::blue(keys[i]), ": ",
                                   crayon::white(values[i]),
-                                  strrep(" ", box.width - (box.nchar[i])-box.margins*2 -1),
+                                  strrep(" ", box.width - (box.nchar[i])-box.margins*2 +1),
                                   "\u2502",
                                   strrep(" ", box.margins)
                                   )
