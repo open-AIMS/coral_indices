@@ -5,6 +5,9 @@ library(assertthat)
 library(purrr)
 library(rlang)
 library(lubridate)
+library(sf)
+library(INLA)
+library(posterior)
 ## ----end
 
 source('../R/functions_boxes.R')
@@ -96,6 +99,27 @@ CI__change_status <- function(stage, item, status, update_display = TRUE) {
     assign("CI", CI, env = globalenv())
     if (update_display) CI_openingBanner()
 }
+CI__get_label <- function(stage, item) {
+    CI$status[[stage]]$labels[which(CI$status[[stage]]$item == item)] 
+}
+
+CI__change_label <- function(stage, item, label, update_display = TRUE) {
+    if (!any(str_detect(names(CI$status), stage))) CI$status[[stage]] <- list()
+    CI$status[[stage]]$labels[which(CI$status[[stage]]$item == item)] <- label
+    assign("CI", CI, env = globalenv())
+    if (update_display) CI_openingBanner()
+}
+
+CI__append_label <- function(stage, item, n, N) {
+    current_label <- CI__get_label(stage = stage, item = item)
+    if (str_detect(current_label, "\\[.*\\]")) {
+        current_label <- str_replace(current_label, "\\[.*\\]",
+                                     paste0('[',n,"/", N,']'))
+    } else {
+        current_label <- paste0(current_label, ' [',n, '/', N, ']')
+    }
+    CI__change_label(stage = stage, item = item, label = current_label)
+}
 
 
 CI__add_status <- function(stage, item, label, status, update_display = TRUE) {
@@ -109,6 +133,9 @@ CI__add_status <- function(stage, item, label, status, update_display = TRUE) {
     if (update_display) CI_openingBanner()
 }
 
+CI__get_stage <- function() {
+    paste0('STAGE', CURRENT_STAGE)
+}
 
 CI_initialise <- function() {
     ## setClass('CI', slots = representation(FINAL_YEAR="numeric"))

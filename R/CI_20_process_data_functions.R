@@ -249,3 +249,380 @@ CI_process_combine_points <- function() {
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0('Combine processed points.'), return=NULL)
 }
+
+CI_load_and_parse_file <- function(file) {
+    df <- get(load(file))
+    if(!assertthat::are_equal(colnames(df),
+                          c("P_CODE", "REEF", "DEPTH", "VISIT_NO",      
+                            "SITE_NO", "TRANSECT_NO", "HC", "REPORT_YEAR",
+                            "LATITUDE", "LONGITUDE", "A", "MA",
+                            "total.points", "reef.site", "reef.site.tran",
+                            "Project"))) {
+        
+        CI_log('ERROR', LOG_FILE, Category = '--Data processing--',
+               msg = paste0('Format of ', basename(file),
+                            ' file does not match expectations'))
+        return(NULL)
+    }
+    df
+}
+
+CI_process_external_data <- function() {
+    ## Will want to alter this function to read in csv versions of the data
+    ## this will be easier to gaurentee that the data are compatible with
+    ## the current version of R.  RData files can be created via either `save()`
+    ## or `saveRDS()` and these are different formats.
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'external_data',
+                   label = "Obtain external data", status = 'pending')
+    CI_tryCatch({
+        files <- list.files(path = paste0(DATA_PATH, 'external'),
+                            pattern = 'points.analysis.data.transect.*.RData',
+                            full.names = TRUE)
+        points.analysis.data.transect.external <- do.call('rbind',
+                                                         lapply(files, CI_load_and_parse_file))
+    
+        save(points.analysis.data.transect.external,
+             file = paste0(DATA_PATH, 'processed/points.analysis.data.transect.external.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'external_data',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Obtain external data'), return=NULL)
+}
+
+CI_process_combine_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'combine_sources',
+                   label = "Combine all sources", status = 'pending')
+    CI_tryCatch({
+
+        files <- list.files(path = paste0(DATA_PATH, 'processed'),
+                            pattern = 'points.analysis.data.transect.*.RData',
+                            full.names = TRUE)
+        points.analysis.data.transect <- do.call('rbind',
+                                                         lapply(files, CI_load_and_parse_file))
+
+        save(points.analysis.data.transect,
+             file = paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
+
+        points.analysis.data <- points.analysis.data.transect %>%
+            dplyr::select(-reef.site.tran, -TRANSECT_NO) %>%
+            group_by(P_CODE, REEF, DEPTH, LATITUDE, LONGITUDE, VISIT_NO,
+                     SITE_NO, REPORT_YEAR, Project, reef.site) %>%
+            summarise(across(c("HC","MA","A","total.points"),sum)) %>%
+            ungroup()
+
+        save(points.analysis.data,
+             file = paste0(DATA_PATH, 'processed/points.analysis.data.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'combine_sources',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Combine all sources'), return=NULL)
+}
+
+
+CI_process_spatial <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'process_spatial',
+                   label = "Process spatial", status = 'pending')
+    CI_tryCatch({
+
+        ## Bioregions
+        bregions.sf <- read_sf(paste0(DATA_PATH, "spatial/bioregions/Marine_Bioregions_of_the_Great_Barrier_Reef__Reef_.shp")) %>%
+                            st_transform(crs=4326) %>%
+                            st_make_valid()
+        save(bregions.sf,
+             file = paste0(DATA_PATH, 'processed/bregions.sf.RData'))
+
+        ## NRM spatial
+        nrm.sf  <- read_sf(paste0(DATA_PATH, "spatial/NRM Regions/NRM_MarineRegions.shp")) %>%
+            st_transform(crs=4326)%>%
+            st_make_valid()
+        save(nrm.sf,
+             file = paste0(DATA_PATH, 'processed/nrm.sf.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'process_spatial',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Process spatial'), return=NULL)
+}
+
+
+CI_process_assign_regions <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'assign_regions',
+                   label = "Assign regions", status = 'pending')
+    CI_tryCatch({
+        
+        load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
+        load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
+        load(paste0(DATA_PATH, 'processed/nrm.sf.RData'))
+
+        bioregions <- points.analysis.data.transect %>%
+            dplyr::select(P_CODE, REEF, SITE_NO, DEPTH, LATITUDE, LONGITUDE) %>%
+            distinct() %>%
+            rename(Longitude = LONGITUDE,
+                   Latitude = LATITUDE) %>%
+            mutate(SITE_NO = as.character(SITE_NO)) %>%
+            st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
+            st_join(., bregions.sf, join = st_nearest_feature)%>%
+            st_drop_geometry()  %>%
+            dplyr::select(REEF, DEPTH, SITE_NO, BIOREGION) %>% 
+            group_by(REEF, DEPTH) %>%
+            filter(SITE_NO == first(SITE_NO)) %>%
+            droplevels() %>%
+            dplyr::select(-SITE_NO) %>%
+            ungroup()
+
+        ## NRM spatial
+        nrm <- points.analysis.data.transect %>%
+            rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
+            st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
+            st_join(., nrm.sf, join = st_within)%>%
+            st_drop_geometry()%>%
+            rename(NRM=NAME) %>%
+            dplyr::select(REEF,DEPTH, NRM) %>% 
+            distinct()
+
+        ## Join REEF, BIOREGION, NRM, Lat/longs and save
+        regions <- bioregions %>% 
+            left_join(nrm) %>%
+            distinct() %>%
+            suppressWarnings() %>%
+            suppressMessages()
+        
+        save(regions,
+             file = paste0(DATA_PATH, 'processed/regions.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'assign_regions',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Assign regions'), return=NULL)
+}
+
+
+
+CI_process_juvenile_density <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'juvinile_density',
+                   label = "Juvenile density", status = 'pending')
+    CI_tryCatch({
+        
+        load(paste0(DATA_PATH, 'primary/juveniles.RData'))
+
+        ## convert to density per m2 of transect
+        juv.analysis.data <- juveniles %>%
+            group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO) %>%
+            summarise(total.juv = sum(ABUNDANCE)) %>%
+            ungroup() %>%
+            left_join(juveniles %>% 
+                      pivot_wider(names_from = GENUS,
+                                  values_from = ABUNDANCE,
+                                  values_fill = 0)) %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(juv.analysis.data,
+             file = paste0(DATA_PATH, 'processed/juv.analysis.data.RData'))
+
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'juvinile_density',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Juvenile density'), return=NULL)
+}
+
+CI_process_juvenile_offset <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'juvinile_offset',
+                   label = "Juvenile offset", status = 'pending')
+    CI_tryCatch({
+        
+        load(paste0(DATA_PATH, 'processed/juv.tran.area.RData'))
+        mmp.points <- read.csv(paste0(DATA_PATH, 'primary/mmp.points.csv'), as.is=TRUE)
+        video_codes <- read.csv(paste0(DATA_PATH, 'primary/video_codes.csv'), as.is=TRUE)
+        
+        ## MMP
+        mmp.points.site <- mmp.points %>%
+            left_join(video_codes) %>%
+            filter(!BENTHOS_CODE == 'IN') %>% #remove indeterminate points
+            group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO) %>%
+            summarise(n.point = sum(POINTS)) %>%
+            ungroup() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        mmp.cover.algae.site <- mmp.points %>%
+            left_join(video_codes) %>%
+            filter(BENTHOS_CODE %in% c('AO','CA','MA','TA','ST')) %>% 
+            droplevels() %>%
+            group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, BENTHOS_CODE) %>%
+            summarise(points = sum(POINTS)) %>%
+            ungroup() %>%
+            pivot_wider(names_from = BENTHOS_CODE,
+                        values_from = points,
+                        values_fill = list(points = 0)) %>%
+            right_join(mmp.points.site) %>%
+            left_join(juv.tran.area) %>%
+            mutate(avail.sub = (MA+ST+TA+CA+AO)/n.point,
+                   avail.area=tran.area*avail.sub) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## LTMP
+        ltmp.points <- read.csv(paste0(DATA_PATH, 'primary/ltmp.points.csv'), as.is=TRUE)
+        ltmp.points.site <- ltmp.points %>%
+            left_join(video_codes) %>%
+            filter(!BENTHOS_CODE == 'IN' & VISIT_NO > 14) %>% #remove indeterminate points and pre juvenile samples
+            group_by(P_CODE, REEF, VISIT_NO, SITE_NO) %>%
+            summarise(n.point = sum(POINTS)) %>%
+            ungroup() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ltmp.cover.algae.site <- ltmp.points %>%
+            left_join(video_codes) %>%
+            filter(BENTHOS_CODE %in% c('AO','CA','MA','TA','ST')) %>% 
+            droplevels() %>%
+            group_by(P_CODE, REEF, VISIT_NO, SITE_NO, BENTHOS_CODE) %>%
+            summarise(points = sum(POINTS)) %>%
+            ungroup() %>%
+            pivot_wider(names_from = BENTHOS_CODE,
+                        values_from = points,
+                        values_fill = list(points = 0)) %>%
+            right_join(ltmp.points.site) %>%
+            left_join(juv.tran.area) %>%
+            mutate(avail.sub = (MA+ST+TA+CA+AO)/n.point,
+                   avail.area = tran.area*avail.sub,
+                   DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8))) %>%
+            suppressMessages() %>%
+            suppressWarnings()
+        
+        juvenile.offset <- ltmp.cover.algae.site %>% 
+            rbind(mmp.cover.algae.site) %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(juvenile.offset,
+             file = paste0(DATA_PATH, 'processed/juvenile.offset.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'juvinile_offset',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Juvenile offset'), return=NULL)
+}
+
+CI_process_juvenile_data_for_baselines <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'juvenile_baseline',
+                   label = "Juvenile baseline data", status = 'pending')
+    CI_tryCatch({
+        
+        load(paste0(DATA_PATH, 'processed/juv.analysis.data.RData'))
+        load(paste0(DATA_PATH, 'processed/juvenile.offset.RData'))
+        load(paste0(DATA_PATH, 'processed/points.analysis.data.RData'))
+        load(paste0(DATA_PATH, 'processed/sample.reef.report.year.RData'))
+        load(paste0(DATA_PATH, 'processed/regions.RData'))
+
+        ## Prepare data for baseline model
+        juv.df <- juv.analysis.data %>%
+            mutate(total.juv.excl.turb = total.juv - Turbinaria,
+                   Non_Acropora = total.juv - Acropora, 
+                   Non_Acr_exTurb = Non_Acropora - Turbinaria,
+                   SITE_NO = as.factor(as.character(SITE_NO))) %>%
+            left_join(sample.reef.report.year %>%
+                      mutate(SITE_NO = as.factor(as.character(SITE_NO))) %>%
+                      select(-Date),
+                      by = c("P_CODE", "REEF", "DEPTH", "VISIT_NO", "SITE_NO")) %>%
+            filter(!is.na(REPORT_YEAR) & REPORT_YEAR>2006) %>%
+            left_join(regions) %>%
+            mutate(P_CODE = as.factor(P_CODE),
+                   NRM = as.factor(NRM),
+                   DEPTH.f = factor(case_when(DEPTH > 3 ~"deep slope",
+                                  DEPTH <= 3 ~"shallow slope")),
+                   REEF.d = factor(paste(REEF, DEPTH.f)),
+                   REPORT_YEAR = as.numeric(as.character(REPORT_YEAR)),
+                   BIOREGION = as.character(BIOREGION),
+                   BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
+                                                       BIOREGION %in% c("35", "36") ~"35:36",
+                                                       !BIOREGION %in% c("4", "3", "35", "36")
+                                                       ~BIOREGION))) %>%
+            left_join(juvenile.offset %>%
+                      mutate(SITE_NO = as.factor(SITE_NO))) %>%
+            filter(DEPTH < 9.1) %>% 
+            mutate(fYEAR = factor(REPORT_YEAR),
+                   Site = factor(paste0(REEF.d, SITE_NO))) %>%
+            dplyr::select(P_CODE, NRM, BIOREGION, BIOREGION.agg, REEF, DEPTH, DEPTH.f,
+                          REEF.d, VISIT_NO, REPORT_YEAR, fYEAR, SITE_NO, Site,
+                          LATITUDE, LONGITUDE, total.juv, total.juv.excl.turb,
+                          Turbinaria, Non_Acropora, Non_Acr_exTurb,
+                          Acropora, avail.area) %>% #Select relevant variables
+            filter(!is.na(avail.area)) %>%
+            droplevels() %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(juv.df,
+             file = paste0(DATA_PATH, 'processed/juv.df.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'juvenile_baseline',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Juvenile baseline data'), return=NULL)
+}
+
+
+
+CI_process_unique_site_location <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'unique_locations',
+                   label = "Unique site locations", status = 'pending')
+    CI_tryCatch({
+        
+        ## create a unique identifier for each P_CODE,REEF,DEPTH,SITE
+        ## these will need to link back to the baseline estimates at
+        ## the level of P_CODE,REEF,DEPTH ultimately there will need
+        ## to be a lookup table that has fields for Bioregion, nrm,
+        ## other regional aggregations, Latitude, longitude, reef,
+        ## site, depth, reef.site.depth, year the above is the level
+        ## we intend to estimate index score distributions that are
+        ## then aggregated to regional summaries.
+        load(file=paste0(DATA_PATH, 'processed/points.analysis.data.RData'))
+        load(paste0(DATA_PATH, 'processed/regions.RData'))
+
+        site.location <- points.analysis.data %>% 
+            dplyr::select(P_CODE, REEF, DEPTH, SITE_NO, LATITUDE, LONGITUDE) %>%
+            distinct() %>%
+            left_join(regions) %>%
+            mutate(BIOREGION = as.character(BIOREGION),
+                   BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
+                                                       BIOREGION %in% c("35", "36") ~"35:36",
+                                                       !BIOREGION %in% c("4", "3", "35", "36")
+                                                       ~BIOREGION)),
+                   DEPTH.f = factor(case_when(DEPTH >3 ~"deep slope",
+                                              DEPTH <= 3 ~"shallow slope")),
+                   Site = factor(paste(REEF, DEPTH.f, SITE_NO)),
+                   Shelf = ifelse(BIOREGION %in% c('16','17','18','19','22','23','29'),
+                                  'Inshore','Offshore')) %>%
+            distinct() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(site.location,
+             file = paste0(DATA_PATH, 'processed/site.location.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'unique_locations',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Unique site locations'), return=NULL)
+}

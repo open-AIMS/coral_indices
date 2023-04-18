@@ -16,6 +16,7 @@ CI__add_stage(stage = paste0('STAGE',CURRENT_STAGE), title = 'Stage 1 - extract 
 
 if (CI$setting[['FRESH_START']]) CI_clear_primary_data()
 
+## AIMS data in database
 CI_get_names_lookups()
 CI_get_mmp_samples_data()
 CI_get_ltmp_samples_data()
@@ -29,5 +30,5 @@ CI_get_mmp_point_data()
 CI_get_ltmp_point_data()
 CI_combine_point_data()
 
-
-
+## External sources
+CI_get_external_data()

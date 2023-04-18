@@ -415,3 +415,129 @@ CI_combine_point_data <- function() {
     }, logFile=LOG_FILE, Category='--Data extraction--',
     msg=paste0('Combine points.'), return=NULL)
 }
+
+## External data are defined by two files:
+## - points.data.<P_CODE>.csv
+##   this is the observed spatio-temporal benthic points data
+## - samples.<P_CODE>.csv
+##   this provides the sample location geodata
+CI_get_external_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'external_data',
+                   label = "External data", status = 'pending')
+    CI_tryCatch({
+
+        ##JCU data total points jcu exclude the early data based on 25
+        ## points per transect, and impose a visit_no beginning at the
+        ## first year of 50 points per transect.
+        files <- list.files(path = paste0(DATA_PATH, 'external'),
+                            pattern = 'points.data.*.csv',
+                            full.names = TRUE)
+        ext.points <- purrr::map(files,
+                                 .f = ~ read_csv(.x) %>%
+                                     dplyr::filter(total.points > 25) %>% 
+                                     ## this record is they only one
+                                     ## in the data set that is not
+                                     ## whole numbers
+                                     filter(!(SITE_NO=='HY2' & TRANSECT=='5' & YEAR=='2012')) %>%  
+                                     mutate(VISIT_NO=YEAR-2002,
+                                            REPORT_YEAR=YEAR) %>%
+                                     filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>%
+                                     rename(TRANSECT_NO=TRANSECT) %>%
+                                     suppressMessages() %>%
+                                     suppressWarnings())
+        ## Total points (transect level)
+        total.points.ext <- purrr::map(.x = ext.points,
+                                       .f = ~ .x %>%
+                                           dplyr::select(P_CODE, REEF,DEPTH, VISIT_NO,
+                                                         REPORT_YEAR, SITE_NO, TRANSECT_NO,
+                                                         total.points) %>%
+                                           group_by(P_CODE, REEF, DEPTH, VISIT_NO,
+                                                    REPORT_YEAR, SITE_NO, TRANSECT_NO) %>%
+                                           summarise(total.points = sum(total.points)) %>%
+                                           ungroup() %>% 
+                                           suppressMessages() %>%
+                                           suppressWarnings())
+
+        ## hard coral points  
+        hc.ext <- purrr::map(.x = ext.points,
+                             .f = ~ .x %>% 
+                                 dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
+                                               REPORT_YEAR, SITE_NO, TRANSECT_NO, HC) %>%
+                                 group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                          SITE_NO, TRANSECT_NO) %>%
+                                 summarise(HC = sum(HC))%>%
+                                 ungroup() %>%
+                                 suppressMessages() %>%
+                                 suppressWarnings())
+
+        ## MA points
+        ma.ext <- purrr::map(.x = ext.points,
+                             .f = ~ .x %>% 
+                                 dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
+                                               REPORT_YEAR, SITE_NO, TRANSECT_NO, MA) %>%
+                                 group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                          SITE_NO, TRANSECT_NO) %>%
+                                 summarise(MA = sum(MA)) %>%
+                                 ungroup() %>%
+                                 suppressMessages() %>%
+                                 suppressWarnings())
+
+        ## Algae points 
+        a.ext <- purrr::map(.x = ext.points,
+                            .f = ~ .x %>% 
+                                dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                              SITE_NO, TRANSECT_NO, A) %>%
+                                group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                         SITE_NO, TRANSECT_NO) %>%
+                                summarise(A = sum(A)) %>%
+                                ungroup() %>%
+                                suppressMessages() %>%
+                                suppressWarnings())
+        ## samples data
+        files_samples <- list.files(path = paste0(DATA_PATH, 'external'),
+                                    pattern = 'sample.*.csv',
+                                    full.names = TRUE)
+        ext.samples <- purrr::map(files_samples,
+                                  .f = ~ read_csv(.x) %>%
+                                      dplyr::select(P_CODE,REEF,SITE_NO,Lat,Long) %>%
+                                      unique %>%
+                                      rename(LONGITUDE="Long",
+                                             LATITUDE="Lat") %>%
+                                      mutate(SITE_NO=as.character(SITE_NO)) %>%
+                                      suppressMessages() %>%
+                                      suppressWarnings())
+
+        points.analysis.data.transect.jcu <-
+            purrr::pmap(.l = list(hc.ext, ma.ext, a.ext,
+                                  ext.samples, total.points.ext),
+                        .f = ~ ..1 %>%
+                            left_join(..2) %>%
+                            left_join(..3) %>%
+                            left_join(..4) %>%
+                            left_join(..5) %>%
+                            mutate(REEF = as.factor(REEF),
+                                   reef.site = as.factor(paste0(REEF,'.',SITE_NO)),
+                                   reef.site.tran = as.factor(paste0(reef.site,'.',TRANSECT_NO)),
+                                   Project = as.factor(P_CODE)) %>%
+                            suppressMessages() %>%
+                            suppressWarnings()
+                        ) %>%
+            bind_rows() %>%
+            dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,      
+                            SITE_NO, TRANSECT_NO, HC, REPORT_YEAR,
+                            LATITUDE, LONGITUDE, A, MA,
+                            total.points, reef.site, reef.site.tran,
+                            Project)
+        
+        save(points.analysis.data.transect.jcu,
+             file = paste0(DATA_PATH, 'external/points.analysis.data.transect.jcu.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'external_data',status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data extraction--',
+    msg=paste0('External data'), return=NULL)
+}
+
+
