@@ -8,6 +8,7 @@ library(lubridate)
 library(sf)
 library(INLA)
 library(posterior)
+library(tidybayes)
 ## ----end
 
 source('../R/functions_boxes.R')
@@ -28,7 +29,7 @@ CI_fakeArgs <- function(type) {
     switch(type,
            CI_startMatter(args = c("--final_year=2023",
                                    "--fresh_start=true",
-                                   "--runStage=1:2")),
+                                   "--runStage=1:3")),
            CI_startMatter(args = c("--final_year=2023"))
            )
 }

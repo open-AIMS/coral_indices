@@ -612,7 +612,8 @@ CI_process_unique_site_location <- function() {
                                               DEPTH <= 3 ~"shallow slope")),
                    Site = factor(paste(REEF, DEPTH.f, SITE_NO)),
                    Shelf = ifelse(BIOREGION %in% c('16','17','18','19','22','23','29'),
-                                  'Inshore','Offshore')) %>%
+                                  'Inshore','Offshore'),
+                   REEF.d = factor(paste(REEF, DEPTH.f))) %>%
             distinct() %>%
             suppressMessages() %>%
             suppressWarnings()

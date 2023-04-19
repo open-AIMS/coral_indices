@@ -17,6 +17,9 @@ CI_models_MA_get_baselines()
 CI_models_MA_prepare_data()
 CI_models_MA_prepare_nest() 
 CI_models_MA_fit_models()
+CI_models_MA_cellmeans()
+CI_models_MA_preds()
 
 ## Calculate distances to baselines
-#CI_models_MA_distance()
+CI_models_MA_distance()
+CI_models_MA_aggregation_bioregion() 
