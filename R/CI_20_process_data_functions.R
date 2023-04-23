@@ -326,6 +326,8 @@ CI_process_combine_data <- function() {
 
 
 CI_process_spatial <- function() {
+    ## This is for the shapefiles stored in this repo, for others
+    ## set CI_get_spatial_data() in CI_10_get_data_functions.R
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'process_spatial',
                    label = "Process spatial", status = 'pending')
@@ -362,6 +364,9 @@ CI_process_assign_regions <- function() {
         load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
         load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
         load(paste0(DATA_PATH, 'processed/nrm.sf.RData'))
+        load(paste0(DATA_PATH, 'processed/tumra.RData'))
+        load(paste0(DATA_PATH, 'processed/gbrmpa.management.RData'))
+        load(paste0(DATA_PATH, 'processed/gbrmpa.RData'))
 
         bioregions <- points.analysis.data.transect %>%
             dplyr::select(P_CODE, REEF, SITE_NO, DEPTH, LATITUDE, LONGITUDE) %>%
@@ -389,15 +394,54 @@ CI_process_assign_regions <- function() {
             dplyr::select(REEF,DEPTH, NRM) %>% 
             distinct()
 
+        ## TUMRA
+        tumra <- points.analysis.data.transect %>%
+            rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
+            st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
+            st_join(., tumra, join = st_within)%>%
+            st_drop_geometry()%>%
+            rename(TUMRA = Name) %>%
+            dplyr::select(REEF, DEPTH, TUMRA) %>% 
+            distinct() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## GBRMPA management areas
+        gbrmpa.ma <- points.analysis.data.transect %>%
+            rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
+            st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
+            st_join(., gbrmpa.management, join = st_within)%>%
+            st_drop_geometry()%>%
+            rename(GBRMPA.MA = Name) %>%
+            dplyr::select(REEF, DEPTH, GBRMPA.MA) %>% 
+            distinct() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+        
+        ## Whole GBRMP 
+        gbrmp <- points.analysis.data.transect %>%
+            rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
+            st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
+            st_join(., gbrmpa, join = st_within)%>%
+            st_drop_geometry()%>%
+            rename(GBRMP = Name) %>%
+            dplyr::select(REEF, DEPTH, GBRMP) %>% 
+            distinct() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
         ## Join REEF, BIOREGION, NRM, Lat/longs and save
-        regions <- bioregions %>% 
+        spatial_lookup <- bioregions %>% 
             left_join(nrm) %>%
+            left_join(tumra) %>%
+            left_join(gbrmpa.ma) %>%
+            left_join(gbrmp) %>%
             distinct() %>%
             suppressWarnings() %>%
             suppressMessages()
         
-        save(regions,
-             file = paste0(DATA_PATH, 'processed/regions.RData'))
+        save(spatial_lookup,
+             file = paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'assign_regions',status = 'success')
@@ -530,7 +574,7 @@ CI_process_juvenile_data_for_baselines <- function() {
         load(paste0(DATA_PATH, 'processed/juvenile.offset.RData'))
         load(paste0(DATA_PATH, 'processed/points.analysis.data.RData'))
         load(paste0(DATA_PATH, 'processed/sample.reef.report.year.RData'))
-        load(paste0(DATA_PATH, 'processed/regions.RData'))
+        load(paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
 
         ## Prepare data for baseline model
         juv.df <- juv.analysis.data %>%
@@ -543,7 +587,7 @@ CI_process_juvenile_data_for_baselines <- function() {
                       select(-Date),
                       by = c("P_CODE", "REEF", "DEPTH", "VISIT_NO", "SITE_NO")) %>%
             filter(!is.na(REPORT_YEAR) & REPORT_YEAR>2006) %>%
-            left_join(regions) %>%
+            left_join(spatial_lookup) %>%
             mutate(P_CODE = as.factor(P_CODE),
                    NRM = as.factor(NRM),
                    DEPTH.f = factor(case_when(DEPTH > 3 ~"deep slope",
@@ -597,12 +641,12 @@ CI_process_unique_site_location <- function() {
         ## we intend to estimate index score distributions that are
         ## then aggregated to regional summaries.
         load(file=paste0(DATA_PATH, 'processed/points.analysis.data.RData'))
-        load(paste0(DATA_PATH, 'processed/regions.RData'))
+        load(paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
 
         site.location <- points.analysis.data %>% 
             dplyr::select(P_CODE, REEF, DEPTH, SITE_NO, LATITUDE, LONGITUDE) %>%
             distinct() %>%
-            left_join(regions) %>%
+            left_join(spatial_lookup) %>%
             mutate(BIOREGION = as.character(BIOREGION),
                    BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
                                                        BIOREGION %in% c("35", "36") ~"35:36",

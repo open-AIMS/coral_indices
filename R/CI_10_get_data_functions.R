@@ -541,3 +541,57 @@ CI_get_external_data <- function() {
 }
 
 
+
+CI_get_spatial_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'spatial_data',
+                   label = "Spatial data", status = 'pending')
+    CI_tryCatch({
+
+        ## TUMRA
+        tumra <- st_read(paste0("https://services8.arcgis.com/",
+                                "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
+                                "Traditional_Use_of_Marine_Resources_Agreement_areas/",
+                                "FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"),
+                         quiet = T) %>%
+            select(NAME, geometry) %>% 
+            rename(Name = NAME) %>%
+            ## group_by(Name) %>%
+            ## summarise(geometry = st_combine(.))  %>%
+            mutate(Region = "TUMRA") %>%
+            st_make_valid()
+
+        save(tumra,
+             file = paste0(DATA_PATH, 'processed/tumra.RData'))
+
+        ## GBRMPA management
+        gbrmpa.management <- st_read(paste0("https://services8.arcgis.com/",
+                                 "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
+                                 "Management_Areas_of_the_Great_Barrier_Reef_Marine_Park/",
+                                 "FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"),
+                          quiet = T) %>%
+            select(AREA_DESCR, geometry) %>%
+            rename(Name = AREA_DESCR)%>%
+            mutate(Region = "GBRMPA_Management")
+
+        save(gbrmpa.management,
+             file = paste0(DATA_PATH, 'processed/gbrmpa.management.RData'))
+
+        ## GBR
+        gbrmpa <- st_read(paste0("https://services8.arcgis.com/",
+                                 "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
+                                 "Great_Barrier_Reef_Marine_Park_Boundary/",
+                                 "FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"),
+                          quiet = T) %>%
+            mutate(Region = "GBR", Name = "GBRMP")%>%
+            select(Name, Region, geometry) 
+
+        save(gbrmpa,
+             file = paste0(DATA_PATH, 'processed/gbrmpa.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'spatial_data',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Spatial data'), return=NULL)
+}

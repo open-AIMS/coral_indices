@@ -2,54 +2,6 @@ CI_clear_models_MA_data <- function() {
     ## unlink("../data/modelled/*.*", recursive = TRUE)
 }
 
-CI__make_predictions <- function(newdata, mod, mesh) {
-    draws <- inla.posterior.sample(1000, result=mod, seed=123) %>%
-        suppressWarnings()
-
-    points.grid <- newdata %>% 
-        dplyr::select(LONGITUDE, LATITUDE)
-    ## sets up an interpolator to actual location points from our new data
-    proj.grid <- inla.mesh.projector(mesh, loc = as.matrix(points.grid))
-
-    ## Rearrange draws so that it is a matrix of cellmeans, rather than a list
-    cellmeans <- sapply(draws, function(x) x[['latent']])
-
-    ## Index the cell means for fixed effects
-    i.mod <- sapply(c('APredictor','^Predictor','spatial.field','Site','Intercept',
-                      'fYEAR'),
-                    function(x) grep(x, draws[[1]]$latent %>% rownames, perl=TRUE))
-
-    ## get the partial predictions for the spatial field (all nodes on the mesh)
-    cellmeans.spatial <- cellmeans[i.mod[["spatial.field"]],] 
-
-    ##Get the predictions for fixed effects (covariate).  These
-    ## are the intercept and the partial effects of the covariates
-    ## Generate model matrix
-    Xmat <- model.matrix(~1, data = newdata)
-
-    wch <- grep('Intercept', names(i.mod))
-    ii = unlist(i.mod[wch]) 
-
-    ## multiply the predictions by the fixed effects for the covariates
-    cellmeans.full.1 <- (cellmeans[ii,]) %*% t(Xmat)
-
-    ## inla.mesh.project uses proj.grid to convert from mesh nodes
-    ## to points beyond nodes the conversion is applied to the
-    ## parameters from cellmeans.spatial transpose from rows to
-    ## columns
-    cellmeans.spatial <- t(inla.mesh.project(proj.grid, field = cellmeans.spatial))
-
-    ## add the fixed and spatial effects together
-    cellmeans.full.2 <- cellmeans.full.1 + cellmeans.spatial
-    
-    ## Backtransform
-    cellmeans.spatial.2 <- cellmeans.full.2 %>%
-        as.matrix() %>%
-        plogis()
-
-    cellmeans.spatial.2
-}
-
 CI_models_MA_get_baselines <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'get_baselines',
@@ -60,110 +12,176 @@ CI_models_MA_get_baselines <- function() {
 
         ## Shallow posteriors (reef) ===========================================
         load(file = paste0(DATA_PATH, "parameters/MA__baseline_shallow.RData"))
-         
-        ## include NRM and k490 for later use in ordering. data for plotting
+
+        ## Get the set of reefs to predict for and
+        ## nest according to whether they should be predicted against:
+        ## 1. inshore shallow model
+        ## 2. inshore deep model
+        ## 3. offshore model
         newdata <- site.location %>%
-            dplyr::group_by(REEF) %>%
-            summarise(across(c(LATITUDE, LONGITUDE), mean))
-        
-        newdata <- newdata %>% 
-            mutate(Case = 1:n()) %>%
-            left_join(CI__make_predictions(newdata, mod, mesh) %>%
-                      as.data.frame() %>%
-                      pivot_longer(cols = everything(), names_to = 'Case') %>%
-                      mutate(Case = as.integer(Case)) %>%
-                      group_by(Case) %>%
-                      mutate(.draw = 1:n()) %>%
-                      ungroup) %>%
-            mutate(REEF.d = factor(paste(REEF, 'shallow slope'))) %>%
-            dplyr::select(REEF.d, LATITUDE, LONGITUDE, .draw, value) %>%
+            mutate(Model = ifelse(Shelf == 'Offshore',
+                                  'offshore',
+                           ifelse(DEPTH.f == 'shallow slope',
+                                  'shallow',
+                                  'deep'))) %>%
+            dplyr::group_by(Model) %>%
+            nest() %>%
+            mutate(data = map2(.x = data, .y = Model,
+                               .f = ~ {
+                                   model <- ifelse(.y == 'offshore', 'BIOREGION.agg', 'REEF')
+                                   .x %>% 
+                                       dplyr::group_by_at(model) %>%
+                                       summarise(across(c(LATITUDE, LONGITUDE), mean))
+                                   }
+                              )
+                   )
+
+        baselines <- newdata %>%
+            mutate(Preds = map2(.x = data, .y = Model,
+                                .f = ~ {
+                                    load(file = paste0(DATA_PATH, "parameters/MA__baseline_",.y,".RData"))
+                                    .x %>%
+                                    mutate(Case = 1:n()) %>%
+                                    left_join(CI__make_predictions(.x, mod, mesh) %>%
+                                              as.data.frame() %>%
+                                              pivot_longer(cols = everything(), names_to = 'Case') %>%
+                                              mutate(Case = as.integer(Case)) %>%
+                                              group_by(Case) %>%
+                                              mutate(.draw = 1:n()) %>%
+                                              ungroup) %>%
+                                        (if(.y == "shallow") { 
+                                             . %>% mutate(REEF.d = factor(paste(REEF, 'shallow slope'))) %>%
+                                             dplyr::select(REEF.d, LATITUDE, LONGITUDE, .draw, value)
+                                         } else if(.y == 'deep') {
+                                             . %>% mutate(REEF.d = factor(paste(REEF, 'deep slope'))) %>%
+                                             dplyr::select(REEF.d, LATITUDE, LONGITUDE, .draw, value)
+                                         } else {
+                                             . %>% dplyr::select(BIOREGION.agg, LATITUDE, LONGITUDE, .draw, value) 
+                                        }) %>% 
+                                        left_join(site.location %>%
+                                                  dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
+                                                  distinct()) %>%
+                                        suppressMessages() %>%
+                                        suppressWarnings()
+                                }
+                                )
+                   ) %>%
+            dplyr::select(Preds) %>%
+            unnest(c(Preds)) %>% 
+            ungroup() %>% 
             suppressMessages() %>%
             suppressWarnings()
-
-        save(newdata, file = paste0(DATA_PATH, "modelled/MA__baseline_posteriors_shallow.RData"))            
-        ## newdata %>%
-        ##     dplyr::select(-LATITUDE, -LONGITUDE) %>%
-        ##     group_by(REEF.d) %>%
-        ##     summarise_draws(median,
-        ##                     HDInterval::hdi)
-
-        ## Deep posteriors (reef) ===========================================
-        load(file = paste0(DATA_PATH, "parameters/MA__baseline_deep.RData"))
-
-        ## include NRM and k490 for later use in ordering. data for plotting
-        newdata <- site.location %>%
-            dplyr::group_by(REEF) %>%
-            summarise(across(c(LATITUDE, LONGITUDE), mean))
-        
-        newdata <- newdata %>% 
-            mutate(Case = 1:n()) %>%
-            left_join(CI__make_predictions(newdata, mod, mesh) %>%
-                      as.data.frame() %>%
-                      pivot_longer(cols = everything(), names_to = 'Case') %>%
-                      mutate(Case = as.integer(Case)) %>%
-                      group_by(Case) %>%
-                      mutate(.draw = 1:n()) %>%
-                      ungroup) %>%
-            mutate(REEF.d = factor(paste(REEF, 'deep slope'))) %>%
-            dplyr::select(REEF.d, LATITUDE, LONGITUDE, .draw, value) %>%
-            ## posterior::as_draws() %>%
-            suppressMessages() %>%
-            suppressWarnings()
-
-        save(newdata, file = paste0(DATA_PATH, "modelled/MA__baseline_posteriors_deep.RData"))            
-
-        ## Offshore posteriors (bioregion) ===========================================
-        load(file = paste0(DATA_PATH, "parameters/MA__baseline_offshore.RData"))
-        ## include NRM and k490 for later use in ordering. data for plotting
-        newdata <- site.location %>%
-            dplyr::group_by(BIOREGION.agg) %>%
-            summarise(across(c(LATITUDE, LONGITUDE), mean))
-
-        newdata <- newdata %>% 
-            mutate(Case = 1:n()) %>%
-            left_join(CI__make_predictions(newdata, mod, mesh) %>%
-                      as.data.frame() %>%
-                      pivot_longer(cols = everything(), names_to = 'Case') %>%
-                      mutate(Case = as.integer(Case)) %>%
-                      group_by(Case) %>%
-                      mutate(.draw = 1:n()) %>%
-                      ungroup) %>%
-            ## mutate(REEF.d = factor(paste(REEF, 'offshore'))) %>%
-            dplyr::select(BIOREGION.agg, LATITUDE, LONGITUDE, .draw, value) %>%
-            ## posterior::as_draws() %>%
-            suppressMessages() %>%
-            suppressWarnings()
-
-        save(newdata, file = paste0(DATA_PATH, "modelled/MA__baseline_posteriors_offshore.RData"))            
-        ## Combine posteriors (reef) ===========================================
-        newdata.offshore <- get(load(file = paste0(DATA_PATH,
-                                                   "modelled/MA__baseline_posteriors_offshore.RData")))            
-        newdata.shallow <- get(load(file = paste0(DATA_PATH,
-                                                  "modelled/MA__baseline_posteriors_shallow.RData")))            
-        newdata.deep <- get(load(file = paste0(DATA_PATH,
-                                               "modelled/MA__baseline_posteriors_deep.RData")))
-        baselines <- newdata.offshore %>%
-            dplyr::select(-LONGITUDE, -LATITUDE) %>% 
-            left_join(site.location %>%
-                      dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
-                      distinct()) %>%
-            bind_rows(newdata.shallow %>%
-                      dplyr::select(-LONGITUDE, -LATITUDE) %>%
-                      left_join(site.location %>%
-                                dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
-                                distinct())
-                      ) %>% 
-            bind_rows(newdata.deep %>%
-                      dplyr::select(-LONGITUDE, -LATITUDE) %>%
-                      left_join(site.location %>%
-                                dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
-                                distinct())
-                      ) %>% 
-            suppressMessages() %>%
-            suppressWarnings()
-
+                                    
         save(baselines,
              file = paste0(DATA_PATH, 'modelled/MA__baseline_posteriors.RData'))
+
+        ##               left_join(site.location %>%
+        ##                         dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
+        ##                         distinct())
+        
+        ## ## include NRM and k490 for later use in ordering. data for plotting
+        ## newdata <- site.location %>%
+        ##     dplyr::group_by(REEF) %>%
+        ##     summarise(across(c(LATITUDE, LONGITUDE), mean))
+        
+        ## newdata <- newdata %>% 
+        ##     mutate(Case = 1:n()) %>%
+        ##     left_join(CI__make_predictions(newdata, mod, mesh) %>%
+        ##               as.data.frame() %>%
+        ##               pivot_longer(cols = everything(), names_to = 'Case') %>%
+        ##               mutate(Case = as.integer(Case)) %>%
+        ##               group_by(Case) %>%
+        ##               mutate(.draw = 1:n()) %>%
+        ##               ungroup) %>%
+        ##     mutate(REEF.d = factor(paste(REEF, 'shallow slope'))) %>%
+        ##     dplyr::select(REEF.d, LATITUDE, LONGITUDE, .draw, value) %>%
+        ##     suppressMessages() %>%
+        ##     suppressWarnings()
+
+        ## save(newdata, file = paste0(DATA_PATH, "modelled/MA__baseline_posteriors_shallow.RData"))            
+        ## ## newdata %>%
+        ## ##     dplyr::select(-LATITUDE, -LONGITUDE) %>%
+        ## ##     group_by(REEF.d) %>%
+        ## ##     summarise_draws(median,
+        ## ##                     HDInterval::hdi)
+
+        ## ## Deep posteriors (reef) ===========================================
+        ## load(file = paste0(DATA_PATH, "parameters/MA__baseline_deep.RData"))
+
+        ## ## include NRM and k490 for later use in ordering. data for plotting
+        ## newdata <- site.location %>%
+        ##     dplyr::group_by(REEF) %>%
+        ##     summarise(across(c(LATITUDE, LONGITUDE), mean))
+        
+        ## newdata <- newdata %>% 
+        ##     mutate(Case = 1:n()) %>%
+        ##     left_join(CI__make_predictions(newdata, mod, mesh) %>%
+        ##               as.data.frame() %>%
+        ##               pivot_longer(cols = everything(), names_to = 'Case') %>%
+        ##               mutate(Case = as.integer(Case)) %>%
+        ##               group_by(Case) %>%
+        ##               mutate(.draw = 1:n()) %>%
+        ##               ungroup) %>%
+        ##     mutate(REEF.d = factor(paste(REEF, 'deep slope'))) %>%
+        ##     dplyr::select(REEF.d, LATITUDE, LONGITUDE, .draw, value) %>%
+        ##     ## posterior::as_draws() %>%
+        ##     suppressMessages() %>%
+        ##     suppressWarnings()
+
+        ## save(newdata, file = paste0(DATA_PATH, "modelled/MA__baseline_posteriors_deep.RData"))            
+
+        ## ## Offshore posteriors (bioregion) ===========================================
+        ## load(file = paste0(DATA_PATH, "parameters/MA__baseline_offshore.RData"))
+        ## ## include NRM and k490 for later use in ordering. data for plotting
+        ## newdata <- site.location %>%
+        ##     dplyr::group_by(BIOREGION.agg) %>%
+        ##     summarise(across(c(LATITUDE, LONGITUDE), mean))
+
+        ## newdata <- newdata %>% 
+        ##     mutate(Case = 1:n()) %>%
+        ##     left_join(CI__make_predictions(newdata, mod, mesh) %>%
+        ##               as.data.frame() %>%
+        ##               pivot_longer(cols = everything(), names_to = 'Case') %>%
+        ##               mutate(Case = as.integer(Case)) %>%
+        ##               group_by(Case) %>%
+        ##               mutate(.draw = 1:n()) %>%
+        ##               ungroup) %>%
+        ##     ## mutate(REEF.d = factor(paste(REEF, 'offshore'))) %>%
+        ##     dplyr::select(BIOREGION.agg, LATITUDE, LONGITUDE, .draw, value) %>%
+        ##     ## posterior::as_draws() %>%
+        ##     suppressMessages() %>%
+        ##     suppressWarnings()
+
+        ## save(newdata, file = paste0(DATA_PATH, "modelled/MA__baseline_posteriors_offshore.RData"))            
+        ## Combine posteriors (reef) ===========================================
+        ## newdata.offshore <- get(load(file = paste0(DATA_PATH,
+        ##                                            "modelled/MA__baseline_posteriors_offshore.RData")))            
+        ## newdata.shallow <- get(load(file = paste0(DATA_PATH,
+        ##                                           "modelled/MA__baseline_posteriors_shallow.RData")))            
+        ## newdata.deep <- get(load(file = paste0(DATA_PATH,
+        ##                                        "modelled/MA__baseline_posteriors_deep.RData")))
+        ## baselines <- newdata.offshore %>%
+        ##     dplyr::select(-LONGITUDE, -LATITUDE) %>% 
+        ##     left_join(site.location %>%
+        ##               dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
+        ##               distinct()) %>%
+        ##     bind_rows(newdata.shallow %>%
+        ##               dplyr::select(-LONGITUDE, -LATITUDE) %>%
+        ##               left_join(site.location %>%
+        ##                         dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
+        ##                         distinct())
+        ##               ) %>% 
+        ##     bind_rows(newdata.deep %>%
+        ##               dplyr::select(-LONGITUDE, -LATITUDE) %>%
+        ##               left_join(site.location %>%
+        ##                         dplyr::select(P_CODE, REEF, REEF.d, BIOREGION.agg) %>%
+        ##                         distinct())
+        ##               ) %>% 
+        ##     suppressMessages() %>%
+        ##     suppressWarnings()
+
+        ## save(baselines,
+        ##      file = paste0(DATA_PATH, 'modelled/MA__baseline_posteriors.RData'))
 
         ## note: offshore baseline estimates for bioregions for which
         ## there are no observations
@@ -454,12 +472,14 @@ CI__index_MA <- function(dat, baselines) {
     dat %>%
         left_join(baselines %>%
                   dplyr::rename(baseline = value)) %>%
-        mutate(distance.metric = plogis(log2(baseline/value)),
-               consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
-                                    ifelse((value/0.5) <= 1, value/0.5, 1),
-                                   ifelse((value/0.4) <= 1, value/0.4, 1)),
-               rescale.consequence.metric = scales::rescale(consequence.metric, c(1,0)),
-               value = (distance.metric + rescale.consequence.metric)/2 ) %>%
+        mutate(
+            distance.metric = plogis(log2(baseline/value)),
+            consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
+                                 ifelse((value/0.5) <= 1, value/0.5, 1),
+                                 ifelse((value/0.4) <= 1, value/0.4, 1)),
+            rescale.consequence.metric = scales::rescale(consequence.metric, c(1,0)),
+            combined.metric = (distance.metric + rescale.consequence.metric)/2 ) %>%
+        pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 
         suppressMessages() %>%
         suppressWarnings()
@@ -477,21 +497,35 @@ CI_models_MA_distance <- function() {
 
         mods <- mods %>%
             mutate(Scores = map(.x = Pred,
-                               .f = ~ CI__index_MA(.x, baselines)
+                                .f = ~ CI__index_MA(.x, baselines) %>%
+                                    filter(Metric %in% c('distance.metric',
+                                                         'rescale.consequence.metric')) %>%
+                                    mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
+                                    arrange(fYEAR, .draw)
                                )) %>%
             dplyr::select(-data, -newdata,-Full_data, -Pred, -Summary) %>%
             mutate(Summary = map(.x = Scores,
                                  .f = ~ .x %>%
-                                     dplyr::select(
-                                                -P_CODE,
-                                                -distance.metric,
-                                                -consequence.metric,
-                                                -rescale.consequence.metric,
-                                                -baseline) %>%
-                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg) %>%
+                                     dplyr::select(-any_of(c(
+                                                "P_CODE",
+                                                "Model",
+                                                "value",
+                                                "baseline"))) %>%
+                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
                                      summarise_draws(median, mean, sd,
-                                                     HDInterval::hdi)
-                                 )) %>% 
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5)
+                                                     )
+                                 ),
+                   Below = map(.x = Summary,
+                               .f = ~ .x %>%
+                                   ungroup() %>%
+                                   mutate(Below = ifelse(upper < 0.5, 1, 0),
+                                          PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
+                                   dplyr::select(fYEAR, Metric, Below, PBelow) %>%
+                                   distinct()
+                               )
+                   ) %>% 
             suppressMessages() %>%
             suppressWarnings()
 
@@ -506,42 +540,127 @@ CI_models_MA_distance <- function() {
 }
 
 
-CI_models_MA_aggregation_bioregion <- function() {
+CI_models_MA_varify_scores <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                   item = 'agg_bioregion',
-                   label = "Aggregate to bioregions", status = 'pending')
+                   item = 'varify_scores',
+                   label = "Varify scores", status = 'pending')
     CI_tryCatch({
 
         mods <- get(load(file = paste0(DATA_PATH, 'modelled/MA__scores_reef_year.RData')))
+
+        pwalk(.l = list(mods$REEF.d, mods$Scores),
+              .f = ~ {
+                  g1 <- ..2 %>%
+                      filter(Metric == 'distance.metric') %>%
+                      droplevels() %>% 
+                      ggplot(aes(x = value)) +
+                      geom_density(aes(fill = 'Cover'), alpha = 0.5, trim = TRUE) +
+                      geom_density(aes(x = baseline, fill = 'Baseline'), alpha = 0.5, trim = TRUE) +
+                      facet_grid(fYEAR ~ ., scales = 'free') +
+                      theme_bw() +
+                      theme(strip.text.y = element_text(angle = 0)) +
+                      ggtitle(..1)
+                  g2 <- ..2 %>%
+                      filter(Metric == 'distance.metric') %>%
+                      droplevels() %>% 
+                      ggplot(aes(x = .value)) +
+                      geom_density(aes(fill = 'Distance metric')) +
+                      facet_grid(fYEAR ~ ., scales = 'free') +
+                      theme_bw() +
+                      theme(strip.text.y = element_text(angle = 0)) +
+                      ggtitle(..1)
+
+                  ggsave(filename = paste0(FIGS_PATH, '/MA__varify_scores_',..1,'.png'),
+                         g1 + g2,
+                         width = 10, height = 10)
+              }
+              )
+        zip(zipfile = paste0(FIGS_PATH, "/MA__varify_scores.zip"),
+            files = list.files(path = paste0(FIGS_PATH),
+                               pattern = "MA__varify_scores_.*.png",
+                               full.names = TRUE),
+            flags = "-9rX")
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'varify_scores',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Varify scores'), return=NULL)
+}
+
+
+CI_models_MA_aggregation <- function(level = 'NRM') {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = paste0('agg_', level),
+                   label = paste0("Aggregate to ", level), status = 'pending')
+    CI_tryCatch({
+
+        mods <- get(load(file = paste0(DATA_PATH, 'modelled/MA__scores_reef_year.RData')))
+        site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
+
+        ## Number of reefs below 0.5
+        mods.n <- mods %>%
+            dplyr::select(REEF.d, Below) %>%
+            unnest(Below) %>%
+            left_join(site.location %>%
+                      dplyr::select(REEF.d, !!level) %>%
+                      distinct()
+                      ) %>%
+            group_by(fYEAR, Metric, !!sym(level)) %>%
+            summarise(n.below = sum(Below),
+                      n.Pbelow = sum(PBelow),
+                      tn.reefs = n()) %>%
+            ungroup() %>%
+            group_by(!!sym(level)) %>%
+            nest() %>%
+            dplyr::rename(Below = data) %>% 
+            ungroup() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## Scores 
         mods <- mods %>%
             dplyr::select(Scores) %>% 
             unnest(Scores) %>% 
-            group_by(BIOREGION.agg) %>%
+            dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
+            left_join(site.location %>%
+                      dplyr::select(REEF.d, !!level) %>%
+                      distinct()
+                      ) %>%
+            group_by(!!sym(level)) %>%
             summarise(data = list(cur_data_all()), .groups = "drop") %>% 
             mutate(Scores = map(.x = data,
                                 .f = ~ .x %>%
                                     ungroup() %>% 
-                                    group_by(fYEAR, BIOREGION.agg, .draw) %>%
-                                    summarise(value = mean(value)) 
+                                    group_by(fYEAR, !!sym(level), .draw, Metric) %>%
+                                    summarise(.value = mean(.value)) 
                                 ),
                    Summary = map(.x = Scores,
                                  .f = ~ .x %>%
-                                     group_by(fYEAR, BIOREGION.agg) %>%
+                                     group_by(fYEAR, !!sym(level), Metric) %>%
                                      summarise_draws(median, mean, sd,
-                                                     HDInterval::hdi)
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5))
                                  ) 
                    ) %>% 
             suppressMessages() %>%
             suppressWarnings()
 
+        ## Combine
+        mods <- mods %>%
+            left_join(mods.n) %>% 
+            mutate(Summary = map2(.x = Summary, .y = Below,
+                                  .f = ~ .x %>% left_join(.y))) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+        
         save(mods,
-              file = paste0(DATA_PATH, 'modelled/MA__scores_reef_bioregion.RData'))
+              file = paste0(DATA_PATH, 'modelled/MA__scores_', level,'_year.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                              item = 'agg_bioregion',status = 'success')
+                              item = paste0('agg_', level), status = 'success')
 
     }, logFile=LOG_FILE, Category='--MA models--',
-    msg=paste0('Aggregate to bioregions'), return=NULL)
+    msg=paste0('Aggregate to ', level), return=NULL)
 }
 
 

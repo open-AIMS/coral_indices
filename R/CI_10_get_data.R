@@ -32,3 +32,6 @@ CI_combine_point_data()
 
 ## External sources
 CI_get_external_data()
+
+## Spatial data (arcgis server)
+CI_get_spatial_data()
