@@ -1,0 +1,97 @@
+CI_clear_models_collation_data <- function() {
+    ## unlink("../data/modelled/*.*", recursive = TRUE)
+}
+
+CI_models_collate_indices <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'collate_indices',
+                   label = "Collation of indices", status = 'pending')
+    CI_tryCatch({
+
+        site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
+        files <- list.files(path = paste0(DATA_PATH, "modelled"),
+                              pattern = "..__scores_.*_year.RData",
+                              full.names = TRUE)
+        indices <- purrr::map_df(.x = files,
+                              .f = ~ {
+                                  level <- str_replace(.x,
+                                                       ".*scores_(.*)_year.RData",
+                                                       "\\1")
+                                  name <- case_when(
+                                                    level == "reef" ~ "REEF",
+                                                    level == "BIOREGION.agg" ~ "BIOREGION.agg",
+                                                    level == "NRM" ~ "NRM",
+                                                    level == "TUMRA" ~ "TUMRA",
+                                                    level == "GBRMPA.MA" ~ "GBRMPA.MA",
+                                                    level == "GBRMP" ~ "GBRMP")
+                                  indicator <- str_replace(.x,
+                                                           ".*modelled/([A-Z]{2})__.*",
+                                                           "\\1") 
+                                  indicator <-  case_when(
+                                      indicator == "CC" ~ "Coral.cover",
+                                      indicator == "MA" ~ "Macroalgae"
+                                  )
+                                  x <- get(load(.x)) %>%
+                                      dplyr::select(Summary) %>%
+                                      unnest(Summary) %>% 
+                                      suppressMessages() %>%
+                                      suppressWarnings()
+                                  if (level == "reef") {
+                                      x <- x %>%
+                                          left_join(site.location %>%
+                                                    dplyr::select(!!name, DEPTH.f,
+                                                                  LATITUDE,LONGITUDE) %>%
+                                                    distinct()) %>%
+                                          suppressMessages() %>%
+                                          suppressWarnings()
+                                  } else {
+                                      x <- x %>% 
+                                          mutate(DEPTH.f = NA,
+                                                 LATITUDE = NA, LONGITUDE = NA) %>% 
+                                          suppressMessages() %>%
+                                          suppressWarnings()
+                                  }
+                                  x <- x %>%  
+                                      mutate(Level = {{level}},
+                                             Name = !!sym(name),
+                                             Indicator = {{indicator}},
+                                             tn.reefs = ifelse(Level == "reef", NA, tn.reefs),
+                                             n.below = ifelse(Level == "reef", NA, n.below),
+                                             Reference = case_when(
+                                                 Metric == 'pcb.rescale.dist.metric' ~ 'Critical',
+                                                 Metric == 'rescale.dist.metric' ~ 'Baseline',
+                                                 Metric == 'rescale.consequence.metric' ~ 'Critical',
+                                                 Metric == 'distance.metric' ~ 'Baseline'
+                                                 )) %>%
+                                      dplyr::select(Level,
+                                                    Year = fYEAR,
+                                                    Name,
+                                                    Latitude = LATITUDE,
+                                                    Longitude = LONGITUDE,
+                                                    Depth = DEPTH.f,
+                                                    Indicator,
+                                                    Metric,
+                                                    Reference,
+                                                    Median = median,
+                                                    Lower = lower,
+                                                    Upper = upper,
+                                                    tn.reefs = tn.reefs,
+                                                    n.below = n.below) %>% 
+                                      suppressMessages() %>%
+                                      suppressWarnings()
+                                  }
+                              )
+            
+        
+        save(indices, file = paste0(DATA_PATH, 'modelled/indices.RData'))
+        write_csv(indices, file = paste0(TABS_PATH, "/Indices.csv"))
+        
+        ## save(template,
+        ##       file = paste0(DATA_PATH, 'modelled/template.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'collate_indices',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Collation of indices'), return=NULL)
+}

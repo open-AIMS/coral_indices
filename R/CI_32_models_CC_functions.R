@@ -2,6 +2,32 @@ CI_clear_models_CC_data <- function() {
     ## unlink("../data/modelled/*.*", recursive = TRUE)
 }
 
+
+CI_models_CC_get_baselines <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'get_baselines',
+                   label = "Get baseline model posteriors", status = 'pending')
+    CI_tryCatch({
+
+        load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
+
+        ## Shallow posteriors (reef) ===========================================
+        load(file = paste0(DATA_PATH, "parameters/CC__baseline.RData"))
+
+        baselines <- mod %>%
+            mutate(DEPTH.f = ifelse(DEPTH.f == 'deep', 'deep slope', 'shallow slope'))
+        
+        save(baselines,
+             file = paste0(DATA_PATH, 'modelled/CC__baseline_posteriors.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'get_baselines',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Get baseline model posteriors'), return=NULL)
+}
+
+
 CI_models_CC_prepare_data <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'prepare_data',
@@ -147,7 +173,7 @@ CI_models_CC_fit_models <- function() {
         ## DATA_PATH/modelled/CC__.*__.RData
         purrr::pwalk(.l = list(mods$Full_data,mods$n),
                      .f = ~ CI__fit_CC_model(form = form, data = ..1,
-                                             family = 'binomial', n = ..2, N = nrow(mods))
+                                             family = 'betabinomial', n = ..2, N = nrow(mods))
                    )
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -155,4 +181,256 @@ CI_models_CC_fit_models <- function() {
 
     }, logFile=LOG_FILE, Category='--CC models--',
     msg=paste0('Fit MA models'), return=NULL)
+}
+
+CI__cellmeans_CC_model <- function(obs_data, Full_data, newdata, n, N) {
+    CI_tryCatch({
+        reef <- unique(newdata$REEF.d)
+        CI__append_label(stage = CI__get_stage(), item = 'cellmeans',
+                         n, N)
+        if (file.exists(paste0(DATA_PATH, "modelled/CC__", reef, '__posteriors.RData'))) {
+            CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--CC models--",
+                   msg = paste0("Reuse ", reef, " CC cellmeans"))
+            return(NULL)
+        }
+        draws <- get(load(file = paste0(DATA_PATH, "modelled/CC__", reef, '__draws.RData')))
+        cellmeans <- sapply(draws, function(x)
+            x[[2]][(nrow(Full_data)-nrow(newdata)+1):nrow(Full_data)]) 
+        posteriors <- newdata %>%
+            dplyr::select(fYEAR, REEF.d) %>%
+            cbind(plogis(cellmeans)) %>%
+            pivot_longer(cols = matches('[0-9]'), names_to = 'Rep') %>%
+            mutate(REEF.d = reef,
+                   .draw = as.integer(Rep)) %>%
+            dplyr::select(-Rep) %>%
+            left_join(obs_data %>%
+                      dplyr::select(fYEAR, REEF.d) %>%
+                      distinct()) %>% 
+            suppressWarnings() %>%
+            suppressMessages()
+        save(posteriors, file = paste0(DATA_PATH, "modelled/CC__", reef, '__posteriors.RData'))
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Posteriors for ', reef, ' CC model'), return=NULL)
+}
+
+CI_models_CC_cellmeans <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'cellmeans',
+                   label = "Cell means of CC models", status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, "modelled/data_cc.RData"))
+        load(file = paste0(DATA_PATH, 'modelled/CC__mods.RData'))
+        ## Calculate cellmeans
+        cellmeans <- purrr::pwalk(.l = list(mods$data, mods$Full_data, mods$newdata, mods$n, nrow(mods)),
+                                 .f = ~ CI__cellmeans_CC_model(..1, ..2, ..3, ..4, ..5)) 
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'cellmeans',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Cell means of CC models'), return=NULL)
+}
+
+CI_models_CC_preds <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'predictions',
+                   label = "Calculate predictions", status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, "modelled/data_cc.RData"))
+        load(file = paste0(DATA_PATH, 'modelled/CC__mods.RData'))
+        mods <- mods %>%
+            mutate(Pred = map(.x = REEF.d,
+                              .f = ~ get(load(file = paste0(DATA_PATH,
+                                                            "modelled/CC__", .x, '__posteriors.RData'))) %>%
+                                  dplyr::select(fYEAR, REEF.d, .draw, value)),
+                   Summary = pmap(.l = list(data, Pred),
+                                  .f = ~ ..2 %>% posterior::as_draws() %>%
+                                      group_by(fYEAR, REEF.d) %>% 
+                                      posterior::summarise_draws(mean,
+                                                                 sd,
+                                                                 median,
+                                                                 HDInterval::hdi) %>%
+                                      left_join(..1 %>%
+                                                dplyr::select(fYEAR, Site) %>%
+                                                distinct()) %>%
+                                      suppressMessages() %>%
+                                      suppressWarnings()
+                                  )
+                   )
+        pwalk(.l = list(mods$REEF.d, mods$Summary),
+              .f = ~ ..2 %>% save(file = paste0(DATA_PATH, "modelled/CC__", ..1, '__summary.RData')))
+
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/CC__preds.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'predictions',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Calculate predictions'), return=NULL)
+}
+
+
+CI__index_CC <- function(dat, baselines) {
+    dat %>%
+        left_join(baselines %>%
+                  dplyr::rename(baseline = value)) %>%
+        mutate(
+            distance.met = plogis(log2(baseline/value)),
+            cap.dist.met = as.numeric(case_when(distance.met < -1 ~ -1,
+                                              distance.met > 1 ~1,
+                                              distance.met > -1 & distance.met < 1 ~
+                                                  distance.met)),
+            rescale.dist.metric = scales::rescale(cap.dist.met, to = c(1, 0)),
+            pcb.distance.met = log2(0.2/value),
+            pcb.cap.dist.met = as.numeric(case_when(pcb.distance.met < -1 ~ -1,
+                                                    pcb.distance.met > 1 ~ 1,
+                                                    pcb.distance.met > -1 & pcb.distance.met < 1 ~
+                                                        pcb.distance.met)),
+            pcb.rescale.dist.metric = scales::rescale(pcb.cap.dist.met, to = c(1, 0))) %>%
+        dplyr::select(-any_of(ends_with("met"))) %>%
+        pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+        filter(!is.na(REEF.d)) %>% 
+        suppressMessages() %>%
+        suppressWarnings()
+}
+
+CI_models_CC_distance <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'indices',
+                   label = "Calculate indices", status = 'pending')
+    CI_tryCatch({
+
+        baselines <- get(load(file = paste0(DATA_PATH,
+                                            'modelled/CC__baseline_posteriors.RData')))
+        mods <- get(load(file = paste0(DATA_PATH, "modelled/CC__preds.RData")))
+        load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
+        ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
+
+        mods <- mods %>%
+            mutate(Pred = map(.x = Pred,
+                              .f = ~ .x %>%
+                                  left_join(site.location %>%
+                                            dplyr::select(REEF, REEF.d, BIOREGION.agg, DEPTH.f) %>%
+                                            distinct()))) %>% 
+            mutate(Scores = map(.x = Pred,
+                                .f = ~ CI__index_CC(.x, baselines) %>%
+                                    filter(Metric %in% c('rescale.dist.metric',
+                                                         'pcb.rescale.dist.metric')) %>%
+                                    mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
+                                    arrange(fYEAR, .draw)
+                               )) %>%
+            dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
+            mutate(Summary = map(.x = Scores,
+                                 .f = ~ .x %>%
+                                     dplyr::select(-any_of(c(
+                                                "P_CODE",
+                                                "Model",
+                                                "value",
+                                                "baseline",
+                                                "DEPTH.f"))) %>%
+                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
+                                     summarise_draws(median, mean, sd,
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5)
+                                                     )
+                                 ),
+                   Below = map(.x = Summary,
+                               .f = ~ .x %>%
+                                   ungroup() %>%
+                                   mutate(Below = ifelse(upper < 0.5, 1, 0),
+                                          PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
+                                   dplyr::select(fYEAR, Metric, Below, PBelow) %>%
+                                   distinct()
+                               )
+                   ) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'indices',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Calculate indices'), return=NULL)
+}
+
+
+CI_models_CC_aggregation <- function(level = 'NRM') {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = paste0('agg_', level),
+                   label = paste0("Aggregate to ", level), status = 'pending')
+    CI_tryCatch({
+
+        mods <- get(load(file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData')))
+        site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
+
+        ## Number of reefs below 0.5
+        mods.n <- mods %>%
+            dplyr::select(REEF.d, Below) %>%
+            unnest(Below) %>%
+            left_join(site.location %>%
+                      dplyr::select(REEF.d, !!level) %>%
+                      distinct()
+                      ) %>%
+            group_by(fYEAR, Metric, !!sym(level)) %>%
+            summarise(n.below = sum(Below),
+                      n.Pbelow = sum(PBelow),
+                      tn.reefs = n()) %>%
+            ungroup() %>%
+            group_by(!!sym(level)) %>%
+            nest() %>%
+            dplyr::rename(Below = data) %>% 
+            ungroup() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## Scores 
+        mods <- mods %>%
+            dplyr::select(Scores) %>% 
+            unnest(Scores) %>% 
+            dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
+            left_join(site.location %>%
+                      dplyr::select(REEF.d, !!level) %>%
+                      distinct()
+                      ) %>%
+            group_by(!!sym(level)) %>%
+            summarise(data = list(cur_data_all()), .groups = "drop") %>% 
+            mutate(Scores = map(.x = data,
+                                .f = ~ .x %>%
+                                    ungroup() %>% 
+                                    group_by(fYEAR, !!sym(level), .draw, Metric) %>%
+                                    summarise(.value = mean(.value)) 
+                                ),
+                   Summary = map(.x = Scores,
+                                 .f = ~ .x %>%
+                                     group_by(fYEAR, !!sym(level), Metric) %>%
+                                     summarise_draws(median, mean, sd,
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5))
+                                 ) 
+                   ) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## Combine
+        mods <- mods %>%
+            left_join(mods.n) %>% 
+            mutate(Summary = map2(.x = Summary, .y = Below,
+                                  .f = ~ .x %>% left_join(.y))) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+        
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/CC__scores_', level,'_year.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = paste0('agg_', level), status = 'success')
+
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Aggregate to ', level), return=NULL)
 }
