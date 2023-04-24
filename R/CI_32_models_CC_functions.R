@@ -434,3 +434,4 @@ CI_models_CC_aggregation <- function(level = 'NRM') {
     }, logFile=LOG_FILE, Category='--CC models--',
     msg=paste0('Aggregate to ', level), return=NULL)
 }
+

@@ -39,9 +39,9 @@ CI_models_collate_indices <- function() {
                                   if (level == "reef") {
                                       x <- x %>%
                                           left_join(site.location %>%
-                                                    dplyr::select(!!name, DEPTH.f,
-                                                                  LATITUDE,LONGITUDE) %>%
-                                                    distinct()) %>%
+                                                    group_by(!!sym(name), DEPTH.f) %>%
+                                                    summarise(across(c(LATITUDE, LONGITUDE), mean))
+                                                    ) %>%
                                           suppressMessages() %>%
                                           suppressWarnings()
                                   } else {
@@ -95,3 +95,40 @@ CI_models_collate_indices <- function() {
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0('Collation of indices'), return=NULL)
 }
+
+## tests
+
+tests <- function(level = 'NRM', value = 'Burdekin') {
+    cat(paste0('\n##-----', level, ' (', value, ') tn.reefs from indices in 2000 ---------\n'))
+    indices %>%
+        filter(Level == level,
+               Year == 2000,
+               Indicator == 'Coral.cover',
+               Reference == 'Baseline') %>%
+        as.data.frame %>%
+        print()
+
+    
+    cat(paste0('\n##-----all unique ', level, ' (', value, ') reefs in site.locations ---------\n'))
+    SS <- site.location %>%
+        filter(!!sym(level) == value) %>%
+        dplyr::select(REEF) %>%
+        distinct() %>%
+        pull(REEF) %>%
+        unique 
+    print(SS)
+    
+    cat(paste0('\n##-----all unique ', level, ' (', value, ') reefs in points.analysis.data.transect in 2000---------\n'))
+    points.analysis.data.transect %>%
+        filter(REPORT_YEAR == 2000, REEF %in% SS) %>%
+        dplyr::select(REEF) %>%
+        unique %>%
+        print()
+}
+
+## tests(level = 'NRM', value = 'Burdekin')
+## tests(level = 'NRM', value = 'Burnett Mary')
+## tests(level = 'NRM', value = 'Cape York')
+## tests(level = 'NRM', value = 'Fitzroy')
+## tests(level = 'NRM', value = 'Mackay Whitsunday')
+## tests(level = 'NRM', value = 'Wet Tropics')
