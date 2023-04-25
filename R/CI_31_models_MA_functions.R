@@ -471,6 +471,7 @@ CI_models_MA_preds <- function() {
 CI__index_MA <- function(dat, baselines) {
     dat %>%
         left_join(baselines %>%
+                  dplyr::select(-any_of(c("LONGITUDE", "LATITUDE"))) %>%
                   dplyr::rename(baseline = value)) %>%
         mutate(
             distance.metric = plogis(log2(baseline/value)),
@@ -605,6 +606,7 @@ CI_models_MA_aggregation <- function(level = 'NRM') {
                       dplyr::select(REEF.d, !!level) %>%
                       distinct()
                       ) %>%
+            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             group_by(fYEAR, Metric, !!sym(level)) %>%
             summarise(n.below = sum(Below),
                       n.Pbelow = sum(PBelow),
@@ -626,6 +628,7 @@ CI_models_MA_aggregation <- function(level = 'NRM') {
                       dplyr::select(REEF.d, !!level) %>%
                       distinct()
                       ) %>%
+            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             group_by(!!sym(level)) %>%
             summarise(data = list(cur_data_all()), .groups = "drop") %>% 
             mutate(Scores = map(.x = data,

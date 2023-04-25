@@ -377,6 +377,7 @@ CI_models_CC_aggregation <- function(level = 'NRM') {
                       dplyr::select(REEF.d, !!level) %>%
                       distinct()
                       ) %>%
+            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             group_by(fYEAR, Metric, !!sym(level)) %>%
             summarise(n.below = sum(Below),
                       n.Pbelow = sum(PBelow),
@@ -398,6 +399,7 @@ CI_models_CC_aggregation <- function(level = 'NRM') {
                       dplyr::select(REEF.d, !!level) %>%
                       distinct()
                       ) %>%
+            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             group_by(!!sym(level)) %>%
             summarise(data = list(cur_data_all()), .groups = "drop") %>% 
             mutate(Scores = map(.x = data,

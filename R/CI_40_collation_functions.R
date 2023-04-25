@@ -39,6 +39,12 @@ CI_models_collate_indices <- function() {
                                   if (level == "reef") {
                                       x <- x %>%
                                           left_join(site.location %>%
+                                                    ## group_by(!!sym(name), DEPTH.f) %>%
+                                                    ## summarise(across(c(LATITUDE, LONGITUDE), mean))
+                                                    ## ensure each reef has same lat/long despite diff
+                                                    ## site depths - Manu wanted this
+                                                    group_by(!!sym(name)) %>%
+                                                    mutate(across(c(LATITUDE, LONGITUDE), mean)) %>%
                                                     group_by(!!sym(name), DEPTH.f) %>%
                                                     summarise(across(c(LATITUDE, LONGITUDE), mean))
                                                     ) %>%
@@ -110,12 +116,21 @@ tests <- function(level = 'NRM', value = 'Burdekin') {
 
     
     cat(paste0('\n##-----all unique ', level, ' (', value, ') reefs in site.locations ---------\n'))
-    SS <- site.location %>%
-        filter(!!sym(level) == value) %>%
-        dplyr::select(REEF) %>%
-        distinct() %>%
-        pull(REEF) %>%
-        unique 
+    if (is.na(value)) {
+        SS <- site.location %>%
+            filter(is.na(!!sym(level))) %>%
+            dplyr::select(REEF) %>%
+            distinct() %>%
+            pull(REEF) %>%
+            unique
+    } else {
+        SS <- site.location %>%
+            filter(!!sym(level) == value) %>%
+            dplyr::select(REEF) %>%
+            distinct() %>%
+            pull(REEF) %>%
+            unique
+    }
     print(SS)
     
     cat(paste0('\n##-----all unique ', level, ' (', value, ') reefs in points.analysis.data.transect in 2000---------\n'))
@@ -132,3 +147,4 @@ tests <- function(level = 'NRM', value = 'Burdekin') {
 ## tests(level = 'NRM', value = 'Fitzroy')
 ## tests(level = 'NRM', value = 'Mackay Whitsunday')
 ## tests(level = 'NRM', value = 'Wet Tropics')
+## tests(level = 'GBRMP', value = 'GBRMP')
