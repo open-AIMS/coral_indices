@@ -8,7 +8,8 @@ CI_models_collate_indices <- function() {
                    label = "Collation of indices", status = 'pending')
     CI_tryCatch({
 
-        site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
+        ## site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
+        spatial_lookup <- get(load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData")))
         files <- list.files(path = paste0(DATA_PATH, "modelled"),
                               pattern = "..__scores_.*_year.RData",
                               full.names = TRUE)
@@ -23,6 +24,7 @@ CI_models_collate_indices <- function() {
                                                     level == "NRM" ~ "NRM",
                                                     level == "TUMRA" ~ "TUMRA",
                                                     level == "GBRMPA.MA" ~ "GBRMPA.MA",
+                                                    level == "ZONE" ~ "ZONE",
                                                     level == "GBRMP" ~ "GBRMP")
                                   indicator <- str_replace(.x,
                                                            ".*modelled/([A-Z]{2})__.*",
@@ -38,22 +40,24 @@ CI_models_collate_indices <- function() {
                                       suppressWarnings()
                                   if (level == "reef") {
                                       x <- x %>%
-                                          left_join(site.location %>%
-                                                    ## group_by(!!sym(name), DEPTH.f) %>%
-                                                    ## summarise(across(c(LATITUDE, LONGITUDE), mean))
-                                                    ## ensure each reef has same lat/long despite diff
-                                                    ## site depths - Manu wanted this
-                                                    group_by(!!sym(name)) %>%
-                                                    mutate(across(c(LATITUDE, LONGITUDE), mean)) %>%
-                                                    group_by(!!sym(name), DEPTH.f) %>%
-                                                    summarise(across(c(LATITUDE, LONGITUDE), mean))
-                                                    ) %>%
+                                          left_join(
+                                              ## site.location %>%
+                                              spatial_lookup %>% 
+                                              ## group_by(!!sym(name), DEPTH.f) %>%
+                                              ## summarise(across(c(LATITUDE, LONGITUDE), mean))
+                                              ## ensure each reef has same lat/long despite diff
+                                              ## site depths - Manu wanted this
+                                              group_by(!!sym(name)) %>%
+                                              mutate(across(c(Latitude, Longitude), mean)) %>%
+                                              group_by(!!sym(name), DEPTH.f) %>%
+                                              summarise(across(c(Latitude, Longitude), mean))
+                                          ) %>%
                                           suppressMessages() %>%
                                           suppressWarnings()
                                   } else {
                                       x <- x %>% 
                                           mutate(DEPTH.f = NA,
-                                                 LATITUDE = NA, LONGITUDE = NA) %>% 
+                                                 Latitude = NA, Longitude = NA) %>% 
                                           suppressMessages() %>%
                                           suppressWarnings()
                                   }
@@ -72,8 +76,8 @@ CI_models_collate_indices <- function() {
                                       dplyr::select(Level,
                                                     Year = fYEAR,
                                                     Name,
-                                                    Latitude = LATITUDE,
-                                                    Longitude = LONGITUDE,
+                                                    Latitude,
+                                                    Longitude,
                                                     Depth = DEPTH.f,
                                                     Indicator,
                                                     Metric,

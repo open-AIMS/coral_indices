@@ -1,7 +1,9 @@
 CI_clear_models_CC_data <- function() {
-    ## unlink("../data/modelled/*.*", recursive = TRUE)
+    files <- list.files(path = paste0(DATA_PATH, "modelled"),
+                        pattern = "CC.*|data_cc.*",
+                        full.names = TRUE)
+    unlink(files)
 }
-
 
 CI_models_CC_get_baselines <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),

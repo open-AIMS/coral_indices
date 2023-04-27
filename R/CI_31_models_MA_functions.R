@@ -1,6 +1,6 @@
 CI_clear_models_MA_data <- function() {
     files <- list.files(path = paste0(DATA_PATH, "modelled"),
-                        pattern = "MA.*",
+                        pattern = "MA.*|data_ma.*",
                         full.names = TRUE)
     unlink(files)
 }
