@@ -548,6 +548,20 @@ CI_get_spatial_data <- function() {
                    label = "Spatial data", status = 'pending')
     CI_tryCatch({
 
+        ## Bioregions (reef)
+        bioregions <- st_read(paste0("https://services8.arcgis.com/",
+                                "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
+                                "Reef_marine_bioregions_of_the_Great_Barrier_Reef/",
+                                "FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"),
+                         quiet = T) %>%
+            select(BIOREGION, DESCRIP, geometry) %>% 
+            mutate(Region = "BIOREGION") %>%
+            st_make_valid()
+
+        save(bioregions,
+             file = paste0(DATA_PATH, 'primary/bioregions.RData'))
+        
+        
         ## TUMRA
         tumra <- st_read(paste0("https://services8.arcgis.com/",
                                 "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
@@ -562,7 +576,7 @@ CI_get_spatial_data <- function() {
             st_make_valid()
 
         save(tumra,
-             file = paste0(DATA_PATH, 'processed/tumra.RData'))
+             file = paste0(DATA_PATH, 'primary/tumra.RData'))
 
         ## GBRMPA management
         gbrmpa.management <- st_read(paste0("https://services8.arcgis.com/",
@@ -575,7 +589,7 @@ CI_get_spatial_data <- function() {
             mutate(Region = "GBRMPA_Management")
 
         save(gbrmpa.management,
-             file = paste0(DATA_PATH, 'processed/gbrmpa.management.RData'))
+             file = paste0(DATA_PATH, 'primary/gbrmpa.management.RData'))
 
         ## GBR
         gbrmpa <- st_read(paste0("https://services8.arcgis.com/",
@@ -587,7 +601,47 @@ CI_get_spatial_data <- function() {
             select(Name, Region, geometry) 
 
         save(gbrmpa,
-             file = paste0(DATA_PATH, 'processed/gbrmpa.RData'))
+             file = paste0(DATA_PATH, 'primary/gbrmpa.RData'))
+
+        ## Zones
+        northern.bbox <- st_bbox(c(xmin = 142, xmax = 155, ymin = -15.4, ymax = 0)) %>%
+            st_as_sfc() %>%
+            st_sf(crs = st_crs(gbrmpa)) %>%
+            mutate(Zone = 'Northern')
+        central.bbox <- rbind(c(142,-20.7),
+                               c(148.7,-20.7),
+                               c(152,-19.6),
+                               c(152,-15.4),
+                               c(142,-15.4)) %>%
+            st_linestring() %>%
+            st_cast("POLYGON") %>%
+            st_sfc(crs = st_crs(gbrmpa)) %>%
+            st_sf() %>%
+            mutate(Zone = 'Central')
+
+       southern.bbox <- rbind(c(142,-20.7),
+                              c(148.7,-20.7),
+                              c(152,-19.6),
+                              c(155,-19.6),
+                              c(155,-25),
+                              c(142,-25)) %>%
+            st_linestring() %>%
+            st_cast("POLYGON") %>%
+            st_sfc(crs = st_crs(gbrmpa)) %>%
+            st_sf() %>%
+            mutate(Zone = 'Southern')
+       zones.bbox <- rbind(northern.bbox, central.bbox, southern.bbox)
+ 
+       zones <- gbrmpa %>%
+           st_intersection(zones.bbox) %>%
+           mutate(Region = 'Zones',
+                  Name = Zone) %>%
+           dplyr::select(-Zone) %>%
+           suppressMessages() %>%
+           suppressWarnings()
+       
+        save(zones,
+             file = paste0(DATA_PATH, 'primary/zones.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'spatial_data',status = 'success')

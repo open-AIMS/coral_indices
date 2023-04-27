@@ -334,18 +334,18 @@ CI_process_spatial <- function() {
     CI_tryCatch({
 
         ## Bioregions
-        bregions.sf <- read_sf(paste0(DATA_PATH, "spatial/bioregions/Marine_Bioregions_of_the_Great_Barrier_Reef__Reef_.shp")) %>%
-                            st_transform(crs=4326) %>%
-                            st_make_valid()
-        save(bregions.sf,
-             file = paste0(DATA_PATH, 'processed/bregions.sf.RData'))
+        ## bregions.sf <- read_sf(paste0(DATA_PATH, "spatial/bioregions/Marine_Bioregions_of_the_Great_Barrier_Reef__Reef_.shp")) %>%
+        ##                     st_transform(crs=4326) %>%
+        ##                     st_make_valid()
+        ## save(bregions.sf,
+        ##      file = paste0(DATA_PATH, 'processed/bregions.sf.RData'))
 
         ## NRM spatial
         nrm.sf  <- read_sf(paste0(DATA_PATH, "spatial/NRM Regions/NRM_MarineRegions.shp")) %>%
             st_transform(crs=4326)%>%
             st_make_valid()
         save(nrm.sf,
-             file = paste0(DATA_PATH, 'processed/nrm.sf.RData'))
+             file = paste0(DATA_PATH, 'primary/nrm.sf.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'process_spatial',status = 'success')
@@ -362,11 +362,13 @@ CI_process_assign_regions <- function() {
     CI_tryCatch({
         
         load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
-        load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
-        load(paste0(DATA_PATH, 'processed/nrm.sf.RData'))
-        load(paste0(DATA_PATH, 'processed/tumra.RData'))
-        load(paste0(DATA_PATH, 'processed/gbrmpa.management.RData'))
-        load(paste0(DATA_PATH, 'processed/gbrmpa.RData'))
+        ## load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
+        load(paste0(DATA_PATH, 'primary/bioregions.RData'))
+        load(paste0(DATA_PATH, 'primary/nrm.sf.RData'))
+        load(paste0(DATA_PATH, 'primary/tumra.RData'))
+        load(paste0(DATA_PATH, 'primary/gbrmpa.management.RData'))
+        load(paste0(DATA_PATH, 'primary/gbrmpa.RData'))
+        load(paste0(DATA_PATH, 'primary/zones.RData'))
 
         bioregions <- points.analysis.data.transect %>%
             dplyr::select(P_CODE, REEF, SITE_NO, DEPTH, LATITUDE, LONGITUDE) %>%
@@ -375,7 +377,8 @@ CI_process_assign_regions <- function() {
                    Latitude = LATITUDE) %>%
             mutate(SITE_NO = as.character(SITE_NO)) %>%
             st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
-            st_join(., bregions.sf, join = st_nearest_feature)%>%
+            ## st_join(., bregions.sf, join = st_nearest_feature)%>%
+            st_join(., bioregions, join = st_nearest_feature)%>%
             st_drop_geometry()  %>%
             dplyr::select(REEF, DEPTH, SITE_NO, BIOREGION) %>% 
             group_by(REEF, DEPTH) %>%
@@ -430,16 +433,53 @@ CI_process_assign_regions <- function() {
             suppressMessages() %>%
             suppressWarnings()
 
+        ## Zones (Northern, Central, Southern)
+        zones <- points.analysis.data.transect %>%
+            rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
+            st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
+            st_join(., zones, join = st_within)%>%
+            st_drop_geometry()%>%
+            rename(ZONE = Name) %>%
+            dplyr::select(REEF, DEPTH, ZONE) %>% 
+            distinct() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## Latitude and Longitude
+        latlong <- points.analysis.data.transect %>%
+            rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
+            dplyr::select(REEF, DEPTH, Latitude, Longitude) %>%
+            distinct() %>%
+            group_by(REEF, DEPTH) %>%
+            summarise(Latitude = mean(Latitude),
+                   Longitude = mean(Longitude)) %>%
+            ungroup() %>% 
+            suppressWarnings() %>%
+            suppressMessages()
+            
         ## Join REEF, BIOREGION, NRM, Lat/longs and save
         spatial_lookup <- bioregions %>% 
             left_join(nrm) %>%
             left_join(tumra) %>%
             left_join(gbrmpa.ma) %>%
             left_join(gbrmp) %>%
+            left_join(zones) %>%
+            left_join(latlong) %>% 
             distinct() %>%
+            mutate(BIOREGION = as.character(BIOREGION),
+                   BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
+                                                       BIOREGION %in% c("35", "36") ~"35:36",
+                                                       !BIOREGION %in% c("4", "3", "35", "36")
+                                                       ~BIOREGION)),
+                   DEPTH.f = factor(case_when(DEPTH >3 ~"deep slope",
+                                              DEPTH <= 3 ~"shallow slope")),
+                   Shelf = ifelse(BIOREGION %in% c('16','17','18','19','22','23','29'),
+                                  'Inshore','Offshore'),
+                   REEF.d = factor(paste(REEF, DEPTH.f))) %>%
+                distinct() %>%
             suppressWarnings() %>%
             suppressMessages()
-        
+
         save(spatial_lookup,
              file = paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
         
@@ -587,7 +627,13 @@ CI_process_juvenile_data_for_baselines <- function() {
                       select(-Date),
                       by = c("P_CODE", "REEF", "DEPTH", "VISIT_NO", "SITE_NO")) %>%
             filter(!is.na(REPORT_YEAR) & REPORT_YEAR>2006) %>%
-            left_join(spatial_lookup) %>%
+            left_join(spatial_lookup %>%
+                      dplyr::select(REEF, DEPTH, DEPTH.f, REEF.d, BIOREGION, BIOREGION.agg, NRM) %>%
+                      distinct()
+                      ) %>%
+            ## left_join(spatial_lookup %>%
+            ##           dplyr::select(REEF, DEPTH, BIOREGION, NRM) %>%
+            ##           distinct()) %>%
             mutate(P_CODE = as.factor(P_CODE),
                    NRM = as.factor(NRM),
                    DEPTH.f = factor(case_when(DEPTH > 3 ~"deep slope",
@@ -598,7 +644,8 @@ CI_process_juvenile_data_for_baselines <- function() {
                    BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
                                                        BIOREGION %in% c("35", "36") ~"35:36",
                                                        !BIOREGION %in% c("4", "3", "35", "36")
-                                                       ~BIOREGION))) %>%
+                                                       ~BIOREGION))
+                   ) %>%
             left_join(juvenile.offset %>%
                       mutate(SITE_NO = as.factor(SITE_NO))) %>%
             filter(DEPTH < 9.1) %>% 
@@ -646,8 +693,12 @@ CI_process_unique_site_location <- function() {
         site.location <- points.analysis.data %>% 
             dplyr::select(P_CODE, REEF, DEPTH, SITE_NO, LATITUDE, LONGITUDE) %>%
             distinct() %>%
-            left_join(spatial_lookup) %>%
-            mutate(BIOREGION = as.character(BIOREGION),
+            left_join(spatial_lookup %>%
+                      dplyr::select(REEF, DEPTH, DEPTH.f, REEF.d, BIOREGION, BIOREGION.agg, NRM) %>%
+                      distinct()
+                      ) %>%
+            mutate(
+                BIOREGION = as.character(BIOREGION),
                    BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
                                                        BIOREGION %in% c("35", "36") ~"35:36",
                                                        !BIOREGION %in% c("4", "3", "35", "36")

@@ -360,80 +360,80 @@ CI_models_CC_distance <- function() {
 }
 
 
-CI_models_CC_aggregation <- function(level = 'NRM') {
-    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                   item = paste0('agg_', level),
-                   label = paste0("Aggregate to ", level), status = 'pending')
-    CI_tryCatch({
+## CI_models_CC_aggregation <- function(level = 'NRM') {
+##     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+##                    item = paste0('agg_', level),
+##                    label = paste0("Aggregate to ", level), status = 'pending')
+##     CI_tryCatch({
 
-        mods <- get(load(file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData')))
-        site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
+##         mods <- get(load(file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData')))
+##         spatial_lookup <- get(load(file = paste0(DATA_PATH, 'processed/spatial_lookup.RData')))
 
-        ## Number of reefs below 0.5
-        mods.n <- mods %>%
-            dplyr::select(REEF.d, Below) %>%
-            unnest(Below) %>%
-            left_join(site.location %>%
-                      dplyr::select(REEF.d, !!level) %>%
-                      distinct()
-                      ) %>%
-            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
-            group_by(fYEAR, Metric, !!sym(level)) %>%
-            summarise(n.below = sum(Below),
-                      n.Pbelow = sum(PBelow),
-                      tn.reefs = n()) %>%
-            ungroup() %>%
-            group_by(!!sym(level)) %>%
-            nest() %>%
-            dplyr::rename(Below = data) %>% 
-            ungroup() %>%
-            suppressMessages() %>%
-            suppressWarnings()
+##         ## Number of reefs below 0.5
+##         mods.n <- mods %>%
+##             dplyr::select(REEF.d, Below) %>%
+##             unnest(Below) %>%
+##             left_join(spatial_lookup %>%
+##                       dplyr::select(REEF.d, !!level) %>%
+##                       distinct()
+##                       ) %>%
+##             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
+##             group_by(fYEAR, Metric, !!sym(level)) %>%
+##             summarise(n.below = sum(Below),
+##                       n.Pbelow = sum(PBelow),
+##                       tn.reefs = n()) %>%
+##             ungroup() %>%
+##             group_by(!!sym(level)) %>%
+##             nest() %>%
+##             dplyr::rename(Below = data) %>% 
+##             ungroup() %>%
+##             suppressMessages() %>%
+##             suppressWarnings()
 
-        ## Scores 
-        mods <- mods %>%
-            dplyr::select(Scores) %>% 
-            unnest(Scores) %>% 
-            dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
-            left_join(site.location %>%
-                      dplyr::select(REEF.d, !!level) %>%
-                      distinct()
-                      ) %>%
-            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
-            group_by(!!sym(level)) %>%
-            summarise(data = list(cur_data_all()), .groups = "drop") %>% 
-            mutate(Scores = map(.x = data,
-                                .f = ~ .x %>%
-                                    ungroup() %>% 
-                                    group_by(fYEAR, !!sym(level), .draw, Metric) %>%
-                                    summarise(.value = mean(.value)) 
-                                ),
-                   Summary = map(.x = Scores,
-                                 .f = ~ .x %>%
-                                     group_by(fYEAR, !!sym(level), Metric) %>%
-                                     summarise_draws(median, mean, sd,
-                                                     HDInterval::hdi,
-                                                     `p<0.5` = ~ mean(.x < 0.5))
-                                 ) 
-                   ) %>% 
-            suppressMessages() %>%
-            suppressWarnings()
+##         ## Scores 
+##         mods <- mods %>%
+##             dplyr::select(Scores) %>% 
+##             unnest(Scores) %>% 
+##             dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
+##             left_join(spatial_lookup %>%
+##                       dplyr::select(REEF.d, !!level) %>%
+##                       distinct()
+##                       ) %>%
+##             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
+##             group_by(!!sym(level)) %>%
+##             summarise(data = list(cur_data_all()), .groups = "drop") %>% 
+##             mutate(Scores = map(.x = data,
+##                                 .f = ~ .x %>%
+##                                     ungroup() %>% 
+##                                     group_by(fYEAR, !!sym(level), .draw, Metric) %>%
+##                                     summarise(.value = mean(.value)) 
+##                                 ),
+##                    Summary = map(.x = Scores,
+##                                  .f = ~ .x %>%
+##                                      group_by(fYEAR, !!sym(level), Metric) %>%
+##                                      summarise_draws(median, mean, sd,
+##                                                      HDInterval::hdi,
+##                                                      `p<0.5` = ~ mean(.x < 0.5))
+##                                  ) 
+##                    ) %>% 
+##             suppressMessages() %>%
+##             suppressWarnings()
 
-        ## Combine
-        mods <- mods %>%
-            left_join(mods.n) %>% 
-            mutate(Summary = map2(.x = Summary, .y = Below,
-                                  .f = ~ .x %>% left_join(.y))) %>% 
-            suppressMessages() %>%
-            suppressWarnings()
+##         ## Combine
+##         mods <- mods %>%
+##             left_join(mods.n) %>% 
+##             mutate(Summary = map2(.x = Summary, .y = Below,
+##                                   .f = ~ .x %>% left_join(.y))) %>% 
+##             suppressMessages() %>%
+##             suppressWarnings()
         
-        save(mods,
-              file = paste0(DATA_PATH, 'modelled/CC__scores_', level,'_year.RData'))
+##         save(mods,
+##               file = paste0(DATA_PATH, 'modelled/CC__scores_', level,'_year.RData'))
         
-        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                              item = paste0('agg_', level), status = 'success')
+##         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+##                               item = paste0('agg_', level), status = 'success')
 
-    }, logFile=LOG_FILE, Category='--CC models--',
-    msg=paste0('Aggregate to ', level), return=NULL)
-}
+##     }, logFile=LOG_FILE, Category='--CC models--',
+##     msg=paste0('Aggregate to ', level), return=NULL)
+## }
 

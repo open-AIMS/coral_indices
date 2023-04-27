@@ -46,3 +46,130 @@ CI__make_predictions <- function(newdata, mod, mesh) {
     cellmeans.spatial.2
 }
 
+
+CI__cellmeans_model <- function(Indicator, obs_data, Full_data, newdata, n, N) {
+    CI_tryCatch({
+        reef <- unique(newdata$REEF.d)
+        CI__append_label(stage = CI__get_stage(), item = 'cellmeans',
+                         n, N)
+        if (file.exists(paste0(DATA_PATH, "modelled/", Indicator, "__", reef, '__posteriors.RData'))) {
+            CI_log(status = 'INFO', logFile = LOG_FILE, Category = paste0("--", Indicator, " models--"),
+                   msg = paste0("Reuse ", reef, " ", Indicator, " cellmeans"))
+            return(NULL)
+        }
+        draws <- get(load(file = paste0(DATA_PATH, "modelled/", Indicator, "__", reef, '__draws.RData')))
+        cellmeans <- sapply(draws, function(x)
+            x[[2]][(nrow(Full_data)-nrow(newdata)+1):nrow(Full_data)]) 
+        posteriors <- newdata %>%
+            dplyr::select(fYEAR, REEF.d) %>%
+            cbind(plogis(cellmeans)) %>%
+            pivot_longer(cols = matches('[0-9]'), names_to = 'Rep') %>%
+            mutate(REEF.d = reef,
+                   .draw = as.integer(Rep)) %>%
+            dplyr::select(-Rep) %>%
+            left_join(obs_data %>%
+                      dplyr::select(fYEAR, REEF.d) %>%
+                      distinct()) %>% 
+            suppressWarnings() %>%
+            suppressMessages()
+        save(posteriors, file = paste0(DATA_PATH, "modelled/", Indicator, "__", reef, '__posteriors.RData'))
+    }, logFile=LOG_FILE, Category=paste0('--', Indicator, ' models--'),
+    msg=paste0('Posteriors for ', reef, ' ', Indicator, ' model'), return=NULL)
+}
+
+CI_models_cellmeans <- function(Indicator = 'CC') {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'cellmeans',
+                   label = paste0("Cell means of ", Indicator, " models"), status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, "modelled/data_ma.RData"))
+        load(file = paste0(DATA_PATH, 'modelled/MA__mods.RData'))
+        ## Calculate cellmeans
+        cellmeans <- purrr::pwalk(.l = list(mods$data, mods$Full_data, mods$newdata, mods$n, nrow(mods)),
+                                 .f = ~ CI__cellmeans_model(Indicator, ..1, ..2, ..3, ..4, ..5)) 
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'cellmeans',status = 'success')
+
+    }, logFile=LOG_FILE, Category=paste0('--', Indicator, ' models--'),
+    msg=paste0('Cell means of ', Indicator, ' models'), return=NULL)
+}
+
+CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = paste0('agg_', level),
+                   label = paste0("Aggregate to ", level), status = 'pending')
+    CI_tryCatch({
+
+        mods <- get(load(file = paste0(DATA_PATH, 'modelled/', Indicator, '__scores_reef_year.RData')))
+        spatial_lookup <- get(load(file = paste0(DATA_PATH, 'processed/spatial_lookup.RData')))
+
+        ## Number of reefs below 0.5
+        mods.n <- mods %>%
+            dplyr::select(REEF.d, Below) %>%
+            unnest(Below) %>%
+            left_join(spatial_lookup %>%
+                      dplyr::select(REEF.d, !!level) %>%
+                      distinct()
+                      ) %>%
+            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
+            group_by(fYEAR, Metric, !!sym(level)) %>%
+            summarise(n.below = sum(Below),
+                      n.Pbelow = sum(PBelow),
+                      tn.reefs = n()) %>%
+            ungroup() %>%
+            group_by(!!sym(level)) %>%
+            nest() %>%
+            dplyr::rename(Below = data) %>% 
+            ungroup() %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## Scores 
+        mods <- mods %>%
+            dplyr::select(Scores) %>% 
+            unnest(Scores) %>% 
+            dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
+            left_join(spatial_lookup %>%
+                      dplyr::select(REEF.d, !!level) %>%
+                      distinct()
+                      ) %>%
+            filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
+            group_by(!!sym(level)) %>%
+            summarise(data = list(cur_data_all()), .groups = "drop") %>% 
+            mutate(Scores = map(.x = data,
+                                .f = ~ .x %>%
+                                    ungroup() %>% 
+                                    group_by(fYEAR, !!sym(level), .draw, Metric) %>%
+                                    summarise(.value = mean(.value)) 
+                                ),
+                   Summary = map(.x = Scores,
+                                 .f = ~ .x %>%
+                                     group_by(fYEAR, !!sym(level), Metric) %>%
+                                     summarise_draws(median, mean, sd,
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5))
+                                 ) 
+                   ) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## Combine
+        mods <- mods %>%
+            left_join(mods.n) %>% 
+            mutate(Summary = map2(.x = Summary, .y = Below,
+                                  .f = ~ .x %>% left_join(.y))) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+        
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/', Indicator, '__scores_', level,'_year.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = paste0('agg_', level), status = 'success')
+
+    }, logFile=LOG_FILE, Category=paste0('--', Indicator, ' models--'),
+    msg=paste0('Aggregate to ', level), return=NULL)
+}
+
