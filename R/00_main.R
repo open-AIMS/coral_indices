@@ -13,4 +13,6 @@ if (3 %in% CI$setting[['runStage']]) source('CI_31_models_MA.R')
 
 if (4 %in% CI$setting[['runStage']]) source('CI_32_models_CC.R')
 
-if (5 %in% CI$setting[['runStage']]) source('CI_40_collation.R')
+if (5 %in% CI$setting[['runStage']]) source('CI_33_models_JU.R')
+
+if (6 %in% CI$setting[['runStage']]) source('CI_40_collation.R')
