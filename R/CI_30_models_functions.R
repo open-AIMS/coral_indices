@@ -50,6 +50,8 @@ CI__make_predictions <- function(newdata, mod, mesh) {
 CI__cellmeans_model <- function(Indicator, obs_data, Full_data, newdata, n, N) {
     CI_tryCatch({
         reef <- unique(newdata$REEF.d)
+        if (any(str_detect(colnames(obs_data), "Taxa"))) { # for juveniles
+        }
         CI__append_label(stage = CI__get_stage(), item = 'cellmeans',
                          n, N)
         if (file.exists(paste0(DATA_PATH, "modelled/", Indicator, "__", reef, '__posteriors.RData'))) {
@@ -114,7 +116,7 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
                       distinct()
                       ) %>%
             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
-            group_by(fYEAR, Metric, !!sym(level)) %>%
+            group_by(fYEAR, Metric, !!sym(level), across(any_of('Taxa'))) %>%
             summarise(n.below = sum(Below),
                       n.Pbelow = sum(PBelow),
                       tn.reefs = n()) %>%
@@ -130,7 +132,7 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
         mods <- mods %>%
             dplyr::select(Scores) %>% 
             unnest(Scores) %>% 
-            dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
+            dplyr::select(fYEAR, REEF.d, .draw, any_of('Taxa'), Metric, .value) %>%
             left_join(spatial_lookup %>%
                       dplyr::select(REEF.d, !!level) %>%
                       distinct()
@@ -141,12 +143,14 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
             mutate(Scores = map(.x = data,
                                 .f = ~ .x %>%
                                     ungroup() %>% 
-                                    group_by(fYEAR, !!sym(level), .draw, Metric) %>%
+                                    group_by(fYEAR, !!sym(level), .draw,
+                                             across(any_of('Taxa')), Metric) %>%
                                     summarise(.value = mean(.value)) 
                                 ),
                    Summary = map(.x = Scores,
                                  .f = ~ .x %>%
-                                     group_by(fYEAR, !!sym(level), Metric) %>%
+                                     group_by(fYEAR, !!sym(level),
+                                              across(any_of('Taxa')), Metric) %>%
                                      summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5))

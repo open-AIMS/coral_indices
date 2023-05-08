@@ -25,6 +25,7 @@
 ## --------------------------- #
 
 source('../R/functions.R')
+source('../R/CI_26_CC_baseline_models_functions.R')
 
 load(paste0(DATA_PATH, 'processed/juv.df.RData'))
 gbrmpa <- get(load(paste0(DATA_PATH, 'primary/gbrmpa.RData')))
@@ -161,12 +162,13 @@ juv.baseline <- juv.baseline %>%
     )
 
 save(juv.baseline,
-     file=paste0(DATA_PATH, 'parameters/JU__baseline.RData'))
+     file=paste0(DATA_PATH, 'parameters/JU__baseline_mod.RData'))
 
 ################################################################################
 ####### PART 3 - get predictions for polygon samples ###########################
 ################################################################################
 load(file = paste0(DATA_PATH, "parameters/newdata_grid.RData"))
+load(file=paste0(DATA_PATH, 'parameters/JU__baseline_mod.RData'))
 
 newdata <- newdata_grid %>%
     st_drop_geometry() %>%
@@ -205,8 +207,8 @@ mods <- mods %>%
                                 )
            )
 
-mod <- mods %>%
+juv.baseline <- mods %>%
     dplyr::select(bio.draws.mesh) %>%
     unnest(bio.draws.mesh)
 
-save(mod, file = paste0(DATA_PATH, "parameters/JUV_baseline.RData"))
+save(juv.baseline, file = paste0(DATA_PATH, "parameters/JUV_baseline.RData"))

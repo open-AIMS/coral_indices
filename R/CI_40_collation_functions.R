@@ -31,7 +31,8 @@ CI_models_collate_indices <- function() {
                                                            "\\1") 
                                   indicator <-  case_when(
                                       indicator == "CC" ~ "Coral.cover",
-                                      indicator == "MA" ~ "Macroalgae"
+                                      indicator == "MA" ~ "Macroalgae",
+                                      indicator == "JU" ~ "Juvenile.density"
                                   )
                                   x <- get(load(.x)) %>%
                                       dplyr::select(Summary) %>%
@@ -71,7 +72,9 @@ CI_models_collate_indices <- function() {
                                                  Metric == 'pcb.rescale.dist.metric' ~ 'Critical',
                                                  Metric == 'rescale.dist.metric' ~ 'Baseline',
                                                  Metric == 'rescale.consequence.metric' ~ 'Critical',
-                                                 Metric == 'distance.metric' ~ 'Baseline'
+                                                 Metric == 'distance.metric' ~ 'Baseline',
+                                                 Metric == 'Total' ~ 'Baseline',
+                                                 Metric == 'Acropora' ~ 'Critical'
                                                  )) %>%
                                       dplyr::select(Level,
                                                     Year = fYEAR,
