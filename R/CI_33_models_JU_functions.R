@@ -215,7 +215,8 @@ CI_models_JU_fit_models <- function() {
         ## Fit the models - output models and draws to
         purrr::pwalk(.l = list(mods$Full_data,mods$n),
                      .f = ~ CI__fit_JU_model(form = form, data = ..1,
-                                             family = 'zeroinflatednbinomial1',
+                                             ## family = 'zeroinflatednbinomial1',
+                                             family = 'nbinomial2',
                                              n = ..2,
                                              N = nrow(mods))
                    )
