@@ -9,6 +9,11 @@ library(sf)
 library(INLA)
 library(posterior)
 library(tidybayes)
+library(vegan)
+library(patchwork)
+library(ggrepel)
+library(ggsci)
+library(glof)
 ## ----end
 
 source('../R/functions_boxes.R')

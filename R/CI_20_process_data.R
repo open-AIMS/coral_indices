@@ -43,3 +43,8 @@ CI_process_juvenile_data_for_baselines()
 
 ## Unique site locations
 CI_process_unique_site_location()
+
+## Composition data
+CI_process_composition_points()
+CI_process_composition_ordi_data()
+CI_process_composition_data()

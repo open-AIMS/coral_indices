@@ -722,3 +722,140 @@ CI_process_unique_site_location <- function() {
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0('Unique site locations'), return=NULL)
 }
+
+CI_process_composition_points <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'comp.points',
+                   label = "Composition points", status = 'pending')
+    CI_tryCatch({
+        load(file = paste0(DATA_PATH, 'primary/points.raw.RData')) 
+        codes <- read.csv(paste0(DATA_PATH, 'primary/video_codes.csv'))
+
+        points.zeros <- points.raw%>% 
+            pivot_wider(names_from = VIDEO_CODE,
+                        values_from = POINTS,
+                        values_fill = list(POINTS = 0)) %>%
+            pivot_longer(cols = num_range(prefix = "", range = 1:997),
+                         names_to = "VIDEO_CODE",
+                         values_to = "n.points") %>%
+            mutate(VIDEO_CODE = as.integer(VIDEO_CODE)) %>%
+            left_join(codes) %>%
+            filter(!GROUP_CODE == 'IN') %>%
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## total points as 
+        total.points.transect <- points.zeros %>%
+            group_by(REEF, DEPTH, VISIT_NO, SITE_NO, TRANSECT_NO) %>%
+            summarise(total.points = sum(n.points)) %>%
+            ungroup() %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(points.zeros, total.points.transect,
+             file = paste0(DATA_PATH, 'processed/comp.points.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'comp.points',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Composition points'), return=NULL)
+}
+
+
+CI_process_composition_ordi_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'ordi.data',
+                   label = "Ordination data", status = 'pending')
+    CI_tryCatch({
+        
+        load(file = paste0(DATA_PATH, 'processed/comp.points.RData'))
+        codes <- read.csv(paste0(DATA_PATH, 'primary/video_codes.csv'))
+        load(file = paste0(DATA_PATH, 'processed/sample.reef.report.year.RData'))
+
+        ## Community composition for ordination
+        ordiData <- points.zeros %>% 
+            left_join(codes %>%
+                      dplyr::select(VIDEO_CODE, GROUP_CODE, COMP_2021)) %>%
+            filter(GROUP_CODE %in% c('HC','SC')) %>%
+            group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, TRANSECT_NO, COMP_2021) %>%
+            summarise(n.points = sum(n.points)) %>%
+            ungroup() %>%
+            left_join(total.points.transect) %>%
+            mutate(cover = 100*(n.points/total.points)) %>%
+            group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, COMP_2021) %>%
+            summarise(cover=mean(cover))%>%
+            ungroup() %>%
+            pivot_wider(id_cols = c(P_CODE, REEF,DEPTH, VISIT_NO, SITE_NO),
+                        names_from = COMP_2021,
+                        values_from = cover) %>%
+            left_join(sample.reef.report.year %>%
+                      dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, REPORT_YEAR)) %>%
+            filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+  
+        save(ordiData, file = paste0(DATA_PATH, 'processed/ordiData.RData'))
+
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'ordi.data',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Ordination data'), return=NULL)
+}
+
+CI_process_composition_data <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'comp.data',
+                   label = "Composition data", status = 'pending')
+    CI_tryCatch({
+        
+        load(file = paste0(DATA_PATH, 'processed/comp.points.RData'))
+        codes <- read.csv(paste0(DATA_PATH, 'primary/video_codes.csv'))
+        load(file = paste0(DATA_PATH, 'processed/sample.reef.report.year.RData'))
+
+        comp2021.transect.temp <- points.zeros %>% 
+            left_join(codes %>%
+                      dplyr::select(VIDEO_CODE, GROUP_CODE, COMP_2021)) %>%
+            group_by(P_CODE, REEF, DEPTH, VISIT_NO,
+                     SITE_NO, TRANSECT_NO, GROUP_CODE,COMP_2021) %>%
+            summarise(n.points = sum(n.points)) %>%
+            ungroup() %>% 
+            left_join(total.points.transect) %>%
+            mutate(cover = 100*(n.points/total.points)) %>%
+            left_join(sample.reef.report.year %>%
+                      dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
+                                    SITE_NO, REPORT_YEAR, Date)) %>%
+            filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        ## remove times when COR* codes were used to excess greater
+        ## than 10% of the coral cover.
+        Cor <- comp2021.transect.temp  %>%
+            filter(GROUP_CODE %in% c('HC','SC')) %>%
+            mutate(cor = case_when(COMP_2021 %in%
+                                    c('COR_CBCF','COR_CE','COR_CL','COR_CMCS') ~ "1"),
+                   Cor = ifelse(is.na(cor), "other", "COR")) %>%
+            group_by(REEF, DEPTH, VISIT_NO, Cor) %>%
+            summarise(points = sum(n.points)) %>%
+            ungroup() %>%
+            pivot_wider(names_from = Cor,
+                        values_from = points) %>%
+            mutate(cor.prop = COR/other) %>%
+            filter(cor.prop < 0.1) %>% 
+            dplyr::select(REEF, DEPTH, VISIT_NO)
+
+        comp.transect<-comp2021.transect.temp %>%
+            right_join(Cor) %>%
+            filter (GROUP_CODE %in% c('OT','SC','HC') &
+                    !COMP_2021 %in% c('IN','OT','SC_OTH'))
+
+        save(comp.transect, file = paste0(DATA_PATH, 'processed/comp.transect.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'comp.data',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Composition data'), return=NULL)
+}

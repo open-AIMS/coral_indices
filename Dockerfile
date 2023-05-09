@@ -76,6 +76,14 @@ RUN R -e "options(repos = \
     install.packages('tarchetypes'); \ 
 "
 
+RUN R -e "options(repos = \ 
+    list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/2022-10-04/'));\ 
+    install.packages('vegan'); \     
+    install.packages('ggrepel'); \ 
+    install.packages('ggsci'); \ 
+    install.packages('Rlof'); \ 
+"
+
 ## Create project directory in docker image 
 RUN mkdir ~/Project
 
