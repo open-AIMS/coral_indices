@@ -14,3 +14,10 @@ if (CI$setting[['FRESH_START']]) CI_clear_models_CO_data()
 ## Fit models
 CI_models_CO_prepare_data()
 CI_models_CO_calc_mds()
+CI_models_CO_calc_novelty()
+CI_models_CO_calc_deviation()
+CI_models_CO_combine_metrics()
+CI_models_CO_calc_distance()
+
+## Visualisations
+CI_models_CO_trajectory()

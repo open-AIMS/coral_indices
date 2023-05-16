@@ -334,7 +334,7 @@ CI_get_mmp_point_data <- function() {
     CI_tryCatch({
 
         writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no, transect_no, b.video_code, count(point_no) points
-           from v_in_sample s, v_all_vpoint_codes c, rm_vpoint b
+           from v_in_sample s, vpoint_codes c, rm_vpoint b
            where s.sample_id = b.sample_id
            and b.video_code=c.video_code
             and p_code in ('IN','AP','GH','RR') 
@@ -368,7 +368,7 @@ CI_get_ltmp_point_data <- function() {
     CI_tryCatch({
 
         writeLines("select p_code, aims_reef_name as reef, depth, visit_no, site_no, transect_no, b.video_code, count(point_no) points
-           from v_in_sample s, v_all_vpoint_codes c, rm_vpoint b
+           from v_in_sample s, vpoint_codes c, rm_vpoint b
            where s.sample_id = b.sample_id
            and b.video_code=c.video_code
            and p_code in ('RAP', 'RM','RMRAP') 

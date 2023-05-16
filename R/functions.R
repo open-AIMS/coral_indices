@@ -10,10 +10,10 @@ library(INLA)
 library(posterior)
 library(tidybayes)
 library(vegan)
+library(Rlof)
 library(patchwork)
 library(ggrepel)
 library(ggsci)
-library(glof)
 ## ----end
 
 source('../R/functions_boxes.R')
@@ -164,11 +164,12 @@ CI_initialise <- function() {
 ####################################################################################
 CI_parseCLA <- function(args) {
     valid_cla <- paste0("\n\nThe call must be of the form:\n",
-                        "00_main.R --final_year=<YEAR> --fresh_start=<true|false> --runStage=<NUM>",
+                        "00_main.R --final_year=<YEAR> --fresh_start=<true|false> --runStage=<NUM> --rerun_baselines=<true|false>",
                         "\n<YEAR>:  \ta valid four digit year representing the final",
                         "\n\t\t(maximum) year of reporting",
                         "\n<true|false> \twhether to start by clearing all stored data (true).",
-                        "\n<NUM> \twhich stages (single integer) or vector of integers) of the analysis to run (-1 or missing is all stages).\n\n")
+                        "\n<NUM> \twhich stages (single integer) or vector of integers) of the analysis to run (-1 or missing is all stages).",
+                        "\n<true|false> \twhether to rerun baseline models (false).\n\n")
     ## Ensure that a final year is supplied
     final_year <- grep('--final_year=.*', args)
     assertthat::assert_that(length(final_year)>0,
@@ -201,6 +202,19 @@ CI_parseCLA <- function(args) {
     }
     CI__add_setting(item = 'runStage', runStage)
 
+    ## check to see whether the baseline models should be rerunt
+    rerun_baselines <- grep('--rerun_baselines=.*', args)
+    if (length(rerun_baselines)>0) {
+        assertthat::assert_that(str_detect(args[rerun_baselines], '--rerun_baselines=(true|false)'),
+                                msg = paste0("\n\nRerun baselines must be supplied as either true or false",
+                                             valid_cla))
+        RERUN_BASELINES <- ifelse(gsub('--rerun_baselines=(.*)','\\1', args[rerun_baselines]) == 'true',
+                               TRUE,
+                               FALSE)
+    } else {
+        RERUN_BASELINES <- FALSE
+    }
+    CI__add_setting(item = 'RERUN_BASELINES', RERUN_BASELINES)
 }
 
 CI_generateSettings <- function() {

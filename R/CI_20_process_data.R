@@ -48,3 +48,12 @@ CI_process_unique_site_location()
 CI_process_composition_points()
 CI_process_composition_ordi_data()
 CI_process_composition_data()
+
+if (CI$setting[['RERUN_BASELINES']]) {
+    source('../R/CI_25_MA_baseline_models.R')
+    CI_25_MA_baseline_models()
+    source('../R/CI_26_CC_baseline_models.R')
+    CI_26_CC_baseline_models()
+    source('../R/CI_27_JU_baseline_models.R')
+    CI_27_JU_baseline_models()
+}
