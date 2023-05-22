@@ -41,6 +41,11 @@ CI_models_collate_indices <- function() {
                                       suppressWarnings()
                                   if (level == "reef") {
                                       x <- x %>%
+                                          ## need to put DEPTH.f back into the output
+                                          ## so that we can add the lat/longs in after that
+                                          left_join(spatial_lookup %>%
+                                                    dplyr::select(REEF.d, DEPTH.f) %>%
+                                                    distinct()) %>%
                                           left_join(
                                               ## site.location %>%
                                               spatial_lookup %>% 

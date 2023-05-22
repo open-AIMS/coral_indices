@@ -14,7 +14,7 @@ CI_models_CC_get_baselines <- function() {
         load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
 
         ## Shallow posteriors (reef) ===========================================
-        load(file = paste0(DATA_PATH, "parameters/CC__baseline.RData"))
+        load(file = paste0(DATA_PATH, "parameters/CC_baseline.RData"))
 
         baselines <- mod %>%
             mutate(DEPTH.f = ifelse(DEPTH.f == 'deep', 'deep slope', 'shallow slope'))
