@@ -589,11 +589,12 @@ CI_models_CO_combine_metrics <- function() {
         load(file = paste0(DATA_PATH, 'modelled/GBR.LOF.novelty.RData'))
         load(file = paste0(DATA_PATH, 'modelled/GBR.LOF.deviation.RData'))
         load(file = paste0(DATA_PATH, 'modelled/reef.nmds.RData'))
-        load(file = paste0(DATA_PATH, 'primary/sample.reef.RData'))
+        ## load(file = paste0(DATA_PATH, 'primary/sample.reef.RData'))
+        load(file = paste0(DATA_PATH, 'processed/sample.reef.report.year.RData'))
 
         ## Get the spatio-temporal meta data for each reef/visit
-        samp.reef <- sample.reef %>%
-            group_by(REEF, DEPTH, VISIT_NO) %>%
+        samp.reef <- sample.reef.report.year %>%
+            group_by(REEF, DEPTH, VISIT_NO, REPORT_YEAR) %>%
             summarise(across(c(LATITUDE, LONGITUDE, Date), mean)) %>%
             ungroup() %>%
             mutate(DEPTH.f = factor(case_when(DEPTH >3 ~"deep slope",
@@ -628,6 +629,7 @@ CI_models_CO_combine_metrics <- function() {
               file = paste0(DATA_PATH, 'modelled/GBR.LOF.RData'))
 
 
+        load(file = paste0(DATA_PATH, 'primary/video_codes.RData'))
         GBR.LOF.table <- GBR.LOF.novelty %>%
             dplyr::select(Novelty.table) %>%
             unnest(cols = c(Novelty.table)) %>%
@@ -636,11 +638,17 @@ CI_models_CO_combine_metrics <- function() {
                       unnest(cols = c(Deviation.table))
                       ) %>%
             left_join(samp.reef) %>%
+            left_join(video_codes %>%
+                      dplyr::select(COMP_2021, COMP_2021_DESCRIPTION, GROUP_DESC) %>%
+                      distinct(),
+                      by = c("Taxon" = "COMP_2021")) %>%
+            mutate(GROUP_DESC = str_to_lower(GROUP_DESC)) %>% 
             suppressMessages() %>%
             suppressWarnings() 
 
         save(GBR.LOF.table,
               file = paste0(DATA_PATH, 'modelled/GBR.LOF.table.RData'))
+        write_csv(GBR.LOF.table, file = paste0(TABS_PATH, "/Composition_change.csv"))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = 'combine_metrics',status = 'success')
@@ -681,6 +689,64 @@ CI_models_CO_calc_distance <- function() {
                                                                                             
     }, logFile=LOG_FILE, Category='--Composition--',
     msg=paste0('Calculate distance'), return=NULL)
+}
+
+
+CI_model_CI_standardise <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'standardise',
+                   label = "Standardise format", status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, 'modelled/GBR.LOF.RData'))
+
+        mods <- GBR.LOF %>%
+            group_by(REEF.d) %>%
+            summarise(data = list(cur_data_all()), .groups = "drop") %>%
+            mutate(Scores = map(.x = data,
+                                 .f = ~ .x %>%
+                                     mutate(fYEAR = factor(REPORT_YEAR),
+                                            .draw = 1,
+                                            Metric = ifelse(k == 3, 'Critical', 'Reference')
+                                            ) %>%
+                                     dplyr::select(fYEAR, REEF.d, .draw,
+                                                   .value = LOF,
+                                                   REEF, DEPTH.f,
+                                                   Metric)
+                                ),
+                   Summary = map(.x = Scores,
+                                 .f = ~ .x %>%
+                                     dplyr::select(-any_of(c(
+                                                        "P_CODE",
+                                                        "Model",
+                                                        "value",
+                                                        "baseline",
+                                                        "DEPTH.f"))) %>%
+                                     group_by(fYEAR, REEF, REEF.d, Metric) %>%
+                                     summarise_draws(median,
+                                                     mean, sd,
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5)
+                                                     )
+                                 ),
+                   Below = map(.x = Summary,
+                               .f = ~ .x %>%
+                                   ungroup() %>%
+                                   mutate(Below = ifelse(upper < 0.5, 1, 0),
+                                          PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
+                                   dplyr::select(fYEAR, Metric, Below, PBelow) %>%
+                                   distinct()
+                               )
+                   )
+
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/CO__scores_reef_year.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'standardise',status = 'success')
+                                                                                            
+    }, logFile=LOG_FILE, Category='--Composition--',
+    msg=paste0('Standardise format'), return=NULL)
 }
 
 

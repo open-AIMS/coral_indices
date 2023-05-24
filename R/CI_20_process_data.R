@@ -56,4 +56,6 @@ if (CI$setting[['RERUN_BASELINES']]) {
     CI_26_CC_baseline_models()
     source('../R/CI_27_JU_baseline_models.R')
     CI_27_JU_baseline_models()
+    source('../R/CI_28_JU_IPM_models.R')
+    CI_28_JU_IPM_models()
 }

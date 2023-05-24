@@ -25,6 +25,7 @@ RUN apt-get update \
     curl \ 
     tk \ 
     xtide \ 
+    libglpk-dev \ 
     openjdk-11-jre \ 
   && rm -rf /var/lib/apt/lists/* 
 
@@ -82,6 +83,18 @@ RUN R -e "options(repos = \
     install.packages('ggrepel'); \ 
     install.packages('ggsci'); \ 
     install.packages('Rlof'); \ 
+"
+
+RUN R -e "  \
+  install.packages('remotes');  \
+  install.packages('rstan');  \ 
+  install.packages('brms');   \
+  install.packages('tidybayes'); 	\
+  install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos'))); \
+  remotes::install_github('stan-dev/cmdstanr'); \
+  library(cmdstanr); \
+  check_cmdstan_toolchain(); \
+  install_cmdstan(cores = 2); \
 "
 
 ## Create project directory in docker image 
