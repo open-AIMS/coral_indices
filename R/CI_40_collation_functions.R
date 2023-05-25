@@ -45,7 +45,7 @@ CI_models_collate_indices <- function() {
                                           ## need to put DEPTH.f back into the output
                                           ## so that we can add the lat/longs in after that
                                           left_join(spatial_lookup %>%
-                                                    dplyr::select(REEF.d, DEPTH.f) %>%
+                                                    dplyr::select(REEF.d, DEPTH.f, Shelf) %>%
                                                     distinct()) %>%
                                           left_join(
                                               ## site.location %>%
@@ -56,7 +56,7 @@ CI_models_collate_indices <- function() {
                                               ## site depths - Manu wanted this
                                               group_by(!!sym(name)) %>%
                                               mutate(across(c(Latitude, Longitude), mean)) %>%
-                                              group_by(!!sym(name), DEPTH.f) %>%
+                                              group_by(!!sym(name), Shelf, DEPTH.f) %>%
                                               summarise(across(c(Latitude, Longitude), mean))
                                           ) %>%
                                           suppressMessages() %>%
@@ -87,6 +87,7 @@ CI_models_collate_indices <- function() {
                                       dplyr::select(Level,
                                                     Year = fYEAR,
                                                     Name,
+                                                    Shelf,
                                                     Latitude,
                                                     Longitude,
                                                     Depth = DEPTH.f,

@@ -112,15 +112,33 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
             dplyr::select(REEF.d, Below) %>%
             unnest(Below) %>%
             left_join(spatial_lookup %>%
-                      dplyr::select(REEF.d, !!level) %>%
+                      dplyr::select(REEF.d, !!level, Shelf) %>%
                       distinct()
                       ) %>%
             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
-            group_by(fYEAR, Metric, !!sym(level), across(any_of('Taxa'))) %>%
-            summarise(n.below = sum(Below),
-                      n.Pbelow = sum(PBelow),
-                      tn.reefs = n()) %>%
-            ungroup() %>%
+            nest(data = everything()) %>%
+            mutate(WithShelf = map(.x = data,
+                                   .f = ~ .x %>% 
+                                       group_by(fYEAR, Metric, !!sym(level),
+                                                Shelf, across(any_of('Taxa'))) %>%
+                                       summarise(n.below = sum(Below),
+                                                 n.Pbelow = sum(PBelow),
+                                                 tn.reefs = n()) 
+                                   ),
+                   NoShelf = map(.x = data,
+                                 .f = ~ .x %>% 
+                                     mutate(Shelf = "All") %>% 
+                                     group_by(fYEAR, Metric, !!sym(level),
+                                              Shelf, across(any_of('Taxa'))) %>%
+                                     summarise(n.below = sum(Below),
+                                               n.Pbelow = sum(PBelow),
+                                               tn.reefs = n()) 
+                                 ),
+                   Combined = map2(.x = NoShelf, .y = WithShelf,
+                                   .f = ~ .x %>% rbind(.y))
+                   ) %>%
+            dplyr::select(Combined) %>% 
+            unnest(Combined) %>%
             group_by(!!sym(level)) %>%
             nest() %>%
             dplyr::rename(Below = data) %>% 
@@ -134,32 +152,47 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
             unnest(Scores) %>% 
             dplyr::select(fYEAR, REEF.d, .draw, any_of('Taxa'), Metric, .value) %>%
             left_join(spatial_lookup %>%
-                      dplyr::select(REEF.d, !!level) %>%
+                      dplyr::select(REEF.d, !!level, Shelf) %>%
                       distinct()
                       ) %>%
             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             group_by(!!sym(level)) %>%
             summarise(data = list(cur_data_all()), .groups = "drop") %>% 
-            mutate(Scores = map(.x = data,
+            mutate(
+                ## Aggregate scores marginalising over shelf
+                Scores = map(.x = data,
                                 .f = ~ .x %>%
                                     ungroup() %>% 
                                     group_by(fYEAR, !!sym(level), .draw,
                                              across(any_of('Taxa')), Metric) %>%
-                                    summarise(.value = mean(.value)) 
+                                    summarise(.value = mean(.value)) %>%
+                                    mutate(Shelf = 'All')
                                 ),
-                   Summary = map(.x = Scores,
-                                 .f = ~ .x %>%
-                                     group_by(fYEAR, !!sym(level),
-                                              across(any_of('Taxa')), Metric) %>%
-                                     summarise_draws(median, mean, sd,
-                                                     HDInterval::hdi,
-                                                     `p<0.5` = ~ mean(.x < 0.5))
-                                 ) 
-                   ) %>% 
+                ## Aggregate scores to shelf level
+                ScoresShelf = map(.x = data,
+                             .f = ~ .x %>%
+                                 ungroup() %>% 
+                                 group_by(fYEAR, !!sym(level), .draw,
+                                          across(any_of('Taxa')), Shelf, Metric) %>%
+                                 summarise(.value = mean(.value)) 
+                             ),
+                ## Combine together
+                Scores = map2(.x = Scores, .y = ScoresShelf,
+                              .f = ~ .x %>% rbind(.y)),
+                ## Summarise
+                Summary = map(.x = Scores,
+                              .f = ~ .x %>%
+                                  group_by(fYEAR, !!sym(level),
+                                           across(any_of('Taxa')), Shelf, Metric) %>%
+                                  summarise_draws(median, mean, sd,
+                                                  HDInterval::hdi,
+                                                  `p<0.5` = ~ mean(.x < 0.5))
+                              )
+            ) %>% 
             suppressMessages() %>%
             suppressWarnings()
 
-        ## Combine
+        ## Add the Below values to the Summary
         mods <- mods %>%
             left_join(mods.n) %>% 
             mutate(Summary = map2(.x = Summary, .y = Below,
