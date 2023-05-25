@@ -478,9 +478,10 @@ CI__index_MA <- function(dat, baselines) {
                   dplyr::rename(baseline = value)) %>%
         mutate(
             distance.metric = plogis(log2(baseline/value)),
-            consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
-                                 ifelse((value/0.5) <= 1, value/0.5, 1),
-                                 ifelse((value/0.4) <= 1, value/0.4, 1)),
+            consequence.metric = ifelse((value/IPM_JUV) <= 1, value/IPM_JUV, 1),
+            ## consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
+            ##                      ifelse((value/0.5) <= 1, value/0.5, 1),
+            ##                      ifelse((value/0.4) <= 1, value/0.4, 1)),
             rescale.consequence.metric = scales::rescale(consequence.metric, c(1,0)),
             combined.metric = (distance.metric + rescale.consequence.metric)/2 ) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
@@ -500,6 +501,14 @@ CI_models_MA_distance <- function() {
         mods <- get(load(file = paste0(DATA_PATH, "modelled/MA__preds.RData")))
 
         mods <- mods %>%
+            mutate(Pred = map(.x = Pred,
+                              .f = ~ .x %>%
+                                  left_join(site.location %>%
+                                            dplyr::select(REEF, REEF.d, BIOREGION.agg,
+                                                          DEPTH.f) %>%
+                                            distinct()) %>%
+                                  left_join(IPM_juv %>% dplyr::rename(IPM_JUV = mean)) %>%
+                              )) %>% 
             mutate(Scores = map(.x = Pred,
                                 .f = ~ CI__index_MA(.x, baselines) %>%
                                     filter(Metric %in% c('distance.metric',
