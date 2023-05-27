@@ -359,10 +359,11 @@ CI_models_JU_distance <- function() {
             mutate(Pred = map(.x = Pred,
                               .f = ~ .x %>%
                                   left_join(site.location %>%
-                                            dplyr::select(REEF, REEF.d, BIOREGION.agg, DEPTH.f) %>%
+                                            dplyr::select(REEF, REEF.d, BIOREGION.agg,
+                                                          DEPTH.f, Shelf) %>%
                                             distinct()) %>%
-                                            suppressMessages() %>%
-                                            suppressWarnings())) %>% 
+                                  suppressMessages() %>%
+                                  suppressWarnings())) %>% 
             mutate(Scores = map2(.x = Pred, .y = Taxa,
                                 .f = ~ CI__index_JU(.x, .y, baselines) %>%
                                     filter(Metric %in% c('rescale.dist.metric',
