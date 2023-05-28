@@ -315,8 +315,10 @@ CI_models_CC_distance <- function() {
             mutate(Pred = map(.x = Pred,
                               .f = ~ .x %>%
                                   left_join(site.location %>%
-                                            dplyr::select(REEF, REEF.d, BIOREGION.agg, DEPTH.f) %>%
-                                            distinct()))) %>% 
+                                            dplyr::select(REEF, REEF.d, BIOREGION.agg,
+                                                          DEPTH.f) %>%
+                                            distinct()) 
+                              )) %>% 
             mutate(Scores = map(.x = Pred,
                                 .f = ~ CI__index_CC(.x, baselines) %>%
                                     filter(Metric %in% c('rescale.dist.metric',

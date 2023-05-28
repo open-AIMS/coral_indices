@@ -471,14 +471,14 @@ CI_models_MA_preds <- function() {
     msg=paste0('Calculate predictions'), return=NULL)
 }
 
-CI__index_MA <- function(dat, baselines) {
+CI__index_MA <- function(dat, baselines, consequence) {
     dat %>%
         left_join(baselines %>%
                   dplyr::select(-any_of(c("LONGITUDE", "LATITUDE"))) %>%
                   dplyr::rename(baseline = value)) %>%
         mutate(
             distance.metric = plogis(log2(baseline/value)),
-            consequence.metric = ifelse((value/IPM_JUV) <= 1, value/IPM_JUV, 1),
+            consequence.metric = ifelse((value/consequence) <= 1, value/consequence, 1),
             ## consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
             ##                      ifelse((value/0.5) <= 1, value/0.5, 1),
             ##                      ifelse((value/0.4) <= 1, value/0.4, 1)),
@@ -499,6 +499,12 @@ CI_models_MA_distance <- function() {
         baselines <- get(load(file = paste0(DATA_PATH,
                                             'modelled/MA__baseline_posteriors.RData')))
         mods <- get(load(file = paste0(DATA_PATH, "modelled/MA__preds.RData")))
+        ## At the moment ma_from_juv_consequence is just the upper CI
+        ## of MA values inverse predicted from a model relating
+        ## Acropora juvenile density to MA cover
+        ma_from_juv_consequence <- get(load(file = paste0(DATA_PATH,
+                                                          'modelled/ma_from_juv_consequence.RData'))) %>% 
+            pull(ymax)
 
         mods <- mods %>%
             mutate(Pred = map(.x = Pred,
@@ -506,11 +512,11 @@ CI_models_MA_distance <- function() {
                                   left_join(site.location %>%
                                             dplyr::select(REEF, REEF.d, BIOREGION.agg,
                                                           DEPTH.f) %>%
-                                            distinct()) %>%
-                                  left_join(IPM_juv %>% dplyr::rename(IPM_JUV = mean)) %>%
+                                            distinct()) #%>%
+                                  ## left_join(IPM_juv %>% dplyr::rename(IPM_JUV = mean)) 
                               )) %>% 
             mutate(Scores = map(.x = Pred,
-                                .f = ~ CI__index_MA(.x, baselines) %>%
+                                .f = ~ CI__index_MA(.x, baselines, ma_from_juv_consequence) %>%
                                     filter(Metric %in% c('distance.metric',
                                                          'rescale.consequence.metric')) %>%
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
@@ -524,7 +530,7 @@ CI_models_MA_distance <- function() {
                                                 "Model",
                                                 "value",
                                                 "baseline"))) %>%
-                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
+                                     group_by(fYEAR, REEF, REEF.d, DEPTH.f, BIOREGION.agg, Metric) %>%
                                      summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)

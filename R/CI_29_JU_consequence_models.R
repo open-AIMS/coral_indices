@@ -67,6 +67,23 @@ CI_29_JU_consequence_models <- function() {
             ## Posterior Draws
             mutate(Draws = map(.x = Mod,
                                .f = ~ inla.posterior.sample(n = 1000, .x, seed = 123))) %>%
+            ## Calculate MA value associated with Critical Acropora
+            ## This involves inverting the regression equation so as
+            ## to predict x from model
+            ## The inverse is (y - beta0)/beta1 on the link scale
+            mutate(MA = map(.x = Draws,
+                            .f = ~ {
+                                wch <- str_which(.x[[1]][[2]] %>% dimnames() %>% `[[`(1),
+                                                  "Intercept|MApLag")
+                                betas <- sapply(.x, function(x) x[[2]][wch]) 
+                                apply(betas, 2, function(x)
+                                (exp((log(Crit.value) - x[1])/x[2])) + 0.01)
+                            }),
+                   MA.sum = map(.x = MA,
+                                .f = ~ .x %>% median_hdci())
+                   ) %>%
+            ## The rest of this is not required, but it does provide a visual
+            ## confirmation of the above calculation
             ## Cellmeans
             mutate(Cellmeans = map2(.x = Draws, .y = Indices,
                                    .f = ~ sapply(.x, function(x) x[[2]][.y]))) %>%
@@ -82,7 +99,7 @@ CI_29_JU_consequence_models <- function() {
                                         median_hdci(value) %>%
                                         rename(lower=`.lower`, upper=`.upper`, median=value) )) %>%
             ## Plots 
-            mutate(gg = map(.x = model.pred,
+            mutate(gg = map2(.x = model.pred, .y = MA.sum,
                             .f = ~ .x %>%
                                 ggplot(aes(y = median, x = MApLag)) +
                                 geom_line()+
@@ -93,14 +110,28 @@ CI_29_JU_consequence_models <- function() {
                                 geom_hline(yintercept = Crit.value,
                                            linetype = 2, color = 'red',
                                            linewidth = 0.5) +
+                                geom_vline(xintercept = .y$ymax,
+                                           linetype = 2, color = 'orange',
+                                           linewidth = 0.5) +
                                         #scale_y_log10('Acropora density')+
                                 theme_classic(base_size = 9)))
+        
         map2(.x = a$Habitat,
              .y = a$gg,
              .f = ~ ggsave(filename = paste0(OUTPUT_PATH, "figures/JU_consequence_", .x, ".png"),
                            .y,
                            width = 6, height = 6)
              )
+
+        ## Although the above models were fit for Inshore deep,
+        ## Inshore shallow and Offshore sites, Angus only wants to use
+        ## Inshore shallow.
+        ma_from_juv_consequence <- a %>% filter(Habitat == 'Inshore shallow slope') %>%
+            dplyr::select(Habitat, MA.sum) %>%
+            unnest(MA.sum)
+        
+        save(ma_from_juv_consequence,
+              file = paste0(DATA_PATH, 'modelled/ma_from_juv_consequence.RData'))
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = 'ju_consequence',status = 'success')

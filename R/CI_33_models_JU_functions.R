@@ -360,7 +360,7 @@ CI_models_JU_distance <- function() {
                               .f = ~ .x %>%
                                   left_join(site.location %>%
                                             dplyr::select(REEF, REEF.d, BIOREGION.agg,
-                                                          DEPTH.f, Shelf) %>%
+                                                          DEPTH.f) %>%
                                             distinct()) %>%
                                   suppressMessages() %>%
                                   suppressWarnings())) %>% 
