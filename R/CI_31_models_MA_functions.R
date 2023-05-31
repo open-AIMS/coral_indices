@@ -412,6 +412,59 @@ CI_models_MA_fit_models <- function() {
 }
 
 
+CI__diagnostics_MA_model <- function(REEF.d, data) {
+    CI_tryCatch({
+        reef <- as.character(unlist(REEF.d))
+        CI__append_label(stage = CI__get_stage(), item = 'diagnostics',
+                         n, N)
+        if (file.exists(paste0(DATA_PATH, "modelled/MA__", reef, '__posteriors.RData'))) {
+            CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--MA models--",
+                   msg = paste0("Reuse ", reef, " MA diagnostics"))
+            return(NULL)
+        }
+        draws <- get(load(file = paste0(DATA_PATH, "modelled/MA__", reef, '__draws.RData')))
+        preds <- sapply(draws, function(x)
+            x[["latent"]][(1:nrow(data))]) %>%
+            plogis()
+        fitted_median_inla <- apply(preds, 1, median)
+
+        DHARMa_inla_posterior <- DHARMa::createDHARMa(
+                                             simulatedResponse = preds,
+                                             observedResponse = data$MA/data$A,
+                                             fittedPredictedResponse = fitted_median_inla,
+                                            )
+        wrap_elements(plot(DHARMa_inla_posterior))
+ 
+            suppressWarnings() %>%
+            suppressMessages()
+        save(posteriors, file = paste0(DATA_PATH, "modelled/MA__", reef, '__posteriors.RData'))
+    }, logFile=LOG_FILE, Category='--MA models--',
+    msg=paste0('Posteriors for ', reef, ' MA model'), return=NULL)
+}
+
+CI_models_MA_diagnostics <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'diagnose_models',
+                   label = "MA model diagnostics", status = 'pending')
+    CI_tryCatch({
+        load(file = paste0(DATA_PATH, 'modelled/MA__mods.RData'))
+
+        ## Calculate cellmeans
+        cellmeans <- purrr::pwalk(.l = list(mods$REEF.d, mods$data),
+                                 .f = ~ CI__diagnostics_MA_model(..1, ..2)) 
+        
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'diagnose_models',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--MA models--',
+    msg=paste0('MA model diagnostics'), return=NULL)
+}
+
+
+
+
+
 CI_models_MA_cellmeans <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'cellmeans',
@@ -478,11 +531,13 @@ CI__index_MA <- function(dat, baselines, consequence) {
                   dplyr::rename(baseline = value)) %>%
         mutate(
             distance.metric = plogis(log2(baseline/value)),
-            consequence.metric = ifelse((value/consequence) <= 1, value/consequence, 1),
+            ## consequence.metric = ifelse((value/consequence) <= 1, value/consequence, 1),
+            consequence.metric = ifelse((value/consequence) >= 1, 0, 1-(value/consequence)),
             ## consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
             ##                      ifelse((value/0.5) <= 1, value/0.5, 1),
             ##                      ifelse((value/0.4) <= 1, value/0.4, 1)),
-            rescale.consequence.metric = scales::rescale(consequence.metric, c(1,0)),
+            rescale.consequence.metric = scales::rescale(consequence.metric,
+                                                         from = c(0,1), to = c(1,0)),
             combined.metric = (distance.metric + rescale.consequence.metric)/2 ) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 

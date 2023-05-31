@@ -285,13 +285,13 @@ CI__index_CC <- function(dat, baselines) {
                                               distance.met > 1 ~1,
                                               distance.met > -1 & distance.met < 1 ~
                                                   distance.met)),
-            rescale.dist.metric = scales::rescale(cap.dist.met, to = c(1, 0)),
+            rescale.dist.metric = scales::rescale(cap.dist.met, from = c(-1,1), to = c(1, 0)),
             pcb.distance.met = log2(0.2/value),
             pcb.cap.dist.met = as.numeric(case_when(pcb.distance.met < -1 ~ -1,
                                                     pcb.distance.met > 1 ~ 1,
                                                     pcb.distance.met > -1 & pcb.distance.met < 1 ~
                                                         pcb.distance.met)),
-            pcb.rescale.dist.metric = scales::rescale(pcb.cap.dist.met, to = c(1, 0))) %>%
+            pcb.rescale.dist.metric = scales::rescale(pcb.cap.dist.met, from = c(-1,1), to = c(1, 0))) %>%
         dplyr::select(-any_of(ends_with("met"))) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF.d)) %>% 

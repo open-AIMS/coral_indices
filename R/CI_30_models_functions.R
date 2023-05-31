@@ -121,8 +121,8 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
                                    .f = ~ .x %>% 
                                        group_by(fYEAR, Metric, !!sym(level),
                                                 Shelf, across(any_of('Taxa'))) %>%
-                                       summarise(n.below = sum(Below),
-                                                 n.Pbelow = sum(PBelow),
+                                       summarise(n.below = sum(Below, na.rm = TRUE),
+                                                 n.Pbelow = sum(PBelow, na.rm = TRUE),
                                                  tn.reefs = n()) 
                                    ),
                    NoShelf = map(.x = data,
@@ -130,8 +130,8 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
                                      mutate(Shelf = "All") %>% 
                                      group_by(fYEAR, Metric, !!sym(level),
                                               Shelf, across(any_of('Taxa'))) %>%
-                                     summarise(n.below = sum(Below),
-                                               n.Pbelow = sum(PBelow),
+                                     summarise(n.below = sum(Below, na.rm = TRUE),
+                                               n.Pbelow = sum(PBelow, na.rm = TRUE),
                                                tn.reefs = n()) 
                                  ),
                    Combined = map2(.x = NoShelf, .y = WithShelf,
@@ -147,7 +147,7 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
             suppressWarnings()
 
         ## Scores 
-        mods <- mods %>%
+        mods <- b <- mods %>%
             dplyr::select(Scores) %>% 
             unnest(Scores) %>% 
             dplyr::select(fYEAR, REEF.d, .draw, any_of('Taxa'), Metric, .value) %>%
@@ -158,24 +158,77 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             group_by(!!sym(level)) %>%
             summarise(data = list(cur_data_all()), .groups = "drop") %>% 
+            ## if the supplied posterior only contains a single draw,
+            ## duplicate this 1000 times
+            mutate(data = map(.x = data,
+                             .f = ~ { if (max(.x$.draw == 1)) {
+                                         .x %>%
+                                             group_by(fYEAR, REEF.d, !!sym(level),
+                                                      across(any_of('Taxa')), Shelf, Metric) %>%
+                                             sample_n(size = 1000, replace = TRUE) %>%
+                                             mutate(.draw = 1:n())
+
+                                      } else .x
+                                      })) %>%
             mutate(
                 ## Aggregate scores marginalising over shelf
+                ## Scores = map(.x = data,
+                ##              .f = ~ .x %>%
+                ##                  ungroup() %>% 
+                ##                  group_by(fYEAR, !!sym(level),.draw,
+                ##                           across(any_of('Taxa')), Metric) %>%
+                ##                  ## be sure to keep each function vectorized in below
+                ##                  ## otherwise it will be very slow
+                ##                  summarise(.mean1 = mean(.value, na.rm = TRUE),
+                ##                            .sd1 = sd(.value, na.rm = TRUE),
+                ##                            ## .value = .mean1 + (rnorm(1, 0, 1) * .sd1)) %>%
+                ##                            shape1 = .mean1 * (((.mean1 * (1 - .mean1)) / .sd1^2) - 1),
+                ##                            shape2 = (1 - .mean1) * (((.mean1 * (1 - .mean1)) / .sd1^2) - 1),
+                ##                            .value = rbeta(1,shape1, shape2)) %>%
+                ##                  mutate(Shelf = 'All')
+                ##              ),
                 Scores = map(.x = data,
                                 .f = ~ .x %>%
                                     ungroup() %>% 
                                     group_by(fYEAR, !!sym(level), .draw,
                                              across(any_of('Taxa')), Metric) %>%
-                                    summarise(.value = mean(.value)) %>%
+                                    summarise(.value = mean(sample(.value, replace = TRUE),
+                                                            na.rm = TRUE)) %>%
                                     mutate(Shelf = 'All')
                                 ),
+                ## Scores = map(.x = data,
+                ##                 .f = ~ .x %>%
+                ##                     ungroup() %>% 
+                ##                     group_by(fYEAR, !!sym(level), .draw,
+                ##                              across(any_of('Taxa')), Metric) %>%
+                ##                     summarise(.value = mean(.value, na.rm = TRUE)) %>%
+                ##                     mutate(Shelf = 'All')
+                ##                 ),
                 ## Aggregate scores to shelf level
+                ## ScoresShelf = map(.x = data,
+                ##              .f = ~ .x %>%
+                ##                  ungroup() %>% 
+                ##                  group_by(fYEAR, !!sym(level), .draw,
+                ##                           across(any_of('Taxa')), Shelf, Metric) %>%
+                ##                  summarise(.mean1 = mean(.value, na.rm = TRUE),
+                ##                            .sd1 = sd(.value, na.rm = TRUE),
+                ##                            .value = .mean1 + (rnorm(1, 0, 1) * .sd1)) 
+                ##              ),
                 ScoresShelf = map(.x = data,
                              .f = ~ .x %>%
                                  ungroup() %>% 
                                  group_by(fYEAR, !!sym(level), .draw,
                                           across(any_of('Taxa')), Shelf, Metric) %>%
-                                 summarise(.value = mean(.value)) 
+                                 summarise(.value = mean(sample(.value, replace = TRUE),
+                                                         na.rm = TRUE)) 
                              ),
+                ## ScoresShelf = map(.x = data,
+                ##              .f = ~ .x %>%
+                ##                  ungroup() %>% 
+                ##                  group_by(fYEAR, !!sym(level), .draw,
+                ##                           across(any_of('Taxa')), Shelf, Metric) %>%
+                ##                  summarise(.value = mean(.value, na.rm = TRUE)) 
+                ##              ),
                 ## Combine together
                 Scores = map2(.x = Scores, .y = ScoresShelf,
                               .f = ~ .x %>% rbind(.y)),
@@ -184,9 +237,11 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
                               .f = ~ .x %>%
                                   group_by(fYEAR, !!sym(level),
                                            across(any_of('Taxa')), Shelf, Metric) %>%
-                                  summarise_draws(median, mean, sd,
+                                  summarise_draws(median = ~ median(.x, na.rm = TRUE),
+                                                  mean = ~ mean(.x, na.rm = TRUE),
+                                                  sd = ~ sd(.x, na.rm = TRUE),
                                                   HDInterval::hdi,
-                                                  `p<0.5` = ~ mean(.x < 0.5))
+                                                  `p<0.5` = ~ mean(.x < 0.5, na.rm = TRUE))
                               )
             ) %>% 
             suppressMessages() %>%
@@ -210,3 +265,54 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
     msg=paste0('Aggregate to ', level), return=NULL)
 }
 
+
+## set.seed(123)
+## A <- data.frame(rbind(a1 = rnorm(100, 30, 1) ,a2 = rnorm(100,35,1), a3 = rnorm(10, 40, 1))) %>%
+##     cbind(Group = c("a1", "a2", "a3")) %>% pivot_longer(cols = -Group)
+## A %>% group_by(name) %>% summarise(.value = mean(value)) %>% ungroup() %>% median_hdci(.value)
+## A %>% median_hdci(value)
+## A %>% group_by(name) %>% summarise(.value = rnorm(1, mean(value), sd(value))) %>% median_hdci(.value)
+## A %>% group_by(name) %>% summarise(.value = rnorm(1, mean(value), sd(value))) %>% pull(.value) %>% sd()
+
+## set.seed(123)
+## A <- data.frame(rbind(a1 = rnorm(100, 30, 0) ,a2 = rnorm(100,35,0), a3 = rnorm(10, 40, 0))) %>%
+##     cbind(Group = c("a1", "a2", "a3")) %>% pivot_longer(cols = -Group)
+## A %>% group_by(name) %>% summarise(.value = mean(value)) %>% ungroup() %>% median_hdci(.value)
+## A %>% median_hdci(value)
+## A$value %>% sd()
+## A %>% group_by(name) %>% summarise(.value = rnorm(1, mean(value), sd(value))) %>% median_hdci(.value)
+## A %>% group_by(name) %>% summarise(.value = rnorm(1, mean(value), sd(value))) %>% pull(.value) %>% sd()
+
+## set.seed(123)
+## A <- data.frame(rbind(a1 = rnorm(100, 30, 1) ,a2 = rnorm(100,30,1), a3 = rnorm(10, 30, 1))) %>%
+##     cbind(Group = c("a1", "a2", "a3")) %>% pivot_longer(cols = -Group)
+## A %>% group_by(name) %>% summarise(.value = mean(value)) %>% ungroup() %>% median_hdci(.value)
+## A %>% median_hdci(value)
+## A$value %>% sd()
+## A %>% group_by(name) %>% summarise(.value = rnorm(1, mean(value), sd(value))) %>% median_hdci(.value)
+## A %>% group_by(name) %>% summarise(.value = rnorm(1, mean(value), sd(value))) %>% pull(.value) %>% sd()
+
+
+
+## set.seed(123)
+## A <- data.frame(rbind(a1 = rnorm(100000, 30, 1) ,a2 = rnorm(100000,35,1), a3 = rnorm(10, 40, 1))) %>%
+##     cbind(Group = c("a1", "a2", "a3")) %>% pivot_longer(cols = -Group)
+## A %>% group_by(name) %>% summarise(.value = mean(value)) %>% ungroup() %>% median_hdci(.value)
+## A %>% median_hdci(value)
+## A$value %>% sd()
+
+## set.seed(123)
+## A <- data.frame(rbind(a1 = rnorm(100000, 30, 0) ,a2 = rnorm(100000,35,0), a3 = rnorm(10, 40, 0))) %>%
+##     cbind(Group = c("a1", "a2", "a3")) %>% pivot_longer(cols = -Group)
+## A %>% group_by(name) %>% summarise(.value = mean(value)) %>% ungroup() %>% median_hdci(.value)
+## A %>% median_hdci(value)
+## A$value %>% sd()
+
+## set.seed(123)
+## A <- data.frame(rbind(a1 = rnorm(100000, 30, 1) ,a2 = rnorm(100000,30,1), a3 = rnorm(10, 30, 1))) %>%
+##     cbind(Group = c("a1", "a2", "a3")) %>% pivot_longer(cols = -Group)
+## A %>% group_by(name) %>% summarise(.value = mean(value)) %>% ungroup() %>% median_hdci(.value)
+## A %>% median_hdci(value)
+## A$value %>% sd()
+
+## median_hdci(rnorm(10000, 35, 1))

@@ -330,7 +330,7 @@ CI__index_JU <- function(dat, taxa, baselines) {
                                               distance.met > 3 ~3,
                                               distance.met > -3 & distance.met < 3 ~
                                                   distance.met)),
-            rescale.dist.metric = scales::rescale(cap.dist.met, to = c(1, 0))) %>%
+            rescale.dist.metric = scales::rescale(cap.dist.met, from = c(-3, 3), to = c(1, 0))) %>%
         dplyr::select(-any_of(ends_with("met"))) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF.d)) %>% 
