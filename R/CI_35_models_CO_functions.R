@@ -723,10 +723,11 @@ CI_model_CI_standardise <- function() {
                                                         "baseline",
                                                         "DEPTH.f"))) %>%
                                      group_by(fYEAR, REEF, REEF.d, Metric) %>%
-                                     summarise_draws(median,
-                                                     mean, sd,
+                                     summarise_draws(median = ~ median(.x, na.rm = TRUE),
+                                                     mean = ~ mean(.x, na.rm = TRUE),
+                                                     sd = ~ sd(.x, na.rm = TRUE),
                                                      HDInterval::hdi,
-                                                     `p<0.5` = ~ mean(.x < 0.5)
+                                                     `p<0.5` = ~ mean(.x < 0.5, na.rm = TRUE)
                                                      )
                                  ),
                    Below = map(.x = Summary,
