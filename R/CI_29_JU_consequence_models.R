@@ -25,13 +25,12 @@ CI_29_JU_consequence_models <- function() {
         ## Model Formula.
         form <- formula(Acropora ~ log(MApLag + 0.01) +
                             f(reef.depth.site, model = 'iid'))
-        
+
         a <- juv.ma.site %>%
-            group_by(Habitat) %>%
-            summarise(data = list(data.frame(reef.depth.site,
+            group_by(Shelf) %>%
+            summarise(data = list(data.frame(reef.depth.site, 
                                              MApLag, Acropora, avail.area)),
-                      .groups = "drop") %>% 
-            ## Create prediction data
+                      .groups = "drop") %>%
             mutate(newdata = map(.x = data,
                                  .f = ~ .x %>%
                                      tidyr::expand(reef.depth.site = NA,
@@ -110,17 +109,29 @@ CI_29_JU_consequence_models <- function() {
                                 geom_hline(yintercept = Crit.value,
                                            linetype = 2, color = 'red',
                                            linewidth = 0.5) +
-                                geom_vline(xintercept = .y$ymax,
-                                           linetype = 2, color = 'orange',
-                                           linewidth = 0.5) +
+                                {if (.y$ymax < 1)
+                                    geom_vline(xintercept = .y$ymax,
+                                               linetype = 2, color = 'orange',
+                                               linewidth = 0.5)} +
+                                         
                                         #scale_y_log10('Acropora density')+
-                                theme_classic(base_size = 9)))
-        
-        map2(.x = a$Habitat,
+                                theme_classic(base_size = 12)))
+        threshold <- a[1,'MA.sum'][[1]][[1]]['ymax'] 
+        map2(.x = a$Shelf,
              .y = a$gg,
              .f = ~ ggsave(filename = paste0(OUTPUT_PATH, "figures/JU_consequence_", .x, ".png"),
-                           .y,
+                           .y + geom_vline(xintercept = threshold[[1]],
+                                           linetype = 2, colour = 'orange',
+                                           linewidth = 0.5),
                            width = 6, height = 6)
+             )
+        map2(.x = a$Shelf,
+             .y = a$gg,
+             .f = ~ ggsave(filename = paste0(OUTPUT_PATH, "figures/JU_consequence_", .x, "_large.png"),
+                           .y + geom_vline(xintercept = threshold[[1]],
+                                           linetype = 2, colour = 'orange',
+                                           linewidth = 0.5),
+                           width = 6, height = 6, dpi = 300)
              )
 
         ## Although the above models were fit for Inshore deep,
