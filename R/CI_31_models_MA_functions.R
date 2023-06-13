@@ -524,21 +524,24 @@ CI_models_MA_preds <- function() {
     msg=paste0('Calculate predictions'), return=NULL)
 }
 
+                                                       
 CI__index_MA <- function(dat, baselines, consequence) {
     dat %>%
         left_join(baselines %>%
                   dplyr::select(-any_of(c("LONGITUDE", "LATITUDE"))) %>%
                   dplyr::rename(baseline = value)) %>%
         mutate(
-            distance.metric = plogis(log2(baseline/value)),
-            ## consequence.metric = ifelse((value/consequence) <= 1, value/consequence, 1),
-            consequence.metric = ifelse((value/consequence) >= 1, 0, 1-(value/consequence)),
-            ## consequence.metric = ifelse(BIOREGION.agg %in% c('16','17','18','19','22','23'),
-            ##                      ifelse((value/0.5) <= 1, value/0.5, 1),
-            ##                      ifelse((value/0.4) <= 1, value/0.4, 1)),
-            rescale.consequence.metric = scales::rescale(consequence.metric,
-                                                         from = c(0,1), to = c(1,0)),
-            combined.metric = (distance.metric + rescale.consequence.metric)/2 ) %>%
+            calc.met = plogis(log2(baseline/value)),
+            distance.met = my_rescale(calc.met,
+                                      from = c(plogis(log2(baseline/1)), 0.5),
+                                      to = c(0, 0.5)),
+            distance.metric = ifelse(value >= baseline, distance.met, calc.met),
+            consequence.metric = ifelse(value <= consequence,
+                                        scales::rescale(value,
+                                                      from = c(0, consequence), 
+                                                      to = c(1, 0)),
+                                        0),
+            combined.metric = (distance.metric + consequence.metric)/2 ) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 
         suppressMessages() %>%
@@ -551,6 +554,7 @@ CI_models_MA_distance <- function() {
                    label = "Calculate indices", status = 'pending')
     CI_tryCatch({
 
+        load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
         baselines <- get(load(file = paste0(DATA_PATH,
                                             'modelled/MA__baseline_posteriors.RData')))
         mods <- get(load(file = paste0(DATA_PATH, "modelled/MA__preds.RData")))
@@ -559,7 +563,8 @@ CI_models_MA_distance <- function() {
         ## Acropora juvenile density to MA cover
         ma_from_juv_consequence <- get(load(file = paste0(DATA_PATH,
                                                           'modelled/ma_from_juv_consequence.RData'))) %>% 
-            pull(ymax)
+            pull(ymax) %>%
+            round(2)
 
         mods <- mods %>%
             mutate(Pred = map(.x = Pred,
@@ -573,7 +578,7 @@ CI_models_MA_distance <- function() {
             mutate(Scores = map(.x = Pred,
                                 .f = ~ CI__index_MA(.x, baselines, ma_from_juv_consequence) %>%
                                     filter(Metric %in% c('distance.metric',
-                                                         'rescale.consequence.metric')) %>%
+                                                         'consequence.metric')) %>%
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
                                )) %>%

@@ -280,18 +280,19 @@ CI__index_CC <- function(dat, baselines) {
         left_join(baselines %>%
                   dplyr::rename(baseline = value)) %>%
         mutate(
-            distance.met = plogis(log2(baseline/value)),
-            cap.dist.met = as.numeric(case_when(distance.met < -1 ~ -1,
-                                              distance.met > 1 ~1,
-                                              distance.met > -1 & distance.met < 1 ~
-                                                  distance.met)),
-            rescale.dist.metric = scales::rescale(cap.dist.met, from = c(-1,1), to = c(1, 0)),
-            pcb.distance.met = log2(0.2/value),
+            calc.met = plogis(log2(value/baseline)),
+            distance.met = my_rescale(calc.met,
+                                      from = c(plogis(log2(1/baseline/1)), 0.5),
+                                      to = c(1, 0.5)),
+            rescale.dist.metric = ifelse(value >= baseline, distance.met, calc.met),
+            pcb.distance.met = log2(value/0.2),
             pcb.cap.dist.met = as.numeric(case_when(pcb.distance.met < -1 ~ -1,
                                                     pcb.distance.met > 1 ~ 1,
-                                                    pcb.distance.met > -1 & pcb.distance.met < 1 ~
+                                                    pcb.distance.met >= -1 & pcb.distance.met <= 1 ~
                                                         pcb.distance.met)),
-            pcb.rescale.dist.metric = scales::rescale(pcb.cap.dist.met, from = c(-1,1), to = c(1, 0))) %>%
+            pcb.rescale.dist.metric = scales::rescale(pcb.cap.dist.met,
+                                                      from = c(-1,1),
+                                                      to = c(0, 1))) %>%
         dplyr::select(-any_of(ends_with("met"))) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF.d)) %>% 

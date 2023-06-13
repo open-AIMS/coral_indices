@@ -10,8 +10,9 @@ CI_29_JU_consequence_models <- function() {
         load(file = paste0(DATA_PATH, "parameters/IPM_juv.RData"))
 
         ## Critical value from IPM
-        Crit.value <- IPM_juv$mean[1]  # just inshore at the moment
-
+        Crit.value <- IPM_juv$mean[1] %>%  # just inshore at the moment
+            round(1)                       # round to align with Manu's documentation
+        
         juv.ma.site <- CI__get_JUV_MA_site_data()
         ## Model to predict the density of Juvenile Acropora ~ MApLag
         ## The desire is to produce a a single value (distribution
@@ -134,11 +135,10 @@ CI_29_JU_consequence_models <- function() {
                            width = 6, height = 6, dpi = 300)
              )
 
-        ## Although the above models were fit for Inshore deep,
-        ## Inshore shallow and Offshore sites, Angus only wants to use
-        ## Inshore shallow.
-        ma_from_juv_consequence <- a %>% filter(Habitat == 'Inshore shallow slope') %>%
-            dplyr::select(Habitat, MA.sum) %>%
+        ## Although the above models were fit for Inshore and
+        ## Offshore, we only want to use Inshore
+        ma_from_juv_consequence <- a %>% filter(Shelf == 'Inshore') %>%
+            dplyr::select(Shelf, MA.sum) %>%
             unnest(MA.sum)
         
         save(ma_from_juv_consequence,
