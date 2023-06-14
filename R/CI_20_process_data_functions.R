@@ -413,7 +413,8 @@ CI_process_assign_regions <- function() {
         gbrmpa.ma <- points.analysis.data.transect %>%
             rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
             st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
-            st_join(., gbrmpa.management, join = st_within)%>%
+            ## st_join(., gbrmpa.management, join = st_within)%>%
+            st_join(., gbrmpa.management, join = st_nearest_feature)%>%
             st_drop_geometry()%>%
             rename(GBRMPA.MA = Name) %>%
             dplyr::select(REEF, DEPTH, GBRMPA.MA) %>% 
@@ -425,7 +426,8 @@ CI_process_assign_regions <- function() {
         gbrmp <- points.analysis.data.transect %>%
             rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
             st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
-            st_join(., gbrmpa, join = st_within)%>%
+            ## st_join(., gbrmpa, join = st_within)%>%
+            st_join(., gbrmpa, join = st_nearest_feature)%>%
             st_drop_geometry()%>%
             rename(GBRMP = Name) %>%
             dplyr::select(REEF, DEPTH, GBRMP) %>% 
@@ -437,7 +439,8 @@ CI_process_assign_regions <- function() {
         zones <- points.analysis.data.transect %>%
             rename(Latitude = LATITUDE, Longitude = LONGITUDE) %>%
             st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
-            st_join(., zones, join = st_within)%>%
+            ## st_join(., zones, join = st_within)%>%
+            st_join(., zones, join = st_nearest_feature)%>%
             st_drop_geometry()%>%
             rename(ZONE = Name) %>%
             dplyr::select(REEF, DEPTH, ZONE) %>% 
@@ -859,3 +862,6 @@ CI_process_composition_data <- function() {
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0('Composition data'), return=NULL)
 }
+
+
+
