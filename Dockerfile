@@ -97,6 +97,19 @@ RUN R -e "  \
   install_cmdstan(cores = 2); \
 "
 
+RUN R -e "  \
+  install.packages('gdata');  \
+  install.packages('functional');  \
+  install.packages('tictoc');  \
+  install.packages('pracma');  \
+  install.packages('doRNG');  \
+  install.packages('doFuture');  \
+  install.packages('adaptMCMC');  \
+  install.packages('mcmc');  \
+  install.packages('deSolve');  \
+  install.packages('BayesianTools');  \
+"
+
 ## Create project directory in docker image 
 RUN mkdir ~/Project
 
