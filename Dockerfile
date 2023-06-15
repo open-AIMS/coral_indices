@@ -109,6 +109,7 @@ RUN R -e "  \
   install.packages('deSolve');  \
   install.packages('BayesianTools');  \
   install.packages('truncnorm');  \
+  install.packages('ggmcmc');  \
 "
 
 ## Create project directory in docker image 
