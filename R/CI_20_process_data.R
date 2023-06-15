@@ -44,11 +44,17 @@ CI_process_juvenile_data_for_baselines()
 ## Unique site locations
 CI_process_unique_site_location()
 
+## RPI (recovery performance indicator) data
+## this processing has been moved to 34_RPI_models_RPI()
+## since it has the CC models as a dependency
+
 ## Composition data
 CI_process_composition_points()
 CI_process_composition_ordi_data()
 CI_process_composition_data()
 
+## Baseline models, Note we cannot fit the RPI baseline models at this
+## stage because they input data from the fitted CC models
 if (CI$setting[['RERUN_BASELINES']]) {
     source('../R/CI_25_MA_baseline_models.R')
     CI_25_MA_baseline_models()

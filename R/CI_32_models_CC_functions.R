@@ -69,14 +69,16 @@ CI_models_CC_prepare_data <- function() {
             filter(!report.year.ss == "1") %>%
             droplevels
 
-        detect.zeros <- df.a %>%
-            group_by(Site, fYEAR) %>%
-            summarise(HC.transect.sum = sum(HC))
+        data <- df.a
+        
+        ## detect.zeros <- df.a %>%
+        ##     group_by(Site, fYEAR) %>%
+        ##     summarise(HC.transect.sum = sum(HC))
 
-        data <- df.a %>%
-            left_join(detect.zeros) %>%
-            filter(!HC.transect.sum == 0) %>%
-            droplevels
+        ## data <- df.a %>%
+        ##     left_join(detect.zeros) %>%
+        ##     filter(!HC.transect.sum == 0) %>%
+        ##     droplevels
         
         save(data,
               file = paste0(DATA_PATH, 'modelled/data_cc.RData'))
@@ -169,13 +171,14 @@ CI_models_CC_fit_models <- function() {
 
         form <- HC ~ fYEAR +
             f(Site , model='iid') +
-            f(Transect , model='iid')
+            f(Transect , model='iid') +
+            f(Obs, model = "iid")
         
         ## Fit the models - output models and draws to
         ## DATA_PATH/modelled/CC__.*__.RData
         purrr::pwalk(.l = list(mods$Full_data,mods$n),
                      .f = ~ CI__fit_CC_model(form = form, data = ..1,
-                                             family = 'betabinomial', n = ..2, N = nrow(mods))
+                                             family = 'binomial', n = ..2, N = nrow(mods))
                    )
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -282,7 +285,7 @@ CI__index_CC <- function(dat, baselines) {
         mutate(
             calc.met = plogis(log2(value/baseline)),
             distance.met = my_rescale(calc.met,
-                                      from = c(plogis(log2(1/baseline/1)), 0.5),
+                                      from = c(plogis(log2(1/baseline)), 0.5),
                                       to = c(1, 0.5)),
             rescale.dist.metric = ifelse(value >= baseline, distance.met, calc.met),
             pcb.distance.met = log2(value/0.2),
