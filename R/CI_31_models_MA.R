@@ -1,6 +1,7 @@
 source('../R/functions.R')
 source('../R/CI_31_models_MA_functions.R')
 source('../R/CI_30_models_functions.R')
+source('../R/functions_inla.R')
 
 if (CI_isParent()) CI_startMatter()
 
@@ -25,6 +26,7 @@ CI_models_MA_diagnostics()
 ## CI_models_MA_cellmeans()
 CI_models_cellmeans(Indicator = "MA")
 CI_models_MA_preds()
+CI_models_MA_partialplots()
 
 ## Calculate distances to baselines
 CI_models_MA_distance()

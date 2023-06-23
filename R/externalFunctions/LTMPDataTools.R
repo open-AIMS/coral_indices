@@ -117,7 +117,7 @@ extract_recovery_trajectories_transect <- function(disturbance,samples,
         visit.seq <- visit.sequence.site$REPORT_YEAR
         for (j in 1:length(visit.seq)) {
           #print(paste0("i = ", i, ': j = ', j, " ", visit.seq$REEF.d[1], " ", "report year ", visit.seq$REPORT_YEAR[1]))
-          print(paste0("i = ", i, ': j = ', j))
+          # print(paste0("i = ", i, ': j = ', j))
             # first visit is always a new recovery trajectory
             if (j == 1) { 
                 rp_id <- rp_id + 1

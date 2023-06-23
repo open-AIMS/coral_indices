@@ -16,6 +16,8 @@ if (CI$setting[['RERUN_BASELINES']]) {
     CI_34_RPI_baseline_models()
 }
 
+CI_34_RPI_refernce_models()
+
 
 ## Baseline - only run once - include random seed
 ## Baseline 1. Set configs, settings (may not be needed) and load functions
@@ -39,6 +41,8 @@ if (CI$setting[['RERUN_BASELINES']]) {
 ##   (and standards)
 ## - generate a baseline data frame
 ## - RPI_baseline_8_rmNonCOnvergence_and_calc_peak_density.R
+
+
 
 ## Reference index - run each (year)
 ##1. primary data set up

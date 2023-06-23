@@ -141,16 +141,37 @@ CI__fit_CC_model <- function(form, data, family='binomial', n, N) {
                    msg = paste0("Reuse ", reef, " CC model"))
             return(NULL)
         }
-        mod <- inla(formula = form,
-                    data = data,
-                    Ntrials = data$total.points,
-                    family = family, 
-                    ## control.family=list(link='logit'),
-                    control.predictor = list(link = 1, compute = TRUE),
-                    control.compute = list(
-                        dic = TRUE, cpo = TRUE, waic = TRUE,
-                        config = TRUE) 
-                    )
+        ## first try betabinomial
+        res <- tryCatch(
+            mod <- inla(formula = form,
+                        data = data,
+                        Ntrials = data$total.points,
+                        family = family, 
+                        ## control.family=list(link='logit'),
+                        control.predictor = list(link = 1, compute = TRUE),
+                        control.compute = list(
+                            dic = TRUE, cpo = TRUE, waic = TRUE,
+                            config = TRUE) 
+                        ),
+            error = function(e) e
+            )
+        ## else try a binomial with Obs-level RE
+        if (inherits(res, "error")) {
+            form1 <- update(form, .~.+f(Obs, model = 'iid'))
+            mod <- inla(formula = form1,
+                        data = data,
+                        Ntrials = data$total.points,
+                        family = 'binomial', 
+                        ## control.family=list(link='logit'),
+                        control.predictor = list(link = 1, compute = TRUE),
+                        control.compute = list(
+                            dic = TRUE, cpo = TRUE, waic = TRUE,
+                            config = TRUE) 
+                        )
+        } else {
+            mod <- res
+        }
+        
         save(mod, file = paste0(DATA_PATH, "modelled/CC__", reef, '__model.RData'))
         draws <- inla.posterior.sample(n=1000, mod, seed=123) %>%
             suppressWarnings() %>%
@@ -171,14 +192,14 @@ CI_models_CC_fit_models <- function() {
 
         form <- HC ~ fYEAR +
             f(Site , model='iid') +
-            f(Transect , model='iid') +
-            f(Obs, model = "iid")
+            f(Transect , model='iid')## +
+            ## f(Obs, model = "iid")
         
         ## Fit the models - output models and draws to
         ## DATA_PATH/modelled/CC__.*__.RData
         purrr::pwalk(.l = list(mods$Full_data,mods$n),
                      .f = ~ CI__fit_CC_model(form = form, data = ..1,
-                                             family = 'binomial', n = ..2, N = nrow(mods))
+                                             family = 'betabinomial', n = ..2, N = nrow(mods))
                    )
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),

@@ -320,12 +320,67 @@ CI_models_MA_prepare_nest <- function() {
     msg=paste0('Prepare data nest'), return=NULL)
 }
 
+CI__best_model <- function(model_type) {
+    disp <- lapply(model_type, `[[`, "diags") %>% lapply(`[[`, "Disp")
+    dispp <- lapply(model_type, `[[`, "diags") %>% lapply(`[[`, "Dispp")
+    ks <- lapply(model_type, `[[`, "diags") %>% lapply(`[[`, "KS")
+    ksp <- lapply(model_type, `[[`, "diags") %>% lapply(`[[`, "KSp")
+    waic <- lapply(model_type, `[[`, "waic") %>% lapply('[[', "WAIC")
+    mse <- lapply(model_type, `[[`, "mse") %>% lapply('[[', "MSE")
+    ## first vet by evidence of issues with KS or dispersion
+    wch <- which(unlist(ksp)>0.05 &
+                 unlist(dispp)>0.05)
+    ## if all fail (not withstanding that these are anti-conservative tests)
+    ## retain all models
+    if (length(wch) == 0) wch <- names(model_type) 
+    ## Compare dispersion and WAIC (weighted most to WAIC)
+    r <- rbind(
+        rank(-abs(1-unlist(disp)))*0.1,
+        rank(-unlist(waic[wch]))
+        ## rank(-unlist(mse[wch]))
+    ) %>% colSums()
+    ## Select best model
+    best <- names(which.max(r))
+    best    
+}
 
+CI__model_diagnostics <- function(mod, obsdata, type, m, reef) {
+    ## Information Criterion
+    waic <- list(WAIC = mod$waic$waic)
+    ## DHARMa diagnostics
+    preds <- posterior_predict.inla(mod, newdata = obsdata, ndraws = 250, new_random_levels = FALSE) %>% t()
+    fitted_median_inla <- apply(preds, 1, mean)
+    mod.resids <- DHARMa::createDHARMa(
+                              simulatedResponse = preds,
+                              observedResponse = obsdata$MA,
+                              fittedPredictedResponse = fitted_median_inla,
+                              integerResponse = TRUE
+                          )
+    ggsave(paste0(FIGS_PATH, "/", type, "_", m, "_DHARMa_", reef, ".png"),
+           patchwork::wrap_elements(~(ks <- DHARMa::testUniformity(mod.resids))) +
+           patchwork::wrap_elements(~DHARMa::plotResiduals(mod.resids)) +
+           patchwork::wrap_elements(~(disp <- DHARMa::testDispersion(mod.resids))),
+           width = 12, height = 4)
+    diags <- list(
+        KS =  ks$statistic[[1]],
+        KSp =  ks$p.value[[1]],
+        Disp = disp$statistic[[1]],
+        Dispp = disp$p.value[[1]]
+    )
+    mse <- list(MSE = mean((fitted_median_inla - obsdata$MA)^2))
+    list(mod = mod,
+         waic = waic,
+         diags = diags,
+         mse = mse
+         )
+}
 
-CI__fit_MA_model <- function(form, data, family='binomial', n, N) {
+## No longer need to pass in form and family - remove these arguments
+CI__fit_MA_model <- function(fulldata, obsdata, n, N) {
     CI_tryCatch({
         ## site <- unique(data$Site)
-        reef <- unique(data$REEF.d)
+        type <- "MA"
+        reef <- unique(fulldata$REEF.d)
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
         if (file.exists(paste0(DATA_PATH, "modelled/MA__", reef, '__model.RData'))) {
@@ -333,16 +388,44 @@ CI__fit_MA_model <- function(form, data, family='binomial', n, N) {
                    msg = paste0("Reuse ", reef, " MA model"))
             return(NULL)
         }
-        mod <- inla(formula = form,
-                    data = data,
-                    Ntrials = data$A,
-                    family = family, 
-                    ## control.family=list(link='logit'),
-                    control.predictor = list(link = 1, compute = TRUE),
-                    control.compute = list(
-                        dic = TRUE, cpo = TRUE, waic = TRUE,
-                        config = TRUE) 
-                    )
+        
+        model_type <- list(
+            list(form = MA ~ fYEAR + f(Site , model='iid') + f(Transect , model='iid'),
+                 family = "binomial"),
+            list(form = MA ~ fYEAR + f(Site , model='iid') + f(Transect , model='iid') +
+                     f(Obs, model='iid'),
+                 family = "binomial"),
+            list(form = MA ~ fYEAR + f(Site , model='iid') + f(Transect , model='iid'),
+                 family = "betabinomial")
+         ) %>% setNames(c("binomial","binomialURE", "betabinomial"))
+        ## Fit each of the candidate models and determine which is "best"
+        for (m in names(model_type)) {
+            CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--MA models--",
+                   msg = paste0("Trying ", m ," model selected for ", reef, ""))
+            ## fit the model
+            ## if (m == "binomialURE") data <- data %>% mutate(Obs = factor(1:n()))
+            mod <- inla(formula = model_type[[m]]$form,
+                        data = fulldata,
+                        Ntrials = fulldata$A,
+                        family = model_type[[m]]$family, 
+                        ## control.family=list(link='logit'),
+                        control.predictor = list(link = 1, compute = TRUE),
+                        control.compute = list(
+                            dic = TRUE, cpo = TRUE, waic = TRUE,
+                            config = TRUE) 
+                        )
+            ## Collect model diagnostics/characteristics
+            ## This will also save the DHARMa plots in FIGS_PATH/<type>_<m>_DHARMa.*
+            model_type[[m]] <- model_type[[m]] %>%
+                append(CI__model_diagnostics(mod, obsdata, type, m, reef))
+        }
+        
+        best_model <- CI__best_model(model_type)
+        mod <- model_type[[best_model]]$mod
+        
+        CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--MA models--",
+                   msg = paste0(best_model, " model selected for ", reef, ""))
+
         save(mod, file = paste0(DATA_PATH, "modelled/MA__", reef, '__model.RData'))
         draws <- inla.posterior.sample(n=1000, mod, seed=123) %>%
             suppressWarnings() %>%
@@ -390,18 +473,16 @@ CI_models_MA_fit_models <- function() {
                    label = "Fit MA models", status = 'pending')
     CI_tryCatch({
 
-        load(file = paste0(DATA_PATH, "modelled/data_ma.RData"))
+        ## load(file = paste0(DATA_PATH, "modelled/data_ma.RData"))
         load(file = paste0(DATA_PATH, 'modelled/MA__mods.RData'))
 
-        form <- MA ~ fYEAR +
-            f(Site , model='iid') +
-            f(Transect , model='iid') +
-            f(Obs, model='iid')       
-        ## Fit the models - output models and draws to
+        ## For each reef/depth, fit 3 alternative models (binomial,
+        ## binomial with unit-level RE, and beta-binomial) and select
+        ## the "best" one.  The model and draws are saved to
         ## DATA_PATH/modelled/MA__.*__.RData
-        purrr::pwalk(.l = list(mods$Full_data,mods$n),
-                     .f = ~ CI__fit_MA_model(form = form, data = ..1,
-                                             family = 'binomial', n = ..2, N = nrow(mods))
+        purrr::pwalk(.l = list(mods$Full_data, mods$data, mods$n),
+                     .f = ~ CI__fit_MA_model(fulldata = ..1, obsdata = ..2,
+                                             n = ..3, N = nrow(mods))
                    )
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -411,33 +492,44 @@ CI_models_MA_fit_models <- function() {
     msg=paste0('Fit MA models'), return=NULL)
 }
 
+CI__DHARMa <- function(type, reef, preds, data, fitted_median_inla) {
+    mod.resids <- DHARMa::createDHARMa(
+                              simulatedResponse = preds,
+                              observedResponse = data$MA,
+                              fittedPredictedResponse = fitted_median_inla,
+                              integerResponse = TRUE
+                          )
+    ggsave(paste0(FIGS_PATH, "/", type, "_DHARMa_", reef, ".png"),
+           patchwork::wrap_elements(~DHARMa::testUniformity(mod.resids)) +
+           patchwork::wrap_elements(~DHARMa::plotResiduals(mod.resids)) +
+           patchwork::wrap_elements(~DHARMa::testDispersion(mod.resids)),
+           width = 12, height = 4)
+}
 
-CI__diagnostics_MA_model <- function(REEF.d, data) {
+
+CI__diagnostics_MA_model <- function(REEF.d, data, n, N) {
     CI_tryCatch({
         reef <- as.character(unlist(REEF.d))
-        CI__append_label(stage = CI__get_stage(), item = 'diagnostics',
+        CI__append_label(stage = CI__get_stage(), item = 'diagnose_models',
                          n, N)
-        if (file.exists(paste0(DATA_PATH, "modelled/MA__", reef, '__posteriors.RData'))) {
-            CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--MA models--",
-                   msg = paste0("Reuse ", reef, " MA diagnostics"))
-            return(NULL)
-        }
-        draws <- get(load(file = paste0(DATA_PATH, "modelled/MA__", reef, '__draws.RData')))
-        preds <- sapply(draws, function(x)
-            x[["latent"]][(1:nrow(data))]) %>%
-            plogis()
-        fitted_median_inla <- apply(preds, 1, median)
-
-        DHARMa_inla_posterior <- DHARMa::createDHARMa(
-                                             simulatedResponse = preds,
-                                             observedResponse = data$MA/data$A,
-                                             fittedPredictedResponse = fitted_median_inla,
-                                            )
-        wrap_elements(plot(DHARMa_inla_posterior))
- 
-            suppressWarnings() %>%
-            suppressMessages()
-        save(posteriors, file = paste0(DATA_PATH, "modelled/MA__", reef, '__posteriors.RData'))
+        
+        ## PIT
+        mod <- get(load(file = paste0(DATA_PATH, "modelled/MA__", reef, '__model.RData')))
+        ggsave(paste0(FIGS_PATH, "/", type, "_PIT_", reef, ".png"),
+               wrap_plots(
+                   pit_qq_plot(mod, i.mod = 1:nrow(data), logit_scale = TRUE),
+                   pit_plot(mod, i.mod = 1:nrow(data)),
+                   pit_resid_plot(mod, i.mod = 1:nrow(data)),
+                   pit_hist_plot(mod, i.mod = 1:nrow(data))) +
+               plot_layout(ncol = 3),
+               width = 15,
+               height = 6)
+        
+        ## DHARMa plots
+        preds <- posterior_predict.inla(mod, newdata = data, ndraws = 250, new_random_levels = FALSE) %>% t()
+        fitted_median_inla <- apply(preds, 1, mean)
+        CI__DHARMa(type = "MA", reef, preds, data, fitted_median_inla)
+        
     }, logFile=LOG_FILE, Category='--MA models--',
     msg=paste0('Posteriors for ', reef, ' MA model'), return=NULL)
 }
@@ -449,10 +541,11 @@ CI_models_MA_diagnostics <- function() {
     CI_tryCatch({
         load(file = paste0(DATA_PATH, 'modelled/MA__mods.RData'))
 
-        ## Calculate cellmeans
-        cellmeans <- purrr::pwalk(.l = list(mods$REEF.d, mods$data),
-                                 .f = ~ CI__diagnostics_MA_model(..1, ..2)) 
-        
+        ## Generate diagnostics 
+        purrr::pwalk(.l = list(mods$REEF.d, mods$data, mods$n, nrow(mods)),
+                     .f = ~ CI__diagnostics_MA_model(..1, ..2,
+                                                     n = ..3,
+                                                     N = ..4)) 
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'diagnose_models',status = 'success')
@@ -524,6 +617,33 @@ CI_models_MA_preds <- function() {
     msg=paste0('Calculate predictions'), return=NULL)
 }
 
+CI_models_MA_partialplots <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'partial',
+                   label = "Generate partial plots", status = 'pending')
+    CI_tryCatch({
+
+        load(file = paste0(DATA_PATH, "modelled/data_ma.RData"))
+        load(file = paste0(DATA_PATH, 'modelled/MA__mods.RData'))
+
+        ## Raw means
+        mods <- mods %>%
+            mutate(RawMeans = map(.x = data,
+                                  .f = ~ .x %>% group_by(fYEAR) %>%
+                                      summarise(Value = mean(MA/A, na.rm = TRUE))
+                                  )) %>%
+            mutate(ModelledMeans = map(.x = REEF.d,
+                                       .f = ~ get(load(file = paste0(DATA_PATH,
+                                                                     "modelled/MA__", .x,
+                                                                     "__summary.RData")))))
+        ##Continue from here - add partial plot with modelled trends overlayed onto raw means 
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'partials',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--MA models--',
+    msg=paste0('Generate partial plots'), return=NULL)
+}
                                                        
 CI__index_MA <- function(dat, baselines, consequence) {
     dat %>%
