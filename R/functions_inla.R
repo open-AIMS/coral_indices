@@ -11,6 +11,11 @@ my_ilink <- function(x, link) {
         softplus = log1p_exp(x), stop2("Link '", link, "' not supported."))
   }
 
+inv_logit <- function(x) {
+    x[x>500] <- 500
+    exp(x)/(exp(x) + 1)
+}
+
 posterior_predict.inla <- function(object, newdata = NULL, ndraws=100, include_re = TRUE, new_random_levels = FALSE) {
     draws <- inla.posterior.sample(n=ndraws, result = object) %>%
         suppressWarnings() %>%

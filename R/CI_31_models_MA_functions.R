@@ -264,10 +264,22 @@ CI_models_MA_prepare_data <- function() {
         ##            total.MA = ifelse(MAs == '0' & TRANSECT_NO == '1', 1, MA)) %>%
         ##     suppressMessages() %>%
         ##     suppressWarnings()
-        data <- df.a %>%
-            mutate(MA = ifelse(MA == 0 & A == 0, NA, MA),
-                   total.MA = MA,
-                   A = ifelse(is.na(MA) & A == 0, NA, A))
+
+        ## The following used to be there to catch instances in which
+        ## MA and A where both 0.  Betabinomial models do not like
+        ## this!  It is no longer an issue, because the model fitting
+        ## fits each of binomial, binomial with unit-level RE and
+        ## betabinomial (before assessing which is "best").  Each of
+        ## the attempts is wrapped in a tryCatch and therefore it does
+        ## not matter that the betabinomial fails - because the other
+        ## two should be ok.  Ideally, we dont want to be making the
+        ## values NA because this will prevent the diagnostics
+        ## (DHARMa) working.
+        ## data <- df.a %>%
+        ##     mutate(MA = ifelse(MA == 0 & A == 0, NA, MA),
+        ##            total.MA = MA,
+        ##            A = ifelse(is.na(MA) & A == 0, NA, A))
+        data = df.a
 
         save(data,
               file = paste0(DATA_PATH, 'modelled/data_ma.RData'))
@@ -350,6 +362,14 @@ CI__model_diagnostics <- function(mod, obsdata, type, m, reef) {
     ## DHARMa diagnostics
     preds <- posterior_predict.inla(mod, newdata = obsdata, ndraws = 250, new_random_levels = FALSE) %>% t()
     fitted_median_inla <- apply(preds, 1, mean)
+    ## Check whether there are any missing values in either
+    ## fitted_median_inla or obsdata.
+    if (any(is.na(obsdata$MA))) { 
+        wch <- which(is.na(obsdata$MA))
+        preds <- preds[-wch,]
+        obsdata <- obsdata[-wch,]
+        fitted_median_inla <- fitted_median_inla[-wch]
+    }
     mod.resids <- DHARMa::createDHARMa(
                               simulatedResponse = preds,
                               observedResponse = obsdata$MA,
@@ -403,21 +423,27 @@ CI__fit_MA_model <- function(fulldata, obsdata, n, N) {
             CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--MA models--",
                    msg = paste0("Trying ", m ," model selected for ", reef, ""))
             ## fit the model
-            ## if (m == "binomialURE") data <- data %>% mutate(Obs = factor(1:n()))
-            mod <- inla(formula = model_type[[m]]$form,
-                        data = fulldata,
-                        Ntrials = fulldata$A,
-                        family = model_type[[m]]$family, 
-                        ## control.family=list(link='logit'),
-                        control.predictor = list(link = 1, compute = TRUE),
-                        control.compute = list(
-                            dic = TRUE, cpo = TRUE, waic = TRUE,
-                            config = TRUE) 
-                        )
-            ## Collect model diagnostics/characteristics
-            ## This will also save the DHARMa plots in FIGS_PATH/<type>_<m>_DHARMa.*
-            model_type[[m]] <- model_type[[m]] %>%
-                append(CI__model_diagnostics(mod, obsdata, type, m, reef))
+            mod <- tryCatch({
+                inla(formula = model_type[[m]]$form,
+                            data = fulldata,
+                            Ntrials = fulldata$A,
+                            family = model_type[[m]]$family, 
+                            ## control.family=list(link='logit'),
+                            control.predictor = list(link = 1, compute = TRUE),
+                            control.compute = list(
+                                dic = TRUE, cpo = TRUE, waic = TRUE,
+                                config = TRUE) 
+                            )
+            }, error = function(e) e)
+           if (inherits(mod, "simpleError")) {
+                model_type[[m]] <- NULL
+            } else {
+                ## Collect model diagnostics/characteristics This will
+                ## also save the DHARMa plots in
+                ## FIGS_PATH/<type>_<m>_DHARMa.*
+                model_type[[m]] <- model_type[[m]] %>%
+                    append(CI__model_diagnostics(mod, obsdata, type, m, reef))
+            }
         }
         
         best_model <- CI__best_model(model_type)
@@ -509,6 +535,7 @@ CI__DHARMa <- function(type, reef, preds, data, fitted_median_inla) {
 
 CI__diagnostics_MA_model <- function(REEF.d, data, n, N) {
     CI_tryCatch({
+        type <- "MA"
         reef <- as.character(unlist(REEF.d))
         CI__append_label(stage = CI__get_stage(), item = 'diagnose_models',
                          n, N)
@@ -528,10 +555,10 @@ CI__diagnostics_MA_model <- function(REEF.d, data, n, N) {
         ## DHARMa plots
         preds <- posterior_predict.inla(mod, newdata = data, ndraws = 250, new_random_levels = FALSE) %>% t()
         fitted_median_inla <- apply(preds, 1, mean)
-        CI__DHARMa(type = "MA", reef, preds, data, fitted_median_inla)
+        CI__DHARMa(type = type, reef = reef, preds, data, fitted_median_inla)
         
     }, logFile=LOG_FILE, Category='--MA models--',
-    msg=paste0('Posteriors for ', reef, ' MA model'), return=NULL)
+    msg=paste0('Diagnostics for ', reef, ' MA model'), return=NULL)
 }
 
 CI_models_MA_diagnostics <- function() {

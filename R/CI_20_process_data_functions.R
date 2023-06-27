@@ -299,7 +299,7 @@ CI_process_combine_data <- function() {
     CI_tryCatch({
 
         files <- list.files(path = paste0(DATA_PATH, 'processed'),
-                            pattern = 'points.analysis.data.transect.*.RData',
+                            pattern = 'points.analysis.data.transect\\..*\\.RData',
                             full.names = TRUE)
         points.analysis.data.transect <- do.call('rbind',
                                                          lapply(files, CI_load_and_parse_file))
