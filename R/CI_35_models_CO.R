@@ -4,7 +4,7 @@ source('../R/CI_30_models_functions.R')
 
 if (CI_isParent()) CI_startMatter()
 
-CURRENT_STAGE <<- 6
+CURRENT_STAGE <<- 7
 CI__change_setting(item = 'CURRENT_STAGE', value = CURRENT_STAGE)
 CI__add_stage(stage = paste0('STAGE',CURRENT_STAGE),
               title = paste0('Stage ', CURRENT_STAGE, ' - modelling Composition data'))

@@ -16,8 +16,11 @@ if (CI$setting[['RERUN_BASELINES']]) {
     CI_34_RPI_baseline_models()
 }
 
-CI_34_RPI_refernce_models()
+## Reference index - run each year
+CI_34_RPI_reference_models()
 
+## Critical index - run each year
+CI_34_RPI_critical_models()
 
 ## Baseline - only run once - include random seed
 ## Baseline 1. Set configs, settings (may not be needed) and load functions
@@ -41,6 +44,9 @@ CI_34_RPI_refernce_models()
 ##   (and standards)
 ## - generate a baseline data frame
 ## - RPI_baseline_8_rmNonCOnvergence_and_calc_peak_density.R
+## The last script above has been replaced by
+## RPI_baseline_8_predict10YearIncrease.R
+## which calculates something about the last 10 years
 
 
 
@@ -71,6 +77,6 @@ CI_34_RPI_refernce_models()
 ##     parameterise it and use it to predict CC for point of interest
 ##   - RPI_x_CriticalIndex_3_PredsFromPreviousTraj.R
 ##2.5. gather two sources of predictions together
-##   - RPI_x_CriticalIndex_5_gatherpreds.R
+##   - RPI_x_CriticalIndex_5_gatherpreds.R <- put this outside the loop
 ##3. Calculate the score
 ## - RPI_x_CriticalIndex_6_calculateScore.R

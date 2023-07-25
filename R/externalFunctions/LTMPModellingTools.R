@@ -881,8 +881,12 @@ adaptMCMC_fit_ode_model <- function(data, model, config) {
     logl(theta0)
 
     fprintf("Initial Sampling ...")
-    mcmc_fit <- foreach(i=1:config$chains, .export=ls(.GlobalEnv), .combine='c',
-                    .packages=c('adaptMCMC','deSolve','truncnorm')) %dorng% {
+    mcmc_fit <- foreach(i=1:config$chains,
+                        .export="param_names",
+                        ## .export=ls(.GlobalEnv),  # Removed by Murray as it exports the entire
+                                        # Global environment and much of it is too large
+                        .combine='c',
+                        .packages=c('adaptMCMC','deSolve','truncnorm')) %dorng% {
         # initialise chains
         theta0 <- model$prior_sampler(model$hyp)
         while (is.infinite(logq(theta0))) {
@@ -908,8 +912,11 @@ adaptMCMC_fit_ode_model <- function(data, model, config) {
         while ((diag.res$Rhat$mpsrf > config$Rthresh || sum(diag.res$ESS < config$ESSthresh) > 0) && numChecks < config$maxChecks) {
             fprintf("[Failed %g of %g]\nAdditional sampling ...",numChecks, config$maxChecks)
             # preform continued sampling and adaptation
-            mcmc_fit2 <- foreach(i=1:config$chains, .export=ls(.GlobalEnv),.combine='c',
-                            .packages=c('adaptMCMC','deSolve','truncnorm')) %dorng% {
+            mcmc_fit2 <- foreach(i=1:config$chains,
+                                 .export = "param_names",
+                                 ## .export=ls(.GlobalEnv),
+                                 .combine='c',
+                                 .packages=c('adaptMCMC','deSolve','truncnorm')) %dorng% {
                 list(MCMC.add.samples(mcmc_fit[[i]],n.update=config$iter))
             }
             fprintf("done!\n")
@@ -933,7 +940,10 @@ adaptMCMC_fit_ode_model <- function(data, model, config) {
     } else {
         # preform continued sampling and adaptation
         fprintf("Sampling")
-        mcmc_fit2 <- foreach(i=1:config$chains, .export=ls(.GlobalEnv),.combine='c',
+        mcmc_fit2 <- foreach(i=1:config$chains,
+                             .export = "param_names",
+                             ## .export=ls(.GlobalEnv),
+                             .combine='c',
                              .packages=c('adaptMCMC','deSolve','truncnorm')) %dorng% {
                                  list(MCMC.add.samples(mcmc_fit[[i]],n.update=config$iter))
                              }

@@ -222,3 +222,42 @@ predict.previous.random <- function(baseline.df, ongoing.df,model,N){
   }
   return(preds)
 }
+
+predict.from.fixed.HCstart <- function(baseline.df, model, N, spec.time, HC.start, AB.cover){
+  traj.ids <- baseline.df %>% select(c("RP_ID")) %>% unique() 
+  # for each ongoing trajectory
+  preds <- data.frame(HC_PRED = c(), RP_ID = c())
+  for (traj.id in traj.ids$RP_ID){
+    # use all samples across past individual estimates
+    rp.mcmc <- baseline.df %>% 
+      ungroup() %>% 
+      select(c("Iteration", "Chain", "RP_ID", "Parameter","value")) %>% 
+      spread(key=Parameter,value=value) %>% 
+      select(-c("Chain","Iteration","RP_ID"))
+
+
+    for (draw.id in 1:1000){
+      # for 1 parameter per draw
+      Nall <- nrow(rp.mcmc)
+      pps <- rep(0,N)
+      samples <- sample(Nall,N,replace=FALSE)
+
+      # build data object 
+      data <- list(nVisits = 1, c0 = HC.start,t0 = 0, 
+                   ts = spec.time, K = K.limit - AB,
+                   Serr = 1)
+
+      for (i in 1:N){
+        theta <- as.numeric(rp.mcmc[samples[i],])
+        names(theta) <- names(rp.mcmc[samples[i],])
+        sim <- model$like_sampler(data,model,theta)
+        pps[i] <- sim[2]
+      }
+      rp.mcmc.pred <- data.frame(HC_PRED = pps, TRANSECT_NO = rep(draw.id,N), RP_ID = rep(traj.id,N)
+                                 #HC_OBS = rep(traj$HC[n],N),HC_se = rep(traj$lower.error[n],N))
+      )#,HC_se = rep(traj$HC_se[n],N))
+      preds <- rbind(preds,rp.mcmc.pred)
+    }
+  }
+  return(preds)
+}

@@ -8,7 +8,8 @@ library(lubridate)
 library(sf)
 library(INLA)
 library(posterior)
-library(tidybayes)
+library(furrr)
+library(progressr)
 library(vegan)
 library(Rlof)
 library(patchwork)
@@ -122,6 +123,7 @@ CI__change_label <- function(stage, item, label, update_display = TRUE) {
 
 CI__append_label <- function(stage, item, n, N) {
     current_label <- CI__get_label(stage = stage, item = item)
+    if (length(current_label)>1) current_label <- current_label[1]
     if (str_detect(current_label, "\\[.*\\]")) {
         current_label <- str_replace(current_label, "\\[.*\\]",
                                      paste0('[',n,"/", N,']'))

@@ -56,6 +56,13 @@ source(paste0(MODEL_DIR,'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
   count=0
   
   for (i in unique(names(filt.rec.traj.proc))) {
+  ## print("Running in parallel") 
+  ## cl <- makeCluster(10)
+  ## registerDoParallel(cl)
+  ## filt.rec.traj.proc.mcmc.res <- foreach(i = unique(names(filt.rec.traj.proc)),
+  ##                                        .packages = c('tidyverse', 'foreach', 'doParallel',
+  ##                                                      'future')
+  ##                                                 ) %dopar% {
     
     reef.group.list<- filt.rec.traj.proc[[i]]
     
@@ -82,6 +89,7 @@ source(paste0(MODEL_DIR,'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
       model$upper[4] <- traj$T[length(traj$T)]/365.0
       print(paste0("MCMC sampling for rpid ", jj, " in bioregion ", i))
       ## Store model in list
+      set.seed(123)
       samples <- adaptMCMC_fit_ode_model(data,model,conf)
       
       if (length(samples)!=0) {
@@ -96,7 +104,10 @@ source(paste0(MODEL_DIR,'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
     
     
     filt.rec.traj.proc.mcmc.res[[i]] <- rpid.list
+      ## rpid.list
   }
+  ## stopCluster(cl)
+  ## names(filt.rec.traj.proc.mcmc.res)<- unique(names(filt.rec.traj.proc))
   toc()
   
   ## save results

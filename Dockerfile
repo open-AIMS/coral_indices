@@ -112,6 +112,11 @@ RUN R -e "  \
   install.packages('ggmcmc');  \
 "
 
+RUN R -e "  \
+  install.packages('furrr');  \
+  install.packages('progressr');  \
+"
+
 ## Create project directory in docker image 
 RUN mkdir ~/Project
 
