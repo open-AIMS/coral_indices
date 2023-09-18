@@ -5,7 +5,6 @@
 cache/
 *.tar
 *.html
-*.csv
 data/primary/
 data/processed/
 .Rhistory
