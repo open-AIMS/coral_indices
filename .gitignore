@@ -6,7 +6,8 @@ cache/
 *.tar
 *.html
 *.csv
-data/
+data/primary/
+data/processed/
 .Rhistory
 output/
 /.quarto/
