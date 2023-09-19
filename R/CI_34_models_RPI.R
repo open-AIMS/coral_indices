@@ -22,6 +22,9 @@ CI_34_RPI_reference_models()
 ## Critical index - run each year
 CI_34_RPI_critical_models()
 
+## Calculate Critical Index scores
+CI_34_RPI_calculate_scores()
+
 ## Baseline - only run once - include random seed
 ## Baseline 1. Set configs, settings (may not be needed) and load functions
 ## - restrincted to up to and including 2020

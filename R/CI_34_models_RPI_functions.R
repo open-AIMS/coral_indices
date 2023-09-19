@@ -1540,7 +1540,8 @@ CI_process_rpi_critical_gather_preds <- function() {
 
         pred.df.critical.obs3.temporal <- rpi_data %>%
             dplyr::select(pred.df.critical.obs3.temporal) %>%
-            unnest(pred.df.critical.obs3.temporal)
+            unnest(pred.df.critical.obs3.temporal) %>%
+            mutate(trajectory.standard = "current")
         save(pred.df.critical.obs3.temporal, file = paste0(DATA_PATH,
                                      "processed/RPI_reference/pred.df.critical.temporal.obs3.random_",
                                      RPI_PURPOSE,
@@ -1552,8 +1553,8 @@ CI_process_rpi_critical_gather_preds <- function() {
                                          RPI_PURPOSE,
                                          "less3_stage8.RData"))
         rpi_data <- rpi_data %>%
-            mutate(pred.df.critical.obs3.temporal =
-                       map(.x = mcmc.traj.ess.critical, #pred.df.critical.obs3,
+            mutate(pred.df.critical.lessthan3.temporal =
+                       map(.x = mcmc.traj.ess.previous, 
                            .f = ~ {
                                nm <- .x
                                if (file.exists(nm)) {
@@ -1562,37 +1563,17 @@ CI_process_rpi_critical_gather_preds <- function() {
                                } else return(NULL)
                            }))
 
-        pred.df.critical.obs3.temporal <- rpi_data %>%
-            dplyr::select(pred.df.critical.obs3.temporal) %>%
-            unnest(pred.df.critical.obs3.temporal)
-        save(pred.df.critical.obs3.temporal, file = paste0(DATA_PATH,
-                                     "processed/RPI_reference/pred.df.critical.temporal.obs3.random_",
+        pred.df.critical.lessthan3.temporal <- rpi_data %>%
+            dplyr::select(pred.df.critical.lessthan3.temporal) %>%
+            unnest(pred.df.critical.lessthan3.temporal) %>%
+            mutate(trajectory.standard = "previous")
+        save(pred.df.critical.lessthan3.temporal, file = paste0(DATA_PATH,
+                                     "processed/RPI_reference/pred.df.critical.temporal.lessthan3.random_",
                                      RPI_PURPOSE,
                                      "_.RData"))
-
-        ## load benthic data
-        load(file=paste0(DATA_PATH, "processed/groups.transect.RData"))
-        ## Load spatial info
-        load(file=paste0(DATA_PATH, "processed/spatial_lookup_rpi.RData"))
-
-        modelled.HC <- groups.transect %>%
-            filter(GROUP_CODE == "HC") %>%
-            droplevels() %>%
-            rename(modelled.cover = COVER)
-
-        modelled.v.pred.dist <- modelled.HC %>%
-            left_join(pred.df.crp.temporal %>%
-                      rename(expected.cover = HC_PRED)) %>%
-            dplyr::select(-TUMRA, -NRM, -BIOREGION, -NRM, -ZONE, -Shelf) %>%
-            left_join(spatial_lookup) %>%
-            suppressMessages() %>% suppressWarnings()
-
-        save(modelled.v.pred.dist, file=paste0(DATA_PATH,
-                                               "/modelled/modelled.v.pred.dist.random.RData"))
-
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                          item = paste0('process_rpi_gather'),
+                          item = paste0('process_rpi_gather3'),
                           status = 'success')
             
     }, logFile=LOG_FILE, Category='--Data processing--',
@@ -1739,13 +1720,14 @@ CI_process_rpi_critical_filter_trajectories <- function() {
             mutate(filt.rec.traj.critical =
                        map2(.x = REPORT_YEAR,
                             .y = n,
-                           .f = ~ {
+                            .f = ~ {
                                CI__append_label(stage = CI__get_stage(),
                                                 item = paste0('process_rpi_filter_', RPI_PURPOSE),
                                                 .y, N)
                                rm.ongoing.trajectories <- recovery.trajectories.final_year %>%
                                    mutate(proj.site.rpid = paste(REEF.d, RP_ID, sep = " ")) %>%
                                    ungroup() %>%
+                                   filter(REPORT_YEAR <= .x) %>%
                                    group_by(proj.site.rpid) %>%
                                    mutate(max.report.year = max(REPORT_YEAR),
                                           NUM_OBS = as.numeric(length(unique(REPORT_YEAR)))) %>%
@@ -2076,23 +2058,46 @@ CI__gather_posteriors <- function(filt.rec.traj.proc.mcmc.res.critical, YR,
             
             spatial.var<- filt.rec.traj.proc.critical[[i]][[mm]]
             mcmc <- reef.group.list[[mm]]
-            mcmc.df<- ggs(mcmc) %>% mutate(RP_ID=factor(mm), BIOREGION=factor(i)) %>% as.data.frame
+            if (type == 'critical') {
+                mcmc.df<- ggs(mcmc) %>%
+                    mutate(RP_ID=factor(mm), BIOREGION=factor(i)) %>%
+                    as.data.frame
+            } else {
+                mcmc.df<- ggs(mcmc) %>%
+                    mutate(previous.RP_ID=factor(mm), BIOREGION=factor(i)) %>%
+                    as.data.frame
+            }
 
             rpid.list[[mm]]=mcmc.df
 
-            mpsrf= data.frame(mpsrf=gelman.diag(reef.group.list[[mm]])[[2]],
-                              ess=effectiveSize(reef.group.list[[mm]])[[2]]) %>%
-                mutate(RP_ID=factor(mm),
-                       NRM=spatial.var$NRM[1],
-                       BIOREGION=factor(i),
-                       ZONE=spatial.var$ZONE[1],
-                       Shelf=spatial.var$Shelf[1],
-                       REEF=spatial.var$REEF[1],
-                       DEPTH.f=spatial.var$DEPTH.f[1],
-                       REEF.d=spatial.var$REEF.d[1],
-                       proj.site.rpid=spatial.var$proj.site.rpid[1],
-                       REPORT_YEAR=current.report.year)
-
+            if (type == 'critical') {
+                mpsrf= data.frame(mpsrf=gelman.diag(reef.group.list[[mm]])[[2]],
+                                  ess=effectiveSize(reef.group.list[[mm]])[[2]]) %>%
+                    mutate(RP_ID=factor(mm),
+                           NRM=spatial.var$NRM[1],
+                           BIOREGION=factor(i),
+                           ZONE=spatial.var$ZONE[1],
+                           Shelf=spatial.var$Shelf[1],
+                           REEF=spatial.var$REEF[1],
+                           DEPTH.f=spatial.var$DEPTH.f[1],
+                           REEF.d=spatial.var$REEF.d[1],
+                           proj.site.rpid=spatial.var$proj.site.rpid[1],
+                           REPORT_YEAR=current.report.year)
+            } else if (type == 'previous') {
+                mpsrf= data.frame(mpsrf=gelman.diag(reef.group.list[[mm]])[[2]],
+                                  ess=effectiveSize(reef.group.list[[mm]])[[2]]) %>%
+                    mutate(previous.RP_ID=factor(mm),
+                           NRM=spatial.var$NRM[1],
+                           BIOREGION=factor(i),
+                           ZONE=spatial.var$ZONE[1],
+                           Shelf=spatial.var$Shelf[1],
+                           REEF=spatial.var$REEF[1],
+                           DEPTH.f=spatial.var$DEPTH.f[1],
+                           REEF.d=spatial.var$REEF.d[1],
+                           proj.site.rpid=spatial.var$proj.site.rpid[1],
+                           REPORT_YEAR=current.report.year)
+            }
+            
             mpsrf.list[[mm]]=mpsrf
 
         }
@@ -2223,7 +2228,7 @@ CI_process_rpi_filter_thin_less3 <- function() {
                                        group_by(proj.site.rpid) %>%
                                        mutate(iterations=max(Iteration)) %>%
                                        dplyr::select(ZONE, Shelf, NRM, BIOREGION,
-                                                     REEF, DEPTH.f, REEF.d, RP_ID,
+                                                     REEF, DEPTH.f, REEF.d, previous.RP_ID,
                                                      proj.site.rpid, REPORT_YEAR,
                                                      iterations, mpsrf, ess) %>%
                                        unique()
@@ -2274,7 +2279,7 @@ CI_process_rpi_optimise <- function() {
                                .x1 <- get(load(nm1))
                                
                                if (length(.x) == 0) {
-                                 mcmc.converge.info.critical <- NULL
+                                 mcmc.traj.ess.critical <- NULL
                                } else { 
                                    mcmc.table.critical <- .x %>%
                                        mutate(ess.thinning.interval=iterations/ess)
@@ -2287,7 +2292,9 @@ CI_process_rpi_optimise <- function() {
                                                 REPORT_YEAR,
                                                 Chain, Parameter) %>%
                                        slice(which(row_number() %% thin.to.ess == 1)) %>%
-                                       mutate(zone.shelf=paste(ZONE, Shelf, sep=" "))
+                                       mutate(zone.shelf=paste(ZONE, Shelf, sep=" ")) %>%
+                                       suppressMessages() %>%
+                                       suppressWarnings()
                                    mcmc.traj.ess.critical
                                }
                                nm <- str_replace(nm, "stage5", "stage6")
@@ -2368,7 +2375,7 @@ CI_process_rpi_optimise_less3 <- function() {
                                        left_join(mcmc.table.previous) %>%
                                        mutate(thin.to.ess=round(ess.thinning.interval)) %>%
                                        group_by(NRM, BIOREGION, ZONE, Shelf, REEF,
-                                                DEPTH.f, REEF.d, RP_ID, proj.site.rpid,
+                                                DEPTH.f, REEF.d, previous.RP_ID, proj.site.rpid,
                                                 REPORT_YEAR,
                                                 Chain, Parameter) %>%
                                        slice(which(row_number() %% thin.to.ess == 1)) %>%
@@ -2409,7 +2416,7 @@ CI_process_rpi_optimise_less3 <- function() {
 
         save(rpi_data, file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
                                      RPI_PURPOSE,
-                                     "less_stage7.RData"))
+                                     "less3_stage7.RData"))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = paste0("process_rpi_optim3_", RPI_PURPOSE),
@@ -2478,7 +2485,7 @@ CI_process_rpi_predict_last_less3 <- function() {
     CI_tryCatch({
         load(file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
                                      RPI_PURPOSE,
-                                    "less_stage7.RData"))
+                                    "less3_stage7.RData"))
         N <- max(rpi_data$n)
         rpi_data <- rpi_data %>%
             mutate(mcmc.traj.ess.previous =
@@ -2512,7 +2519,7 @@ CI_process_rpi_predict_last_less3 <- function() {
 
         save(rpi_data, file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
                                      RPI_PURPOSE,
-                                     "_stage8.RData"))
+                                     "less3_stage8.RData"))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = paste0("process_rpi_predict3_", RPI_PURPOSE),
@@ -2534,19 +2541,30 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
     load(file=paste0(DATA_PATH, "processed/spatial_lookup_rpi.RData"))
     source(paste0('externalFunctions/DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
 
-    rpids.to.predict.for<- filt.rec.traj.critical %>%
-        ungroup() %>%
-        ## { if(type == "critical")
-        ##       filter(., RP_ID %in% rm.poor.chains.critical$RP_ID) %>% droplevels() 
-        ##       else .
-        ## } %>%
-        filter(RP_ID %in% rm.poor.chains.critical$RP_ID) %>% droplevels() %>%
-        dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d,
-                      RP_ID, proj.site.rpid, REPORT_YEAR, max.report.year, NUM_OBS, Date) %>% unique()
+    if (type == 'critical') {
+        rpids.to.predict.for <- filt.rec.traj.critical %>%
+            ungroup() %>%
+            ## { if(type == "critical")
+            ##       filter(., RP_ID %in% rm.poor.chains.critical$RP_ID) %>% droplevels() 
+            ##       else .
+            ## } %>%
+            filter(RP_ID %in% rm.poor.chains.critical$RP_ID) %>% droplevels() %>%
+            dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d,
+                          RP_ID, proj.site.rpid, REPORT_YEAR, max.report.year,
+                          NUM_OBS, Date) %>% unique()
+    } else if (type == 'previous') {
+        rpids.to.predict.for <- filt.rec.traj.critical %>%
+            ungroup() %>%
+            dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d,
+                          RP_ID, proj.site.rpid, REPORT_YEAR,
+                          max.report.year, NUM_OBS, Date) %>%
+            unique()
+    }
+    print(rpids.to.predict.for)
     
     ongoing.df<- groups.transect %>% right_join(rpids.to.predict.for) %>%
         spread(key="GROUP_CODE", value=COVER)
-    
+    print(nrow(ongoing.df))
     ## define the model for prediction
     model <- list(ode_func = general_logistic_twophase,       # RHS for ODE model
                   ode_sol = general_logistic_twophase_analytic,
@@ -2557,6 +2575,7 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
     site.list<- vector(mode="list", length=length(unique(ongoing.df$RP_ID)))
     names(site.list)<- unique(ongoing.df$RP_ID)
 
+    print(unique(rm.poor.chains.critical$previous.RP_ID))
     for(rpid in unique(ongoing.df$RP_ID)){
 
         count=count+1
@@ -2570,8 +2589,16 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
 
         print(paste("rpid", rpid, "for", reef.d, sep=" "))
 
-        rpid.parameters<- rm.poor.chains.critical %>% filter(RP_ID == rpid) %>% droplevels() %>%
-            ungroup()
+        print(type)
+        if (type == 'critical') {
+            rpid.parameters <- rm.poor.chains.critical %>%
+                filter(RP_ID == rpid) %>% droplevels() %>%
+                ungroup()
+        } else if (type == 'previous') {
+            rpid.parameters <- rm.poor.chains.critical %>%
+                filter(REEF.d == reef.d) %>% droplevels() %>%
+                ungroup()
+        }
 
         if (nrow(rpid.parameters)==0) next
 
@@ -2579,15 +2606,24 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
 
             ##use predict.ongoing.random with N=1
             try({
-                current.traj.preds <- predict.ongoing.random(rpid.parameters,
-                                                             ongoing.site.a,
-                                                             model,1)  %>%
-                    left_join(ongoing.site.a %>%
-                              dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d, RP_ID, proj.site.rpid) %>% distinct) %>%
-                    mutate(REPORT_YEAR=current.report.year)
-                
+                if (type == 'critical') {
+                    current.traj.preds <- predict.ongoing.random(rpid.parameters,
+                                                                 ongoing.site.a,
+                                                                 model,1)  %>%
+                        left_join(ongoing.site.a %>%
+                                  dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d, RP_ID, proj.site.rpid) %>% distinct) %>%
+                        mutate(REPORT_YEAR=current.report.year)
+                    
                                         #save(current.traj.preds, file=paste0(MCMC_OUTPUT_DIR, "current.traj.preds.", s, ".depth.", d, ".", y, ".RData"))
                 
+                } else if (type == 'previous') {
+                    current.traj.preds <- predict.previous.random(rpid.parameters,
+                                                                 ongoing.site.a,
+                                                                 model,1)  %>%
+                        left_join(ongoing.site.a %>%
+                                  dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d, RP_ID, proj.site.rpid) %>% distinct) %>%
+                        mutate(REPORT_YEAR=current.report.year)
+                }
                 
                 
                 site.list[[rpid]]=current.traj.preds })
@@ -2639,6 +2675,7 @@ CI_process_rpi_critical_filter_trajectories_less3 <- function() {
                                 rm.ongoing.trajectories <- recovery.trajectories.final_year %>%
                                     mutate(proj.site.rpid = paste(REEF.d, RP_ID, sep = " ")) %>%
                                     ungroup() %>%
+                                    filter(REPORT_YEAR <= .x) %>%
                                     group_by(proj.site.rpid) %>%
                                     mutate(max.report.year = max(REPORT_YEAR),
                                            NUM_OBS = as.numeric(length(unique(REPORT_YEAR)))) %>%
@@ -2679,7 +2716,7 @@ CI_process_rpi_critical_filter_trajectories_less3 <- function() {
                                 
                                 nm <- paste0(DATA_PATH, "processed/RPI_reference/",
                                              "rpi_data_", RPI_PURPOSE, "_less3b_", .x, "_stage1.RData")
-                                save(filt.rec.traj.critical, file = nm)
+                                save(filt.rec.traj.critical.lessthan3, file = nm)
                                 nm
                             }
                             ))
@@ -2714,6 +2751,7 @@ CI_process_rpi_critical_find_previous_trajectory <- function() {
         load(file=paste0(DATA_PATH, "processed/spatial_lookup_rpi.RData"))
         
         rpi_data <- rpi_data %>%
+            mutate(N = max(n)) %>%
             mutate(filt.rec.traj.previous =
                        pmap(.l = list(REPORT_YEAR, n,
                                       rm.ongoing.trajectories),
@@ -2998,4 +3036,89 @@ CI_process_rpi_gather_posteriors_less3 <- function() {
         
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0("Gather RPI posteriors ", RPI_PURPOSE), return=NULL)
+}
+
+CI_34_RPI_calculate_scores <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'rpi_scires',
+                   label = "Calculate scores", status = 'pending')
+    CI_tryCatch({
+
+        RPI_PURPOSE <- 'critical'
+        load(file = paste0(DATA_PATH,
+                           "processed/RPI_reference/pred.df.critical.temporal.obs3.random_",
+                           RPI_PURPOSE,
+                           "_.RData"))
+        load(file = paste0(DATA_PATH,
+                           "processed/RPI_reference/pred.df.critical.temporal.lessthan3.random_",
+                           RPI_PURPOSE,
+                           "_.RData"))
+
+        critical.preds.distribution <- bind_rows(pred.df.critical.lessthan3.temporal,
+                                                 pred.df.critical.obs3.temporal)
+        
+        save(critical.preds.distribution,
+             file = paste0(DATA_PATH, "/processed/RPI_reference/critical.preds.distribution.RData"))
+
+        load(paste0(DATA_PATH, 'processed/groups.transect.RData'))
+        load(file=paste0(DATA_PATH, "/processed/spatial_lookup_rpi.RData"))
+        load(file = paste0(DATA_PATH, "/processed/RPI_reference/critical.preds.distribution.RData"))
+
+        modelled.HC <- groups.transect %>%
+            filter(GROUP_CODE=="HC") %>%
+            droplevels() %>%
+            dplyr::rename(modelled.cover = COVER)
+
+        modelled.v.pred.dist.critical <- modelled.HC %>%
+            left_join(critical.preds.distribution %>%
+                      dplyr::rename(expected.cover = HC_PRED)) %>%
+            dplyr::select(-TUMRA, -NRM, -BIOREGION, -NRM, -ZONE, -Shelf) %>%
+            left_join(spatial_lookup)
+
+        save(modelled.v.pred.dist.critical,
+             file=paste0(DATA_PATH, "/modelled/modelled.v.pred.dist.critical.random.RData"))
+
+        ## Calculate recovery performance index:
+
+        ##There are some negative predictions and so some NaNs are
+        ## produced by the log2 calculation
+        calculate.critical.score <- modelled.v.pred.dist.critical %>%
+            mutate(distance.metric = log2(modelled.cover/expected.cover),
+                   cap.dist.met = as.numeric(case_when(distance.metric < -2 ~ -2,
+                                           distance.metric > 2 ~2,
+                                           distance.metric > -2 &
+                                           distance.metric < 2 ~  distance.metric)),
+                   rescale.dist.met = scales::rescale(cap.dist.met, to = c(0,1))) %>%
+            filter(!distance.metric %in% NaN) %>%
+            droplevels()
+
+        save(calculate.critical.score,
+             file = paste0(DATA_PATH, "/modelled/calculate.critical.score.random.RData"))
+
+        # ## Summarise RPI score
+        load(file = paste0(DATA_PATH, "/modelled/calculate.critical.score.random.RData"))
+
+        current.pred.summary.critical <- calculate.critical.score %>%
+            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
+                     REEF, REEF.d, REPORT_YEAR, trajectory.standard) %>%
+            rename(index = rescale.dist.met) %>%
+            tidybayes::median_hdci(modelled.cover, index, expected.cover) %>%
+            mutate(fYEAR = factor((REPORT_YEAR))) %>%
+            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d) %>%
+            arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d, REPORT_YEAR) %>%
+            tidyr::fill(index, index.upper, index.lower, trajectory.standard)
+
+        save(current.pred.summary.critical,
+             file = paste0(DATA_PATH, "/modelled/current.pred.summary.critical.random.RData"))
+
+        ## save(rpi_data, file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
+        ##                              RPI_PURPOSE,
+        ##                              "less3_stage5.RData"))
+        
+        ## CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+        ##                   item = paste0("process_rpi_gather3_", RPI_PURPOSE),
+        ##                   status = 'success')
+        
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0("Calculate scores ", RPI_PURPOSE), return=NULL)
 }
