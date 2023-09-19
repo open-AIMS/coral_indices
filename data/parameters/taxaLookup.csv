@@ -1,0 +1,55 @@
+,Taxon,COMP_2021_DESCRIPTION,page.desc
+1,F_SC_XEN,Xeniidae,soft corals of the family Xeniidae
+2,F_SC_NEP,Nephtheidae,soft corals of the family Nephtheidae
+3,G_ISO_CSE,Isopora encrusting-submassive,encrusting or sub-massive <i>Isopora</i>
+4,G_DIP,Diploastrea,<i>Diploastrea</i>
+5,G_MON,Montipora,<i>Montipora</i>
+6,ACBX,Acropora branching & bottlebrush,branching or bottlebrush <i>Acropora</i>
+7,ACTO,Acropora tabulate & corymbose,tabulate or corymbose <i>Acropora</i>
+8,ACSE,Acropora submassive & encrusting,submassive or encrusting <i>Acropora</i>
+9,F_MER_PLE_PLOC,Merulinidae Plesiastreidae plocoid,plocoid corals in the families Merulinidae or Plesiastreidae
+10,G_SER,Seriatopora,<i>Seriatopora</i>
+11,G_ECH_OTH,Echinopora other,non-branching <i>Echinopora</i>
+12,ZOA,Zoanthids,Zoanthids
+13,G_POR_M,Porites massive,massive <i>Porites</i>
+14,G_MIL,Millepora,fire coral (<i>Millepora</i>)
+15,COR_CBCF,non-Acropora coral branching & foliose,unidentified banching or foliose hard corals
+16,COR_CMCS,non-Acropora coral massive & sub-massive,unidentified massive or submassive hard corals
+17,COR_CE,non-Acropora coral encrusting,unidentified encrusting hard corals
+18,G_HEL,Heliopora,blue coral (<i>Heliopora</i>)
+19,SP,Sponges & Ascidians,Sponges and Ascidians
+21,F_SC_ALC,Alcyoniidae,soft corals of the family Alcyoniidae
+22,G_POR_CECS,Porites encrusting & sub-massive,encrusting or submassive <i>Porites</i>
+23,F_AGA_CEMS,Agariciidae encrusting & submassive,encrusting or submassive Agariciidae
+24,G_AST,Astreopora,<i>Astreopora</i>
+25,G_MER,Merulina,<i>Merulina</i>
+26,G_GON_ALV_BER,"Goniopora, Alveopora & Bernardpora","combined cover of the genera <i>Alveopora</i>, <i> Bernardpora</i> and <i>Goniopora</i>"
+27,F_MER_CEMS,"Merulinidae encrusting, massive & sub-massive",unidentified corals in the family Merulinidae
+28,G_HYD_OTH,Hydnophora not branching,non-branching <i>Hydnophora</i>
+29,G_STY,Stylophora,<i>Stylophora</i>
+30,G_ISO_B,Isopora branching,branching <i>Isopora</i>
+31,SC_GORG_LIKE,Gorgonian like soft coral,Gorgonian-like soft corals
+33,ACD,Acropora digitate,digitate <i>Acropora</i>
+34,F_SID_COS_PSA,Siderastreidae Coscinaraeidae Psammocoridae,"combined cover of the families Coscinaraeidae, Psammocoridae and Siderastreidae"
+35,G_TUR_DUN,Turbinaria and Duncanopsammia,combined cover of the genera <i>Turbinaria</i> and <i>Duncanopsammia</i>
+36,F_FUN_CMR,Fungiidae free-living,free-livingFungiidae
+37,G_POC,Pocillopora,<i>Pocillopora</i>
+38,SC_OTH_E,Other encrusting soft coral,unidentified encrusting soft corals
+39,G_GAL,Galaxea,<i>Galaxea</i>
+40,G_LOB_AUST,Lobophyllia Australophyllia & A. pachysepta,"combined cover of <i>Lobophyllia</i>, <i>Australophyllia</i> and <i>Acanthastrea pachysepta</i>"
+41,COR_CL,Solitary coral,unidentified solitary coral
+42,F_AGA_CF,Agariciidae foliose,foliose Agariciidae
+43,F_EUPH_PLU,Plerogyridae and Euphylliidae,combined cover of Plerogyridae and Euphylliidae
+44,F_FUN_CECF,Fungiidae encrusting & foliose,encrusting and foliose Fungiidae
+45,G_ACA_MIC_HOM,Acanthastea Micromussa Homophyllia,"combined cover of <i>Acanthastea</i>, <i> Micromussa</i> and <i> Homophyllia</i>"
+46,G_ECH_CB,Echinopora branching,branching <i>Echinopora</i>
+47,G_HYD_CB,Hydnophora branching,branching <i>Hydnophora</i>
+48,G_LEP,Leptastrea,<i>Leptastrea</i>
+49,G_MOS,Moseleya,<i>Moseleya</i>
+50,G_MYC,Mycedium,<i>Mycedium</i>
+51,G_OXY_ECL_ECY,Oxypora Echinophyllia Echinomorpha,"combined cover of the genera <i>Oxypora</i>, <i>Echinophyllia</i> and <i> Echinomorpha</i>"
+52,G_PAC,Pachyseris,<i>Pachyseris</i>
+53,G_PEC,Pectinia,<i>Pectinia</i>
+54,G_POR_B,Porites branching,Branching <i>Porites</i>
+55,G_TUB_HET,Tubastrea Heteropsammia,combined cover of the genera <i>Tubastrea</i> and <i> Heteropsammia</i>
+56,S_POR_RUS,Porites rus,<i>Porites rus</i>

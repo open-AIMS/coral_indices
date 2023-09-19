@@ -10,6 +10,7 @@ CI_29_JU_consequence_models <- function() {
         load(file = paste0(DATA_PATH, "parameters/IPM_juv.RData"))
 
         ## Critical value from IPM
+		
         Crit.value <- IPM_juv$mean[1] %>%  # just inshore at the moment
             round(1)                       # round to align with Manu's documentation
         
@@ -32,6 +33,7 @@ CI_29_JU_consequence_models <- function() {
             summarise(data = list(data.frame(reef.depth.site, 
                                              MApLag, Acropora, avail.area)),
                       .groups = "drop") %>%
+					  # mutate(CV=case_when(Shelf=="Inshore" ~ Critical_Value[1])##MANU
             mutate(newdata = map(.x = data,
                                  .f = ~ .x %>%
                                      tidyr::expand(reef.depth.site = NA,
@@ -72,12 +74,13 @@ CI_29_JU_consequence_models <- function() {
             ## to predict x from model
             ## The inverse is (y - beta0)/beta1 on the link scale
             mutate(MA = map(.x = Draws,
+			# .y= CV,#MANU
                             .f = ~ {
                                 wch <- str_which(.x[[1]][[2]] %>% dimnames() %>% `[[`(1),
                                                   "Intercept|MApLag")
                                 betas <- sapply(.x, function(x) x[[2]][wch]) 
                                 apply(betas, 2, function(x)
-                                (exp((log(Crit.value) - x[1])/x[2])) + 0.01)
+                                (exp((log(Crit.value) - x[1])/x[2])) + 0.01)## MANU
                             }),
                    MA.sum = map(.x = MA,
                                 .f = ~ .x %>% median_hdci())

@@ -1,0 +1,33 @@
+Theme,Variable,Description,Logic_criteria
+Condition,Autotext.class,"In <b>%s</b>, the overall condition of reef habitats was classified as <b>%s</b>.",
+Condition,Good,The good classification shows that all Indicators at or above relevant historical and expected reference levels.,"Cl==""Good"""
+Condition,Watch,This classification indicates the habitat condition is moderate but at least one indicator is under performing. It is important to keep this reefs on watch and monitor their trajectories. ,"Cl==""Watch"""
+Condition,Warning I,This classification indicates a first level of warning. Reef habitat is either not recovering as expected or certain processes are underperforming. This suggests there is an increased risk of further deterioration. ,"Cl==""Warning I"""
+Condition,Warning II,This classification indicates a second level of warning. Reef habitat is are showing signs of a compromised condition. A higher risk of continued degradation is expected unless the performance of recovery processes improve.,"Cl==""Warning II"""
+Condition,Critical,This classification suggests reef habitat is in a degraded condition and recovery processes are compromised.,"Cl==""Critical"""
+Ecosystem engineering,Autotext1,The cover of hard corals has declined to below historical reference levels. At current levels hard corals are %s to be supporting positive reef accretion.,low.years==1
+Ecosystem engineering,Autotext2,The cover of hard corals has been below historical reference levels since %s. At current levels hard corals are %s to be supporting positive reef accretion.,low.years>1
+Ecosystem engineering,Autotext3,he cover of hard corals is %s historical reference levels. At current levels hard corals are %s to be supporting positive reef accretion.,low.year==0
+Trends,Autotext4,"Of %s is that during the most recent recovery period, the recovery performance of hard corals was lower than expected for a reef in this bioregion.",isTRUE(Low.pe) & !isTRUE(Low.pe.c)
+Trends,Autotext5,"Of %s is that during the most recent recovery period, the recovery performance of hard corals was lower than expected for a reef in this bioregion and declining.",isTRUE(Low.pe) & isTRUE(Low.pe.c)
+Trends,Autotext6,"In addition to hard coral cover being %s historical reference levels, the recovery performance of hard corals has matched that expected for a reef in this bioregion.",isFALSE(Low.pe) & isFALSE(Low.hc) & !isTRUE(Low.pe.c)
+Trends,Autotext7,"In addition to hard coral cover being %s historical reference levels, the recovery performance of hard corals has attainded that expected for a reef in this bioregion, but has shown a recent decline.",isFALSE(Low.pe) & isFALSE(Low.hc) & isTRUE(Low.pe.c)
+Trends,Autotext8,"Encouragingly, during the most recent recovery period coral cover increased at a rate expected for a reef in this bioregion.",isFALSE(Low.pe) & isTRUE(Low.hc) & !isTRUE(Low.pe.c)
+Trends,Autotext9,An assessment of the rate of recovery of hard coral cover for this reef could not be made.,is.na(Low.pe)
+Processes,Autotext10,The density of juvenile corals was %s historical reference levels.,
+Processes,Autotext11,%s the density of <i>Acropora</i> juveniles were %s the timely recovery of coral cover.,isTRUE(Low.j)
+Processes,Autotext11,%s the density of <i>Acropora</i> juveniles were %s the timely recovery of coral cover.,isFALSE(Low.j)
+Processes,Autotext12,The representation of macroalgae species within the benthic algal communities was %s historical reference levels. At current levels macroalgae are %s to be limiting coral community resilience,
+Processes,Autotext13,"Despite the cover of hard corals remaining at or above reference levels, there is evidence that the composition of communities have changed.",isTRUE(Low.co) & isFALSE(Low.hc)& low.years.co==1
+Processes,Autotext14,"Despite the cover of hard corals remaining at or above reference levels, since %s the composition of communities have remained distinct from those historically observed.",isTRUE(Low.co) & isFALSE(Low.hc) & low.years.co>1
+Processes,Autotext15,In addition to the cover of hard corals remaining within reference levels there is no evidence of a substantial change in the composition of coral communities.,isFALSE(Low.co) & isFALSE(Low.hc)
+Processes,Autotext16,"In addition to the low cover of hard corals, the community composition has changed compared to the historical reference.",isTRUE(Low.co) & isTRUE(Low.hc) & low.years.co==0
+Processes,Autotext17,"In addition to the low cover of hard corals, the composition of communities have remained distinct from those historically observed since %s.",isTRUE(Low.co) & isTRUE(Low.hc)& low.years.co>0
+Processes,Autotext18,"Although the cover of hard corals is low, there is no evidence of a substantial change in the composition of coral communities.",isFALSE(Low.co) & isFALSE(Low.hc)
+Processes,Autotext19,"However, the taxonomic composition of coral communities are similar to those more recently observed, suggesting a persistent shift.",isTRUE(Low.co) & isFALSE(Low.co.c)
+Processes,Autotext20,"The taxonomic composition of coral communities are also distinct from those more recently observed, suggesting ongoing changes in community composition.",isTRUE(Low.co) & isTRUE(Low.co.c)
+Processes,Autotext21,Most infulential in observed changes in coral community composition have been increases in the relative abundance of %s and decreases in %s.,length(inc.6)>0 & length(dec.6>0
+Processes,Autotext22,Most infulential in observed changes in coral community composition have been increases in the relative abundance of %s.,length(dec)==0
+Processes,Autotext23,Most infulential in observed changes in coral community composition have been decreases in the relative abundance of %s.,length(inc)==0
+Disclaimer,sample.autotext,This synopsis reflects the assesement of indicators relative to their historical baselines.,isTRUE(CC&C&J&P&M)
+Disclaimer,sample.autotext.n1,A clasification could not be made for this reef as estimates for all five indicators were not available.,isFALSE(CC&C&J&P&M)
