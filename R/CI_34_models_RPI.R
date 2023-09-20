@@ -22,8 +22,15 @@ CI_34_RPI_reference_models()
 ## Critical index - run each year
 CI_34_RPI_critical_models()
 
-## Calculate Critical Index scores
-CI_34_RPI_calculate_scores()
+## Put the posteriors together and standardise the format
+## This does not actually calculate the distance - this has already been done!
+CI_models_RPI_distance()
+CI_models_aggregation(Indicator = 'RPI', level = 'BIOREGION.agg') 
+CI_models_aggregation(Indicator = 'RPI', level = 'NRM') 
+CI_models_aggregation(Indicator = 'RPI', level = 'TUMRA') 
+CI_models_aggregation(Indicator = 'RPI', level = 'GBRMPA.MA') 
+CI_models_aggregation(Indicator = 'RPI', level = 'GBRMP') 
+CI_models_aggregation(Indicator = 'RPI', level = 'ZONE') 
 
 ## Baseline - only run once - include random seed
 ## Baseline 1. Set configs, settings (may not be needed) and load functions

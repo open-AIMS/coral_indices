@@ -33,8 +33,8 @@ CI_34_RPI_baseline_models <- function() {
         ## Gather and thin model posteriors
         CI_model_rpi_gatherThin()       
         ## Remove non-convergence and calculate peak density
-        ## CI_model_rpi_calcPeakDensity()
-        CI_model_rpi_calc10YearIncrease()
+        CI_model_rpi_calc_peakDensity()
+        ## CI_model_rpi_calc10YearIncrease()
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'rpi_baselines',status = 'success')
@@ -1174,8 +1174,20 @@ CI_model_rpi_gatherThin <- function() {
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0('Gather and thin RPI baseline growth models'), return=NULL)
 }
+CI_model_rpi_calc_peakDensity <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'rpi_peak',
+                   label = "Calculate peak density RPI baseline growth models", status = 'pending')
+    CI_tryCatch({
+        source("../R/externalFunctions/RPI_baseline_7_BaseTrajCalc_PeakDensity.R")
+        source("../R/externalFunctions/RPI_baseline_8_BaseTrajFilter_alphaTd.R")
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'rpi_peak',status = 'success')
 
-## CI_model_rpi_calcPeakDensity <- function() {
+    }, logFile=LOG_FILE, Category='--Data processing--',
+    msg=paste0('Calculated peak density RPI baseline growth models'), return=NULL)
+}
+
 CI_model_rpi_calc10YearIncrease <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'rpi_10_yr',
@@ -1603,24 +1615,77 @@ CI_process_rpi_calc_recovery_index <- function() {
             save(calculate.RPI.score,
                  file=paste0(DATA_PATH, "/modelled/calculate.RPI.score.random.RData"))
 
-            ## ################################################################################
-            ## Summarise RPI score
-            load(file=paste0(DATA_PATH, "/modelled/calculate.RPI.score.random.RData"))
+        ##############################
+        ## Low coral cover correction
 
-            current.pred.summary <- calculate.RPI.score %>%
-                group_by(ZONE, Shelf, TUMRA, NRM,BIOREGION,
-                         DEPTH.f, REEF, REEF.d, REPORT_YEAR) %>%
-                rename(index = rescale.dist.met) %>%
-                median_hdci(modelled.cover, index, expected.cover) %>%
-                mutate(fYEAR = factor((REPORT_YEAR))) %>%
-                group_by(ZONE, Shelf, TUMRA, NRM,
-                         BIOREGION, REEF, DEPTH.f, REEF.d) %>%
-                arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION,
-                        REEF, DEPTH.f, REEF.d, REPORT_YEAR) %>%
-                tidyr::fill(index, index.upper, index.lower)  #For disturbance years, the index score from the last time it was measured is carried over
+        ## when coral cover is very low (< 6) and time since
+        ## disturbance is > 3yrs, and the upper 95% interval of the
+        ## index is < 0.5, we will override the index to be 0 (along
+        ## with the intervals)
 
-            save(current.pred.summary,
-                 file=paste0(DATA_PATH, "/modelled/current.pred.summary.random.RData"))
+        ## Start by calculating the time since disturbance for each proj.site.rpid/REPORT_YEAR
+        load(file = paste0(DATA_PATH, "/modelled/calculate.RPI.score.random.RData"))
+        load(file=paste0(DATA_PATH, "/processed/samples_rpi.RData"))
+        load(file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
+                                         "reference",
+                                         "_stage4.RData"))
+
+        time_since_disturbance <- rpi_data %>%
+            dplyr::select(REPORT_YEAR, recovery.trajectories.crp) %>%
+            mutate(TEMP = map(.x = recovery.trajectories.crp,
+                              .f = ~ {
+                                  x <- get(load(.x))
+                                  x %>% group_by(REEF.d) %>%
+                                      filter(REPORT_YEAR == max.report.year) %>%
+                                      dplyr::select(REPORT_YEAR, REEF.d, proj.site.rpid)
+                              })) %>%
+            dplyr::select(TEMP) %>%
+            unnest(TEMP) %>%
+            left_join(
+                samples %>% dplyr::select(REPORT_YEAR, REEF.d, Date)
+            ) %>%
+            group_by(proj.site.rpid) %>%
+            arrange(REPORT_YEAR) %>%
+            mutate(Time_since_disturbance = as.numeric(Date - first(Date))/365.25)
+
+        RPI_reference_posteriors <- calculate.RPI.score %>%
+            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
+                     REEF, REEF.d, REPORT_YEAR) %>%
+            rename(index = rescale.dist.met) %>%
+            mutate(index.upper = HDInterval::hdi(index)[2],
+                   modelled.cover = median(modelled.cover)) %>%
+            left_join(time_since_disturbance %>%
+                      dplyr::select(REPORT_YEAR, REEF.d, Time_since_disturbance)) %>%
+            mutate(ref.under = ifelse(index.upper < 0.5, TRUE, FALSE)) %>%
+            mutate(old.index = index) %>% 
+            mutate(index = ifelse(Time_since_disturbance > 3 &
+                                  modelled.cover < 6 &
+                                  !ref.under, 0, index)) %>%
+            dplyr::rename(.draw = TRANSECT_NO)
+
+        save(RPI_reference_posteriors,
+             file = paste0(DATA_PATH, "/modelled/RPI_reference_posteriors.RData"))
+            
+
+        ##     ## ################################################################################
+        ##     ## Summarise RPI score
+        ## ## The following is not really used for anything...
+        ##     load(file=paste0(DATA_PATH, "/modelled/calculate.RPI.score.random.RData"))
+
+        ##     current.pred.summary <- calculate.RPI.score %>%
+        ##         group_by(ZONE, Shelf, TUMRA, NRM,BIOREGION,
+        ##                  DEPTH.f, REEF, REEF.d, REPORT_YEAR) %>%
+        ##         rename(index = rescale.dist.met) %>%
+        ##         tidybayes::median_hdci(modelled.cover, index, expected.cover) %>%
+        ##         mutate(fYEAR = factor((REPORT_YEAR))) %>%
+        ##         group_by(ZONE, Shelf, TUMRA, NRM,
+        ##                  BIOREGION, REEF, DEPTH.f, REEF.d) %>%
+        ##         arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION,
+        ##                 REEF, DEPTH.f, REEF.d, REPORT_YEAR) %>%
+        ##         tidyr::fill(index, index.upper, index.lower)  #For disturbance years, the index score from the last time it was measured is carried over
+
+        ##     save(current.pred.summary,
+        ##          file=paste0(DATA_PATH, "/modelled/current.pred.summary.random.RData"))
                 
                 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -1690,7 +1755,7 @@ CI_34_RPI_critical_models <- function() {
 
         ## Put them both together
         CI_process_rpi_critical_gather_preds()
-        ## CI_process_rpi_calc_recovery_index()
+        CI_process_rpi_calc_critical_recovery_index()
 
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -3038,7 +3103,9 @@ CI_process_rpi_gather_posteriors_less3 <- function() {
     msg=paste0("Gather RPI posteriors ", RPI_PURPOSE), return=NULL)
 }
 
-CI_34_RPI_calculate_scores <- function() {
+
+CI_process_rpi_calc_critical_recovery_index <- function() {
+## CI_34_RPI_calculate_scores <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'rpi_scires',
                    label = "Calculate scores", status = 'pending')
@@ -3095,25 +3162,41 @@ CI_34_RPI_calculate_scores <- function() {
         save(calculate.critical.score,
              file = paste0(DATA_PATH, "/modelled/calculate.critical.score.random.RData"))
 
-        # ## Summarise RPI score
+
         load(file = paste0(DATA_PATH, "/modelled/calculate.critical.score.random.RData"))
+        ##############################
+        ## Low coral cover correction
 
-        current.pred.summary.critical <- calculate.critical.score %>%
+        ## when coral cover is very low (< 6) and time since
+        ## disturbance is > 3yrs, and the upper 95% interval of the
+        ## index is < 0.5, we will override the index to be 0 (along
+        ## with the intervals)
+        
+        load(file = paste0(DATA_PATH, "modelled/recovery.trajectories.final_year.RData"))
+
+        time_since_disturbance <- recovery.trajectories.final_year %>%
+            mutate(proj.site.rpid = paste(REEF.d, RP_ID)) %>%
+            group_by(proj.site.rpid) %>%
+            arrange(REPORT_YEAR) %>%
+            mutate(Time_since_disturbance = as.numeric(Date - first(Date))/365.25)
+
+        RPI_critical_posteriors <- calculate.critical.score %>%
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
-                     REEF, REEF.d, REPORT_YEAR, trajectory.standard) %>%
+                     REEF, REEF.d, REPORT_YEAR) %>%
             rename(index = rescale.dist.met) %>%
-            tidybayes::median_hdci(modelled.cover, index, expected.cover) %>%
-            mutate(fYEAR = factor((REPORT_YEAR))) %>%
-            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d) %>%
-            arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d, REPORT_YEAR) %>%
-            tidyr::fill(index, index.upper, index.lower, trajectory.standard)
+            mutate(index.upper = HDInterval::hdi(index)[2],
+                   modelled.cover = median(modelled.cover)) %>%
+            left_join(time_since_disturbance %>%
+                      dplyr::select(REPORT_YEAR, REEF.d, Time_since_disturbance)) %>%
+            mutate(critical.under = ifelse(index.upper < 0.5, TRUE, FALSE)) %>%
+            mutate(old.index = index) %>% 
+            mutate(index = ifelse(Time_since_disturbance > 3 &
+                                  modelled.cover < 4 &
+                                  !critical.under, 0, index)) %>%
+            dplyr::rename(.draw = TRANSECT_NO)
 
-        save(current.pred.summary.critical,
-             file = paste0(DATA_PATH, "/modelled/current.pred.summary.critical.random.RData"))
-
-        ## save(rpi_data, file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
-        ##                              RPI_PURPOSE,
-        ##                              "less3_stage5.RData"))
+        save(RPI_critical_posteriors,
+             file = paste0(DATA_PATH, "/modelled/RPI_critical_posteriors.RData"))
         
         ## CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
         ##                   item = paste0("process_rpi_gather3_", RPI_PURPOSE),
@@ -3121,4 +3204,133 @@ CI_34_RPI_calculate_scores <- function() {
         
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0("Calculate scores ", RPI_PURPOSE), return=NULL)
+}
+
+CI_models_RPI_distance <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'indices',
+                   label = "Calculate indices", status = 'pending')
+    CI_tryCatch({
+
+
+        baselines <- get(load(file = paste0(DATA_PATH,
+                                            'modelled/CC__baseline_posteriors.RData')))
+        mods <- get(load(file = paste0(DATA_PATH, "modelled/CC__preds.RData")))
+        load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
+        ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
+
+        mods <- mods %>%
+            mutate(Pred = map(.x = Pred,
+                              .f = ~ .x %>%
+                                  left_join(site.location %>%
+                                            dplyr::select(REEF, REEF.d, BIOREGION.agg,
+                                                          DEPTH.f) %>%
+                                            distinct()) 
+                              )) %>% 
+            mutate(Scores = map(.x = Pred,
+                                .f = ~ CI__index_CC(.x, baselines) %>%
+                                    filter(Metric %in% c('rescale.dist.metric',
+                                                         'pcb.rescale.dist.metric')) %>%
+                                    mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
+                                    arrange(fYEAR, .draw)
+                               )) %>%
+            dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
+            mutate(Summary = map(.x = Scores,
+                                 .f = ~ .x %>%
+                                     dplyr::select(-any_of(c(
+                                                "P_CODE",
+                                                "Model",
+                                                "value",
+                                                "baseline",
+                                                "DEPTH.f"))) %>%
+                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
+                                     summarise_draws(median, mean, sd,
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5)
+                                                     )
+                                 ),
+                   Below = map(.x = Summary,
+                               .f = ~ .x %>%
+                                   ungroup() %>%
+                                   mutate(Below = ifelse(upper < 0.5, 1, 0),
+                                          PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
+                                   dplyr::select(fYEAR, Metric, Below, PBelow) %>%
+                                   distinct()
+                               )
+                   ) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'indices',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Calculate indices'), return=NULL)
+}
+
+CI_models_RPI_distance <- function() {
+    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                   item = 'indices',
+                   label = "Calculate indices", status = 'pending')
+    CI_tryCatch({
+
+        ## Get reference indices posteriors
+        load(file = paste0(DATA_PATH, "/modelled/RPI_reference_posteriors.RData"))
+        ## Get critical indices posteriors
+        load(file = paste0(DATA_PATH, "/modelled/RPI_critical_posteriors.RData"))
+
+        mods <- RPI_reference_posteriors %>%
+            ungroup() %>%
+            dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg,
+                          DEPTH.f, .value = index) %>%
+            mutate(Metric = "reference") %>%
+            bind_rows(
+                RPI_critical_posteriors %>%
+                ungroup() %>%
+                dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg,
+                              DEPTH.f, .value = index) %>%
+                mutate(Metric = "critical")
+            ) %>%
+            arrange(REEF.d, fYEAR, .draw, Metric) %>%
+            mutate(fYEAR = factor(fYEAR)) %>%
+            group_by(REEF.d) %>%
+            summarise(Scores = list(cur_data_all()), .groups = "drop") %>%
+            dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
+            mutate(Summary = map(.x = Scores,
+                                 .f = ~ .x %>%
+                                     dplyr::select(-any_of(c(
+                                                "P_CODE",
+                                                "Model",
+                                                "value",
+                                                "baseline",
+                                                "DEPTH.f"))) %>%
+                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
+                                     summarise_draws(median, mean, sd,
+                                                     HDInterval::hdi,
+                                                     `p<0.5` = ~ mean(.x < 0.5)
+                                                     )
+                                 ),
+                   Below = map(.x = Summary,
+                               .f = ~ .x %>%
+                                   ungroup() %>%
+                                   mutate(Below = ifelse(upper < 0.5, 1, 0),
+                                          PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
+                                   dplyr::select(fYEAR, Metric, Below, PBelow) %>%
+                                   distinct()
+                               )
+                   ) %>% 
+            suppressMessages() %>%
+            suppressWarnings()
+
+        save(mods,
+              file = paste0(DATA_PATH, 'modelled/RPI__scores_reef_year.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                              item = 'indices',status = 'success')
+
+    }, logFile=LOG_FILE, Category='--CC models--',
+    msg=paste0('Calculate indices'), return=NULL)
 }

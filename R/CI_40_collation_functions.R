@@ -33,7 +33,8 @@ CI_models_collate_indices <- function() {
                                       indicator == "CC" ~ "Coral.cover",
                                       indicator == "MA" ~ "Macroalgae",
                                       indicator == "JU" ~ "Juvenile.density",
-                                      indicator == "CO" ~ "Community.composition"
+                                      indicator == "CO" ~ "Community.composition",
+                                      indicator == "RPI" ~ "Recovery.performance"
                                   )
                                   x <- get(load(.x)) %>%
                                       dplyr::select(Summary) %>%
@@ -82,7 +83,9 @@ CI_models_collate_indices <- function() {
                                                  Metric == 'Total' ~ 'Baseline',
                                                  Metric == 'Acropora' ~ 'Critical',
                                                  Metric == 'Reference' ~ 'Baseline',
-                                                 Metric == 'Critical' ~ 'Critical'
+                                                 Metric == 'Critical' ~ 'Critical',
+                                                 Metric == 'Reference' ~ 'reference',
+                                                 Metric == 'Critical' ~ 'critical'
                                                  )) %>%
                                       dplyr::select(Level,
                                                     Year = fYEAR,

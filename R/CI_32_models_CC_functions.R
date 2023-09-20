@@ -305,10 +305,11 @@ CI__index_CC <- function(dat, baselines) {
                   dplyr::rename(baseline = value)) %>%
         mutate(
             calc.met = plogis(log2(value/baseline)),
-            distance.met = my_rescale(calc.met,
-                                      from = c(plogis(log2(1/baseline)), 0.5),
-                                      to = c(1, 0.5)),
-            rescale.dist.metric = ifelse(value >= baseline, distance.met, calc.met),
+            rescale.dist.metric = ifelse(value >= baseline,
+                                         my_rescale(calc.met,
+                                                    from = c(plogis(log2(1/baseline)), 0.5),
+                                                    to = c(1, 0.5)),
+                                         calc.met),
             pcb.distance.met = log2(value/0.2),
             pcb.cap.dist.met = as.numeric(case_when(pcb.distance.met < -1 ~ -1,
                                                     pcb.distance.met > 1 ~ 1,
