@@ -318,5 +318,5 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
 ## median_hdci(rnorm(10000, 35, 1))
 
 my_rescale <- function(x, to = c(0,1), from = range(x, na.rm = TRUE, finite = TRUE)) {
-    (x - from[1])/diff(from) * diff(to) + to[1]
+    (x - from[[1]])/(from[[2]] - from[[1]]) * diff(to) + to[1]
 }

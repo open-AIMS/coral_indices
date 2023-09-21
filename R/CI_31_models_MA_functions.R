@@ -681,7 +681,7 @@ CI__index_MA <- function(dat, baselines, consequence) {
             calc.met = plogis(log2(baseline/value)),
             distance.metric = ifelse(value >= baseline,
                                      my_rescale(calc.met,
-                                                from = c(plogis(log2(baseline/1)), 0.5),
+                                                from = list(plogis(log2(baseline/1)), 0.5),
                                                 to = c(0, 0.5)),
                                      calc.met),
             consequence.metric = ifelse(value <= consequence,

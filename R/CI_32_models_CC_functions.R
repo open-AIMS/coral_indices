@@ -307,7 +307,7 @@ CI__index_CC <- function(dat, baselines) {
             calc.met = plogis(log2(value/baseline)),
             rescale.dist.metric = ifelse(value >= baseline,
                                          my_rescale(calc.met,
-                                                    from = c(plogis(log2(1/baseline)), 0.5),
+                                                    from = list(plogis(log2(1/baseline)), 0.5),
                                                     to = c(1, 0.5)),
                                          calc.met),
             pcb.distance.met = log2(value/0.2),
