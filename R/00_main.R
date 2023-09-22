@@ -1,5 +1,7 @@
 source('../R/functions.R')
 
+## singularity exec -B .:/home/Project ../coral_indicators.sif Rscript 00_main.R --final_year=2023 --fresh_start=true --runStage=1:5 --rerun_baselines=true
+
 if (CI_isParent()) CI_startMatter()
 
 ## if (CI$setting[['FRESH_START']]) source('CI_05_clear_data.R')

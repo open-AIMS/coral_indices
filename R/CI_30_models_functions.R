@@ -39,9 +39,15 @@ CI__make_predictions <- function(newdata, mod, mesh) {
     cellmeans.full.2 <- cellmeans.full.1 + cellmeans.spatial
     
     ## Backtransform
-    cellmeans.spatial.2 <- cellmeans.full.2 %>%
-        as.matrix() %>%
-        plogis()
+    if (any(grepl("poisson|nbinomial", mod$.args$family))) {
+        cellmeans.spatial.2 <- cellmeans.full.2 %>%
+            as.matrix() %>%
+            exp()
+    } else {
+        cellmeans.spatial.2 <- cellmeans.full.2 %>%
+            as.matrix() %>%
+            plogis()
+    }
 
     cellmeans.spatial.2
 }

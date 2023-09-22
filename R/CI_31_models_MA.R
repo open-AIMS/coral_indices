@@ -13,7 +13,7 @@ CI__add_stage(stage = paste0('STAGE',CURRENT_STAGE),
 if (CI$setting[['FRESH_START']]) CI_clear_models_MA_data()
 
 ## Generate baseline models
-## source("CI_25_MA_baseline_models.R")
+source("CI_25_MA_baseline_models.R")
 
 ## Combine baseline models
 CI_models_MA_get_baselines()

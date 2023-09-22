@@ -51,8 +51,10 @@ CI_27_JU_baseline_models <- function() {
             inla.nonconvex.hull()
 
 
-        fitModel_JU <- function(form, stack.est, spde, family = 'poisson') {
+        fitModel_JU <- function(form, stack.est, spde, avail.area,family = 'poisson') {
+            avail.area <- inla.stack.data(stack.est)$avail.area 
             inla(form,
+                 offset = log(avail.area),
                  data = inla.stack.data(stack.est),
                  family= family,
                  control.predictor = list(compute = TRUE,
@@ -131,7 +133,8 @@ CI_27_JU_baseline_models <- function() {
                              ),
                 ## STEP 6 - generate the data stack ####
                 stack.est = pmap(.l = list(data, A.est, i.spatial),
-                                 .f = ~ inla.stack(data = list(y = ..1$value),
+                                 .f = ~ inla.stack(data = list(y = ..1$value,
+                                                               avail.area=..1$avail.area),
                                                    A=list(..2, 1,1,1,1),
                                                    effects = list(
                                                        ..3,
@@ -163,8 +166,8 @@ CI_27_JU_baseline_models <- function() {
                 ## family according to the response and/or depth
                 family = 'poisson',
                 ## STEP 10 - fit the model
-                mod = pmap(.l = list(form, stack.est, spde),
-                           .f = ~ fitModel_JU(..1, ..2, spde = ..3, family) 
+                mod = pmap(.l = list(form, stack.est, spde, family),
+                           .f = ~ fitModel_JU(..1, ..2, spde = ..3, family=..4) 
                            )
             )
 

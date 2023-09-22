@@ -13,7 +13,7 @@ if (CI$setting[['FRESH_START']]) CI_clear_models_JU_data()
 
 
 ## Generate baseline models
-## source("CI_27_JU_baseline_models.R")
+source("CI_27_JU_baseline_models.R")
 
 ## Combine baseline models
 CI_models_JU_get_baselines()
