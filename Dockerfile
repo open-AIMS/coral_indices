@@ -117,6 +117,10 @@ RUN R -e "  \
   install.packages('progressr');  \
 "
 
+RUN R -e "  \
+  install.packages('posterior');  \
+"
+
 ## Create project directory in docker image 
 RUN mkdir ~/Project
 
