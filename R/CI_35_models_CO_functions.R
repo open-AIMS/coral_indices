@@ -699,7 +699,6 @@ CI_model_CI_standardise <- function() {
     CI_tryCatch({
 
         load(file = paste0(DATA_PATH, 'modelled/GBR.LOF.RData'))
-
         mods <- GBR.LOF %>%
             group_by(REEF.d) %>%
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
@@ -723,12 +722,21 @@ CI_model_CI_standardise <- function() {
                                                         "baseline",
                                                         "DEPTH.f"))) %>%
                                      group_by(fYEAR, REEF, REEF.d, Metric) %>%
-                                     summarise_draws(median = ~ median(.x, na.rm = TRUE),
-                                                     mean = ~ mean(.x, na.rm = TRUE),
-                                                     sd = ~ sd(.x, na.rm = TRUE),
-                                                     HDInterval::hdi,
-                                                     `p<0.5` = ~ mean(.x < 0.5, na.rm = TRUE)
-                                                     )
+                                     ## summarise_draws(median = ~ median(.x, na.rm = TRUE),
+                                     ##                 mean = ~ mean(.x, na.rm = TRUE),
+                                     ##                 sd = ~ sd(.x, na.rm = TRUE),
+                                     ##                 HDInterval::hdi,
+                                     ##                 `p<0.5` = ~ mean(.x < 0.5, na.rm = TRUE)
+                                     ##                 )
+                                     summarise(variable = '.value',
+                                               tidybayes::median_hdci(.value, na.rm = TRUE),
+                                               mean = mean(.value, na.rm = TRUE),
+                                               sd = sd(.value, na.rm = TRUE),
+                                               `p<0.5` = mean(.value < 0.5, na.rm = TRUE)
+                                               ) %>%
+                                     dplyr::select(fYEAR, REEF, REEF.d, Metric, variable,
+                                                   median = y, mean, sd,
+                                                   lower = ymin, upper = ymax, `p<0.5`)
                                  ),
                    Below = map(.x = Summary,
                                .f = ~ .x %>%
@@ -738,7 +746,9 @@ CI_model_CI_standardise <- function() {
                                    dplyr::select(fYEAR, Metric, Below, PBelow) %>%
                                    distinct()
                                )
-                   )
+                   ) %>%
+            suppressMessages() %>%
+            suppressWarnings()
 
         save(mods,
               file = paste0(DATA_PATH, 'modelled/CO__scores_reef_year.RData'))
