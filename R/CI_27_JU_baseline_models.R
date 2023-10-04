@@ -54,7 +54,8 @@ CI_27_JU_baseline_models <- function() {
         fitModel_JU <- function(form, stack.est, spde, avail.area,family = 'poisson') {
             avail.area <- inla.stack.data(stack.est)$avail.area 
             inla(form,
-                 offset = log(avail.area),
+                 ## offset = log(avail.area),
+                 E = avail.area,
                  data = inla.stack.data(stack.est),
                  family= family,
                  control.predictor = list(compute = TRUE,

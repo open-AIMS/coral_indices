@@ -620,7 +620,7 @@ CI_models_MA_preds <- function() {
                    Summary = pmap(.l = list(data, Pred),
                                   .f = ~ ..2 %>% posterior::as_draws() %>%
                                       group_by(fYEAR, REEF.d) %>% 
-                                      posterior::summarise_draws(mean,
+                                      tidybayes::summarise_draws(mean,
                                                                  sd,
                                                                  median,
                                                                  HDInterval::hdi) %>%
@@ -739,7 +739,7 @@ CI_models_MA_distance <- function() {
                                                 "value",
                                                 "baseline"))) %>%
                                      group_by(fYEAR, REEF, REEF.d, DEPTH.f, BIOREGION.agg, Metric) %>%
-                                     summarise_draws(median, mean, sd,
+                                     tidybayes::summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)
                                                      )

@@ -3,6 +3,15 @@
 #Peak density is effective for identifying particularly slow trajectories
 #........that are undesirable for setting baseline standards of recovery
 
+load(file=paste0(PROC_DATA_DIR, "mcmc.baseline.traj.ess500.RData"))
+
+#There were 2 trajectories that were above 1.1 but barely. After looking at their chains,
+#..... they didn't look bad enough to throw out.
+rm.poor.chains<- mcmc.baseline.traj.ess500 %>%
+  filter(!mpsrf>1.2) %>% droplevels()
+
+save(rm.poor.chains, file=paste0(PROC_DATA_DIR, "rm.poor.chains.RData"))
+
 load(file=paste0(PROC_DATA_DIR, "rm.poor.chains.RData"))
 
 par.list=vector(mode="list", length=length(unique(rm.poor.chains$Parameter)))
@@ -53,9 +62,18 @@ save(parameter.peak.density.df, file=paste0(PROC_DATA_DIR, "parameter.peak.densi
 
 load(file=paste0(PROC_DATA_DIR, "parameter.peak.density.df.RData"))
 
-load(file=paste(PROC_DATA_DIR, 
-           sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs)
-           ,".RData",sep=""))
+## load(file=paste(PROC_DATA_DIR, 
+##            sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs)
+##            ,".RData",sep=""))
+if (RPI_PURPOSE == "baseline") {
+    load(file=paste(PROC_DATA_DIR, 
+                sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs),
+                "_", RPI_PURPOSE, ".RData",sep=""))
+} else {
+    load(file=paste(PROC_DATA_DIR, 
+                sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs),
+                ".RData",sep=""))
+}
 
 calculate.min.report.year<- filt.rec.traj %>%
   group_by(proj.site.rpid) %>% 

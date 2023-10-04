@@ -845,9 +845,9 @@ CI_process_rpi_augment <- function() {
             mutate(ongoing.df = map2(.x = recovery.trajectories.crp,
                                      .y = n,
                                      .f = ~ {
-                                         CI__append_label(stage = CI__get_stage(),
-                                                          item = paste0('process_rpi_augment_', RPI_PURPOSE),
-                                                          .y, N)
+                                         ## CI__append_label(stage = CI__get_stage(),
+                                         ##                  item = paste0('process_rpi_augment_', RPI_PURPOSE),
+                                         ##                  .y, N)
                                          nm <- .x
                                          .x <- get(load(file = nm))
                                          rpi_data <- CI__34_RPI_augment_trajectories(.x)
@@ -3308,7 +3308,7 @@ CI_models_RPI_distance <- function() {
                                                 "baseline",
                                                 "DEPTH.f"))) %>%
                                      group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
-                                     summarise_draws(median, mean, sd,
+                                     tidybayes::summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)
                                                      )

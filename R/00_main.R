@@ -21,4 +21,5 @@ if (6 %in% CI$setting[['runStage']]) source('CI_34_models_RPI.R')
 
 if (7 %in% CI$setting[['runStage']]) source('CI_35_models_CO.R')
 
+## singularity exec -B .:/home/Project ../coral_indicators.sif Rscript 00_main.R --final_year=2023 --fresh_start=true --runStage=8 --rerun_baselines=true
 if (8 %in% CI$setting[['runStage']]) source('CI_40_collation.R')

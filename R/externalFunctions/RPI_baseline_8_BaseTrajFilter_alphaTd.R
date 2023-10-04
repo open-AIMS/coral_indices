@@ -3,17 +3,26 @@
 #There are 6 bioregions that don't have any baseline trajectories.
 #They need to be aggregated as sensibly as possible with other bioregions
 
-load(file=paste(PROC_DATA_DIR, 
-                sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs)
-                ,".RData",sep=""))
+if (RPI_PURPOSE == "baseline") {
+    load(file=paste(PROC_DATA_DIR, 
+                sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs),
+                "_", RPI_PURPOSE, ".RData",sep=""))
+} else {
+    load(file=paste(PROC_DATA_DIR, 
+                sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs),
+                ".RData",sep=""))
+}
+## load(file=paste(PROC_DATA_DIR, 
+##                 sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs)
+##                 ,".RData",sep=""))
 
 load(file=paste0(PROC_DATA_DIR, "rm.poor.chains.RData"))
 
 load(file=paste0(PROC_DATA_DIR, "filter.Td.RData"))
 
-load(file=paste(PROC_DATA_DIR,
-                sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs)
-                ,".RData",sep=""))
+## load(file=paste(PROC_DATA_DIR,
+##                 sprintf(FILTER_OUT_DATA_FMT,max_init,min_final,min_obs)
+##                 ,".RData",sep=""))
 
 RPI.baseline<- rm.poor.chains %>%
   left_join(filt.rec.traj %>% dplyr::select(proj.site.rpid, max.report.year) %>% distinct) %>%

@@ -274,7 +274,7 @@ CI_models_CC_preds <- function() {
                    Summary = pmap(.l = list(data, Pred),
                                   .f = ~ ..2 %>% posterior::as_draws() %>%
                                       group_by(fYEAR, REEF.d) %>% 
-                                      posterior::summarise_draws(mean,
+                                      tidybayes::summarise_draws(mean,
                                                                  sd,
                                                                  median,
                                                                  HDInterval::hdi) %>%
@@ -326,6 +326,7 @@ CI__index_CC <- function(dat, baselines) {
 }
 
 CI_models_CC_distance <- function() {
+    
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'indices',
                    label = "Calculate indices", status = 'pending')
@@ -362,7 +363,7 @@ CI_models_CC_distance <- function() {
                                                 "baseline",
                                                 "DEPTH.f"))) %>%
                                      group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
-                                     summarise_draws(median, mean, sd,
+                                     tidybayes::summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)
                                                      )

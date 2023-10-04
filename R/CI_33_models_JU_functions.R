@@ -181,7 +181,8 @@ CI__fit_JU_model <- function(form, data, family='nbinomial', n, N) {
             return(NULL)
         }
         mod <- inla(formula = form,
-                    offset = log(data$avail.area),
+                    ## offset = log(data$avail.area),
+                    E = data$avail.area,
                     data = data,
                     family = family, 
                     ## control.family=list(link='logit'),
@@ -216,7 +217,8 @@ CI_models_JU_fit_models <- function() {
         purrr::pwalk(.l = list(mods$Full_data,mods$n),
                      .f = ~ CI__fit_JU_model(form = form, data = ..1,
                                              ## family = 'zeroinflatednbinomial1',
-                                             family = 'nbinomial2',
+                                             ## family = 'nbinomial2',
+                                             family = 'nbinomial',
                                              n = ..2,
                                              N = nrow(mods))
                    )
@@ -286,39 +288,38 @@ CI_models_JU_preds <- function() {
 
         load(file = paste0(DATA_PATH, "modelled/data_ju.RData"))
         load(file = paste0(DATA_PATH, 'modelled/JU__mods.RData'))
-    ## CI_log(status = "SUCCESS",
-    ##        logFile = LOG_FILE,
-    ##        Category = list.files(paste0(DATA_PATH,"modelled"), pattern = "JU__mods"),
-    ##        msg=NULL)
-    mods <- mods %>%
-        mutate(Pred = map2(.x = REEF.d, .y = Taxa,
-                           .f = ~ get(load(file = paste0(DATA_PATH,
-                                                         "modelled/JU__", .x, '_', .y, '__posteriors.RData'))) %>%
-                               dplyr::select(fYEAR, REEF.d, .draw, value)),
-               Summary = pmap(.l = list(data, Pred),
-                              .f = ~ ..2 %>% posterior::as_draws() %>%
-                                  group_by(fYEAR, REEF.d) %>% 
-                                  posterior::summarise_draws(mean,
-                                                             sd,
-                                                             median,
-                                                             HDInterval::hdi) %>%
-                                  left_join(..1 %>%
-                                            dplyr::select(fYEAR, Site) %>%
-                                            distinct()) %>%
-                                  suppressMessages() %>%
-                                  suppressWarnings()
+        CI_log(status = "SUCCESS",
+               logFile = LOG_FILE,
+               Category = list.files(paste0(DATA_PATH,"modelled"), pattern = "JU__mods"),
+               msg=NULL)
+        mods <- mods %>%
+            mutate(Pred = map2(.x = REEF.d, .y = Taxa,
+                               .f = ~ get(load(file = paste0(DATA_PATH,
+                                                             "modelled/JU__", .x, '_', .y, '__posteriors.RData'))) %>%
+                                   dplyr::select(fYEAR, REEF.d, .draw, value)),
+                   Summary = pmap(.l = list(data, Pred),
+                                  .f = ~  ..2 %>% posterior::as_draws() %>%
+                                      group_by(fYEAR, REEF.d) %>%  
+                                      tidybayes::summarise_draws(mean,
+                                                                 sd,
+                                                                 median,
+                                                                 HDInterval::hdi) %>%
+                                      left_join(..1 %>%
+                                                dplyr::select(fYEAR, Site) %>%
+                                                distinct()) %>%
+                                      suppressMessages() %>%
+                                      suppressWarnings()
                               )
                )
-
-    pwalk(.l = list(mods$REEF.d, mods$Taxa, mods$Summary),
-          .f = ~ ..3 %>% save(file = paste0(DATA_PATH, "modelled/JU__", ..1, '_', ..2, '__summary.RData')))
-    
-    save(mods,
-         file = paste0(DATA_PATH, 'modelled/JU__preds.RData'))
-    
-    CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                      item = 'predictions',status = 'success')
-    
+        pwalk(.l = list(mods$REEF.d, mods$Taxa, mods$Summary),
+              .f = ~ ..3 %>% save(file = paste0(DATA_PATH, "modelled/JU__", ..1, '_', ..2, '__summary.RData')))
+        
+        save(mods,
+             file = paste0(DATA_PATH, 'modelled/JU__preds.RData'))
+        
+        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                          item = 'predictions',status = 'success')
+        
     }, logFile=LOG_FILE, Category='--JU models--',
     msg=paste0('Calculate predictions'), return=NULL)
 }
@@ -396,7 +397,7 @@ CI_models_JU_distance <- function() {
                                                 "baseline",
                                                 "DEPTH.f"))) %>%
                                      group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
-                                     summarise_draws(median, mean, sd,
+                                     tidybayes::summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)
                                                      )
