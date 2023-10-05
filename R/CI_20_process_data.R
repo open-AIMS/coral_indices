@@ -67,3 +67,32 @@ if (CI$setting[['RERUN_BASELINES']]) {
     source('../R/CI_29_JU_consequence_models.R')
     CI_29_JU_consequence_models()
 }
+
+## Check if the baseline models are present.  If they are not, then
+## retrieve them from the AIMS metadata record
+CI__retrieve_data_from_metadata("MA__baseline_deep.RData")
+CI__retrieve_data_from_metadata("MA__baseline_shallow.RData")
+CI__retrieve_data_from_metadata("MA__baseline_offshore.RData")
+
+CI__retrieve_data_from_metadata("CC_baseline.RData")
+CI__retrieve_data_from_metadata("CC__baseline.RData")
+CI__retrieve_data_from_metadata("CC_baseline_posteriors.RData")
+
+CI__retrieve_data_from_metadata("IPM_juv.RData")
+CI__retrieve_data_from_metadata("JUV_baseline.RData")
+CI__retrieve_data_from_metadata("JU__baseline.RData")
+CI__retrieve_data_from_metadata("JU__baseline_mod.RData")
+CI__retrieve_data_from_metadata("JuvCover_Acropora_NA_Inshore_NA_ResJuv_FALSE_Morph_NA.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Acropora_NA_Offshore_NA_ResJuv_FALSE_Morph_NA.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Mound_growth_NA_Inshore_NA_ResJuv_FALSE_Morph_Merulinidae.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Mound_growth_NA_Inshore_NA_ResJuv_FALSE_Morph_Poritidae.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Mound_growth_NA_Offshore_NA_ResJuv_FALSE_Morph_Merulinidae.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Mound_growth_NA_Offshore_NA_ResJuv_FALSE_Morph_Poritidae.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Pocilloporidae_NA_Inshore_NA_ResJuv_FALSE_Morph_NA.Rdata")
+CI__retrieve_data_from_metadata("JuvCover_Pocilloporidae_NA_Offshore_NA_ResJuv_FALSE_Morph_NA.Rdata")
+
+CI__retrieve_data_from_metadata("newdata_grid.RData")
+CI__retrieve_data_from_metadata("Synoptic_text_reef.csv")
+CI__retrieve_data_from_metadata("Synoptic_text_region.csv")
+CI__retrieve_data_from_metadata("taxaLookup.csv")
+

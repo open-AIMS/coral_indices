@@ -864,4 +864,10 @@ CI_process_composition_data <- function() {
 }
 
 
+CI__retrieve_data_from_metadata <- function(file) {
+    in_file <- paste0("https://data.aims.gov.au/data-download/55f56f2c-c9fd-4af7-90f9-617643975f9e/",
+                      file)
+    out_file <- paste0(DATA_PATH, "parameters/", file)
+    if (!file.exists(file)) download.file(in_file, out_file) 
+}
 
