@@ -1652,6 +1652,16 @@ CI_process_rpi_calc_recovery_index <- function() {
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, REPORT_YEAR) %>%
             rename(index = rescale.dist.met) %>%
+            ## down fill missing values with previous non-NA after arranging
+            ## by REPORT_YEAR within each draw (TRANSECT_NO)
+            ungroup(REPORT_YEAR) %>%
+            group_by(TRANSECT_NO, .add = TRUE) %>%
+            arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
+                     REEF, REEF.d, TRANSECT_NO, REPORT_YEAR) %>%
+            tidyr::fill(index, .direction = "down") %>%
+            ungroup() %>%
+            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
+                     REEF, REEF.d, REPORT_YEAR) %>%
             mutate(index.upper = HDInterval::hdi(index)[2],
                    modelled.cover = median(modelled.cover)) %>%
             left_join(time_since_disturbance %>%
@@ -1662,6 +1672,7 @@ CI_process_rpi_calc_recovery_index <- function() {
                                   modelled.cover < 6 &
                                   !ref.under, 0, index)) %>%
             dplyr::rename(.draw = TRANSECT_NO)
+
 
         save(RPI_reference_posteriors,
              file = paste0(DATA_PATH, "/modelled/RPI_reference_posteriors.RData"))
@@ -3184,6 +3195,16 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, REPORT_YEAR) %>%
             rename(index = rescale.dist.met) %>%
+            ## down fill missing values with previous non-NA after arranging
+            ## by REPORT_YEAR within each draw (TRANSECT_NO)
+            ungroup(REPORT_YEAR) %>%
+            group_by(TRANSECT_NO, .add = TRUE) %>%
+            arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
+                     REEF, REEF.d, TRANSECT_NO, REPORT_YEAR) %>%
+            tidyr::fill(index, .direction = "down") %>%
+            ungroup() %>%
+            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
+                     REEF, REEF.d, REPORT_YEAR) %>%
             mutate(index.upper = HDInterval::hdi(index)[2],
                    modelled.cover = median(modelled.cover)) %>%
             left_join(time_since_disturbance %>%
