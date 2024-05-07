@@ -33,8 +33,8 @@ CI_process_transect_area <- function() {
                    label = "Add transect area", status = 'pending')
     CI_tryCatch({
 
-        juv.tran.area <- data.frame(P_CODE = c("RM","IN","GH","RR","AP"),
-                                    tran.area = c(8.5,34,34,34,34)) 
+        juv.tran.area <- data.frame(P_CODE = c("RM","RMRAP","RAP","IN","GH","RR","AP"),
+                                    tran.area = c(8.5,8.5,8.5,34,34,34,34)) 
 
         save(juv.tran.area,
              file = paste0(DATA_PATH, 'processed/juv.tran.area.RData'))
