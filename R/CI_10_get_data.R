@@ -25,6 +25,9 @@ CI_get_disturbances_data()
 CI_get_video_code_lookup()
 CI_get_mmp_juveniles_data()
 CI_get_ltmp_juveniles_data()
+CI_get_mmp_juveniles_samples() #KC - AT added these
+CI_get_ltmp_juveniles_samples() #KC - AT added these
+CI_combine_juveniles_samples() #KC - AT added these
 CI_combine_juveniles_data()
 CI_get_mmp_point_data()
 CI_get_ltmp_point_data()

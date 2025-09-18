@@ -10,50 +10,53 @@ CI_25_MA_baseline_models <- function() {
         load(paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
         load(paste0(DATA_PATH, 'primary/disturbances.RData'))
 
-        ## Shallow====================================================================================
-        ## - create a categorical version of depth and subset to <3 m Shallow
-        ##   only
-
-        ## - remove some post disturbance obs that can create odd MA
-        ##   observations
-
-        points <- points.analysis.data.transect %>%
-            ungroup() %>%
-            left_join(spatial_lookup) %>%
-            mutate(P_CODE=as.factor(P_CODE),
-                   DEPTH.f=factor(case_when(DEPTH>3~"deep slope",
-                                            DEPTH<=3~"shallow slope")),
-                   REEF.d=factor(paste(REEF, DEPTH.f)),
-                   REPORT_YEAR=as.numeric(as.character(REPORT_YEAR))) %>%
-            filter(REPORT_YEAR >2005,
-                   REPORT_YEAR <= 2021,
-                   DEPTH.f=="shallow slope") %>% 
-            droplevels %>%
-            mutate(fYEAR = factor(REPORT_YEAR),
-                   Site = factor(paste0(REEF.d, SITE_NO)),
-                   Transect = factor(paste0(Site, TRANSECT_NO))) %>%
-            group_by(REEF.d) %>%
-            mutate(LONGITUDE = mean(LONGITUDE),
-                   LATITUDE = mean(LATITUDE))%>%
-            ungroup
+# prepare the data
+      #KC - following AT adjustments  
+        baseline.points.a <- points.analysis.data.transect %>%
+          ungroup() %>%
+          left_join(spatial_lookup |>
+                      dplyr::select(REEF, DEPTH, DEPTH.f, REEF.d, BIOREGION, BIOREGION.agg, NRM,Shelf)  |> 
+                      distinct()) |> 
+          mutate(P_CODE=as.factor(P_CODE),
+                 REPORT_YEAR=as.numeric(as.character(REPORT_YEAR))) %>%
+          filter(REPORT_YEAR >2005,
+                 REPORT_YEAR <= 2021,
+                 DEPTH<9.1) |> 
+          mutate(fYEAR = factor(REPORT_YEAR),
+                 Site = factor(paste0(REEF.d, SITE_NO)),
+                 Transect = factor(paste0(Site, TRANSECT_NO))) %>%
+          group_by(Site) %>% #KC - AT adjusted this from Reef.d to Site.
+          mutate(LONGITUDE = mean(LONGITUDE),
+                 LATITUDE = mean(LATITUDE))%>%
+          ungroup
 
         ## exclude post flood and storm obs as these are often outliers
 
         disturbance<-disturbance.reef %>% filter(RANK=='1') %>%
             dplyr::select(P_CODE,REEF,DEPTH,VISIT_NO,DISTURBANCE)
 
-        points<-points %>%
+        #baseline.points<-points %>% #KC - this didn't work. no object loaded called 'points'. I assume the following achieves the desired outcome
+        baseline.points<-baseline.points.a %>%
             left_join(disturbance) %>%
-            filter(!DISTURBANCE %in% c('s','f')) 
+            filter(!DISTURBANCE %in% c('s','f'))
+
+        ## Shallow sites points
+
+        points <- baseline.points %>%
+            filter(REPORT_YEAR >2005,
+                   REPORT_YEAR <= 2021,
+                   DEPTH.f=="shallow slope") %>% 
+            droplevels()
+        
 
         ## STEP 1 - establish the full spatio-temporal grid
         ## eventually replace with an expression that will provide unique
         ## long/lat/year combinations for all possible locations
-        ## for now, I will use the locations defined in the data
-        points.full.grid <- points %>%
-            dplyr::select(LONGITUDE, LATITUDE) %>%
-            distinct() %>%
-            tidyr::crossing(fYEAR = points$fYEAR)
+        # ## for now, I will use the locations defined in the data
+        # points.full.grid <- points %>%
+        #     dplyr::select(LONGITUDE, LATITUDE) %>%
+        #     distinct() %>%
+        #     tidyr::crossing(fYEAR = points$fYEAR) #KC - following AT adjustments. Has removed this
 
         ## STEP 2 - establish a spatio-temporal grid of the actual data.class
         ## This is all observed locations for all monitored years
@@ -139,41 +142,12 @@ CI_25_MA_baseline_models <- function() {
         ## save(meshdraws_MApShallow, file=paste0(DATA_PATH, 'modelled/meshdraws_MApShallow.RData'))
 
         ## Deep=======================================================================================
-        points<- points.analysis.data.transect %>% ungroup %>%
-            left_join(spatial_lookup) %>%
-            mutate(P_CODE=as.factor(P_CODE),
-                   DEPTH.f=factor(case_when(DEPTH>3~"deep slope",
-                                            DEPTH<=3~"shallow slope")),
-                   REEF.d=factor(paste(REEF, DEPTH.f)),
-                   REPORT_YEAR=as.numeric(as.character(REPORT_YEAR))) %>%
-            filter(REPORT_YEAR >2005,
-                   REPORT_YEAR <= 2021,
-                   DEPTH<9.1,
-                   DEPTH.f=="deep slope",
-                   BIOREGION %in% c('16','17','18','22','23','29')) %>%
-            droplevels %>%
-            mutate(fYEAR = factor(REPORT_YEAR),
-                   Site = factor(paste0(REEF.d, SITE_NO)),
-                   Transect = factor(paste0(Site, TRANSECT_NO)))
-
-        
-                                        # exclude post flood and storm obs as these are often outliers
-
-        disturbance<-disturbance.reef %>% filter(RANK=='1') %>%
-            dplyr::select(P_CODE,REEF,DEPTH,VISIT_NO,DISTURBANCE)
-
-        points<-points %>%
-            left_join(disturbance) %>%
-            filter(!DISTURBANCE %in% c('s','f')) 
-
-        ## STEP 1 - establish the full spatio-temporal grid
-        ## eventually replace with an expression that will provide unique
-        ## long/lat/year combinations for all possible locations
-        ## for now, I will use the locations defined in the data
-        points.full.grid <- points %>%
-            dplyr::select(LONGITUDE, LATITUDE) %>%
-            distinct() %>%
-            tidyr::crossing(fYEAR = points$fYEAR)
+        points <- baseline.points %>%
+          filter(REPORT_YEAR >2005,
+                 REPORT_YEAR <= 2021,
+                 DEPTH.f=="deep slope",
+                 Shelf=='Inshore') %>% 
+          droplevels()
 
         ## STEP 2 - establish a spatio-temporal grid of the actual data.class
         ## This is all observed locations for all monitored years
@@ -278,43 +252,12 @@ CI_25_MA_baseline_models <- function() {
 
         ## Offshore===================================================================================
 
-        points<- points.analysis.data.transect %>% ungroup %>%
-            left_join(spatial_lookup) %>%
-            mutate(P_CODE=as.factor(P_CODE),
-                   DEPTH.f=factor(case_when(DEPTH>3~"deep slope",
-                                            DEPTH<=3~"shallow slope")),
-                   NRM=as.factor(NRM),
-                   REEF=factor(REEF),
-                   REPORT_YEAR=as.numeric(as.character(REPORT_YEAR)),
-                   BIOREGION=as.character(BIOREGION),
-                   BIOREGION.agg=as.factor(case_when(BIOREGION %in% c("4", "3")~"4:3",
-                                                     BIOREGION %in% c("35", "36")~"35:36",
-                                                     !BIOREGION %in% c("4", "3", "35", "36")~BIOREGION)))%>% 
-            ungroup() %>%
-            filter(REPORT_YEAR >2005,
-                   REPORT_YEAR <= 2021,
-                   !BIOREGION %in% c("16","17","18","19","22","23","29")) %>%  # inshore reefs
-            droplevels %>%
-            mutate(fYEAR = factor(REPORT_YEAR),
-                   Site = factor(paste0(REEF, SITE_NO)),
-                   Transect = factor(paste0(Site, TRANSECT_NO)))
-
-        disturbance<-disturbance.reef %>% filter(RANK=='1') %>%
-            dplyr::select(REEF,VISIT_NO,DISTURBANCE)
-
-        points<-points %>%
-            left_join(disturbance) %>%
-            filter(!DISTURBANCE=='s') 
-
-        ## STEP 1 - establish the full spatio-temporal grid
-        ## eventually replace with an expression that will provide unique
-        ## long/lat/year combinations for all possible locations
-        ## for now, I will use the locations defined in the data
-        points.full.grid <- points %>%
-            dplyr::select(LONGITUDE, LATITUDE) %>%
-            distinct() %>%
-            tidyr::crossing(fYEAR = points$fYEAR)
-
+        points <- baseline.points %>%
+          filter(REPORT_YEAR >2005,
+                 REPORT_YEAR <= 2021,
+                 Shelf=='Offshore') %>% 
+          droplevels()
+          
         ## STEP 2 - establish a spatio-temporal grid of the actual data.class
         ## This is all observed locations for all monitored years
         points.data.grid <- points %>%
@@ -330,6 +273,9 @@ CI_25_MA_baseline_models <- function() {
 
         ## STEP 4 - create mesh
         gbr.sf <- sf::read_sf('../data/spatial/GBRMP boundary/Great_Barrier_Reef_Marine_Park_Boundary.shp')
+
+        #KC - function 'inla.nonconvex.hull()' doesn't work because it needs 'splancs', which isn't installed. what does it do?
+
         bndry <- gbr.sf %>%
             st_transform(4326) %>%
             st_cast('POINT') %>%
@@ -337,8 +283,8 @@ CI_25_MA_baseline_models <- function() {
                    Latitude = st_coordinates(.)[,2]) %>%
             select(Longitude, Latitude) %>%
             st_drop_geometry() %>%
-            as.matrix() %>%
-            inla.nonconvex.hull()
+            as.matrix() #%>%
+        #     inla.nonconvex.hull()
         mesh <- inla.mesh.2d(
             loc = points.coords,
             boundary = bndry,

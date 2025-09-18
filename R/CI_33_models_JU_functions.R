@@ -13,7 +13,7 @@ CI_models_JU_get_baselines <- function() {
 
         load(file = paste0(DATA_PATH, "parameters/JUV_baseline.RData"))
 
-        baselines <- juv.baseline %>%
+        baselines <- JUV.baseline %>%
             ## mutate(DEPTH.f = ifelse(DEPTH.f == 'deep', 'deep slope', 'shallow slope'))
             mutate(DEPTH.f = ifelse(str_detect(DEPTH.f, 'deep'), 'deep slope', 'shallow slope'))
         
@@ -75,7 +75,8 @@ CI__clean_ju_data <- function(data) {
         summarise(ss.years.morethanzero = n()) %>%
         ungroup
 
-    df.b %>% 
+    #df.b %>%  #KC - copying over. AT alteration to retain years with valid zeros when other years at the reef were ok, models still run and maybe this also because of the change to cell mean models
+      df.a %>%
         left_join(no.variance) %>% 
         filter(ss.years.morethanzero>1) %>% 
         droplevels %>%
@@ -108,7 +109,7 @@ CI_models_JU_prepare_data <- function() {
             group_by(DEPTH.f, Taxa) %>%
             nest()
 
-        data <- juv %>%
+        data_ju <- juv %>% #KC - AT changed to JU
             mutate(data = map(.x = data,
                               .f = ~ CI__clean_ju_data(.x) %>%
                                   suppressMessages() %>%
@@ -116,7 +117,7 @@ CI_models_JU_prepare_data <- function() {
                               )
                    )
         
-        save(data,
+        save(data_ju, #KC - AT changed to JU
               file = paste0(DATA_PATH, 'modelled/data_ju.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -135,14 +136,19 @@ CI_models_JU_prepare_nest <- function() {
         load(file = paste0(DATA_PATH, "modelled/data_ju.RData"))
         
         ## nest the data
-        mods <- data %>% 
+        mods <- data_ju %>%  #KC - AT changed to JU
             unnest(data) %>%
             ungroup() %>% 
-            group_by(REEF.d, Taxa) %>%
+            group_by(REEF.d, Taxa) %>% #KC - AT nests by DEPTH.f also, but not in CC or MA, not copied over yet
             ## note in more recent versions of dplyr (1.1.0 -
             ## cur_data_all has been replaced by pick)
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
-            mutate(n = 1:n())
+            mutate(n = 1:n()) #
+
+            #KC - AT has this instead of lines 145 and 146, but I couldn't get it to work for MA and CC indicators, so have stuck to original
+            #nest(data=everything(), .by=c(REEF.d, DEPTH.f,Taxa)) %>%
+            #mutate(n = 1:n())
+
         ## Prepare the data
         mods <- mods %>%
             mutate(newdata = map(.x = data,
@@ -150,7 +156,8 @@ CI_models_JU_prepare_nest <- function() {
                                      droplevels() %>% 
                                      ## tidyr::expand(Site = Site, fYEAR = fYEAR, # replace
                                      tidyr::expand(REEF.d = REEF.d, fYEAR = fYEAR,
-                                                   Site = NA, Transect = NA,
+                                                   Site = NA, #Transect = NA,  #KC - AT removed as no Transect level data used
+                                                   avail.area=1,   #KC - AT adds: is this appropriate to add in ??
                                                    value = NA) %>%
                                      distinct()
                                  ),
@@ -173,6 +180,9 @@ CI__fit_JU_model <- function(form, data, family='nbinomial', n, N) {
         ## site <- unique(data$Site)
         reef <- unique(data$REEF.d)
         taxa <- na.omit(unique(data$Taxa))
+
+        #environment(form)<-environment() #KC - AT adds this but I'm not sure why
+
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
         if (file.exists(paste0(DATA_PATH, "modelled/JU__", reef, '_', taxa, '__model.RData'))) {
@@ -210,7 +220,7 @@ CI_models_JU_fit_models <- function() {
         load(file = paste0(DATA_PATH, "modelled/data_ju.RData"))
         load(file = paste0(DATA_PATH, 'modelled/JU__mods.RData'))
 
-        form <- value ~ fYEAR +
+        form <- value ~ 0+fYEAR + ##KC - AT added the 0+ to make a cell means formula
             f(Site , model='iid')
         
         ## Fit the models - output models and draws to
@@ -227,7 +237,7 @@ CI_models_JU_fit_models <- function() {
                               item = 'fit_models',status = 'success')
 
     }, logFile=LOG_FILE, Category='--JU models--',
-    msg=paste0('Fit MA models'), return=NULL)
+    msg=paste0('Fit JU models'), return=NULL)
 }
 
 CI__cellmeans_JU_model <- function(obs_data, Full_data, newdata, n, N) {
@@ -332,7 +342,7 @@ CI__index_JU <- function(dat, taxa, baselines) {
                   dplyr::rename(baseline = value)) %>%
         mutate(
             distance.met = log2(baseline/value),
-            cap.dist.met = as.numeric(case_when(distance.met < -3 ~ -3,
+            cap.dist.met = as.numeric(case_when(distance.met < -3 ~ -3, #KC - The capping at log2(-3 or 3) is outrageous as represents 8* the baseline to score a 1! 
                                               distance.met > 3 ~3,
                                               distance.met > -3 & distance.met < 3 ~
                                                   distance.met)),
@@ -355,11 +365,29 @@ CI_models_JU_distance <- function() {
                    label = "Calculate indices", status = 'pending')
     CI_tryCatch({
 
-        baselines <- get(load(file = paste0(DATA_PATH,
+        Baselines <- get(load(file = paste0(DATA_PATH, #KC - AT changed
                                             'modelled/JU__baseline_posteriors.RData')))
         mods <- get(load(file = paste0(DATA_PATH, "modelled/JU__preds.RData")))
         load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
         ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
+        
+        #KC - AT adds the following
+        # add in Acropora juvenile limits based on Manu's modelling
+        load(file=paste0(DATA_PATH, 'parameters/IPM_juv.RData'))
+        
+        .draw=tibble(.draw=seq(from=1, to=1000, by=1))
+        # updated code to include the IPM_juv estimate - noting this is a little different to the value reported in the indicators tech report.
+        Acr.baseline<- site.location |> 
+          dplyr::select(DEPTH.f, BIOREGION.agg, Shelf) |>  
+          unique() |> 
+          left_join(IPM_juv |> rename(value=mean)) |> 
+          mutate(Taxa='Acropora') |> 
+          cross_join(.draw) |> 
+          dplyr::select(-Shelf)
+        # remove density of Acropora estimated from INLA models of observed values and replace with that derived from IPM model
+        baselines<- Baselines |> 
+          filter(Taxa=='Total') |> 
+          rbind(Acr.baseline)
 
         mods <- mods %>%
             mutate(Pred = map(.x = Pred,
@@ -376,7 +404,7 @@ CI_models_JU_distance <- function() {
                                                          'pcb.rescale.dist.metric')) %>%
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
-                               )) %>%
+                               )) %>% #KC - from here, AT creates a new object for Summary, rather than including it in mods, then only saves the Summary. I haven't followed suit yet....
             dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
             ## Since each of Total and Acropora are modelled separately, we need to unnest
             ## the Scores dataframes and then rbind them together for each Reef, before
@@ -385,7 +413,7 @@ CI_models_JU_distance <- function() {
             unnest(Scores) %>%
             dplyr::select(-Metric) %>%
             dplyr::rename(Metric = Taxa) %>%
-            group_by(REEF.d) %>%
+            group_by(REEF.d) %>% #KC - AT adds DEPTH.f, not copied over yet
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
             dplyr::rename(Scores = data) %>%
             mutate(Summary = map(.x = Scores,
@@ -395,8 +423,8 @@ CI_models_JU_distance <- function() {
                                                 "Model",
                                                 "value",
                                                 "baseline",
-                                                "DEPTH.f"))) %>%
-                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
+                                                "DEPTH.f"))) %>% #KC - AT removes DEPTH.f here, not copied over yet
+                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>% #KC - AT adds DEPTH.f here, not copied over yet
                                      tidybayes::summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)
@@ -416,6 +444,7 @@ CI_models_JU_distance <- function() {
 
         save(mods,
               file = paste0(DATA_PATH, 'modelled/JU__scores_reef_year.RData'))
+              #KC - AT does not save the full mods object here, but saves just the summary instead, as JU__scores_reef_year.RData. Might find out why as I get further....
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'indices',status = 'success')
@@ -423,3 +452,37 @@ CI_models_JU_distance <- function() {
     }, logFile=LOG_FILE, Category='--JU models--',
     msg=paste0('Calculate indices'), return=NULL)
 }
+
+#KC - AT has a different aggregation function for JU here, noting that AT's 'JU__scores_reef_year.RData' is different to the other indicators, and it filters for MMP reefs
+# CI_models_JU_aggregation <- function(level = 'NRM') {
+  
+  
+#   mods <- get(load(file = paste0(DATA_PATH, 'modelled/JU__scores_reef_year.RData')))
+#   spatial_lookup <- get(load(file = paste0(DATA_PATH, 'processed/spatial_lookup.RData')))
+  
+  
+#   mods <-  mods %>%
+#     dplyr::select(Scores) %>% 
+#     unnest(Scores) %>% 
+#     dplyr::select(fYEAR, REEF.d, .draw, Metric, .value) %>%
+#     left_join(spatial_lookup %>%
+#                 dplyr::select(REEF.d, MMP.Report,!!level)  |> 
+#                 distinct()
+#     ) %>%
+#     filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary
+#     filter(MMP.Report=="TRUE") |> 
+#     droplevels() |> 
+#     dplyr::select(-MMP.Report) |>   
+#     group_by(!!sym(level), Metric, fYEAR, .draw) %>%
+#     summarise(.value = mean(.value)) %>%
+#     ungroup() |> 
+#     group_by(fYEAR, !!sym(level), Metric) |> 
+#     summarise(Score=median(.value),
+#               q95=quantile(.value, 0.95)) |> 
+#     mutate(BelowPar=ifelse(q95<0.5, 0,1),
+#            Indicator="Juvenile") |> 
+#     ungroup()
+  
+#   save(mods,
+#        file = paste0(DATA_PATH, 'modelled/JU__scores_', level,'_year.RData'))
+# }

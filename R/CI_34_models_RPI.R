@@ -13,6 +13,8 @@ if (CI$setting[['FRESH_START']]) CI_clear_models_RPI_data()
 
 ## Baseline model - only run once
 if (CI$setting[['RERUN_BASELINES']]) {
+    # Ensure all necessary functions are sourced inside the future if using parallel processing
+    # and avoid passing non-exportable objects (like externalptr) to futures.
     CI_34_RPI_baseline_models()
 }
 

@@ -18,7 +18,7 @@ CI_26_CC_baseline_models <- function() {
 ################################################################################
         points <- points.analysis.data.transect %>%
             ungroup() %>%
-            left_join(spatial_lookup) %>%
+            left_join(spatial_lookup |> dplyr::select(-TUMRA) |> distinct()) %>%  # multiple TUMRA at some reefs e.g Farquharson Reef
             mutate(P_CODE = as.factor(P_CODE),
                    NRM = as.factor(NRM),
                    DEPTH.f = factor(case_when(DEPTH >3 ~ "deep",
@@ -197,8 +197,8 @@ CI_26_CC_baseline_models <- function() {
                    Latitude = st_coordinates(.)[,2]) %>%
             select(Longitude, Latitude) %>%
             st_drop_geometry() %>%
-            as.matrix() %>%
-            inla.nonconvex.hull()
+            as.matrix() #%>%
+            #inla.nonconvex.hull() #KC - I don't have splancs. Not sure what the impact is of not using this
 
         ## Model separately per depth
         mods <- points.site %>%

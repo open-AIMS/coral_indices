@@ -255,7 +255,7 @@ CI_load_and_parse_file <- function(file) {
     if(!assertthat::are_equal(colnames(df),
                           c("P_CODE", "REEF", "DEPTH", "VISIT_NO",      
                             "SITE_NO", "TRANSECT_NO", "HC", "REPORT_YEAR",
-                            "LATITUDE", "LONGITUDE", "A", "MA",
+                            "LATITUDE", "LONGITUDE", "A", "MA", 
                             "total.points", "reef.site", "reef.site.tran",
                             "Project"))) {
         
@@ -334,11 +334,11 @@ CI_process_spatial <- function() {
     CI_tryCatch({
 
         ## Bioregions
-        ## bregions.sf <- read_sf(paste0(DATA_PATH, "spatial/bioregions/Marine_Bioregions_of_the_Great_Barrier_Reef__Reef_.shp")) %>%
-        ##                     st_transform(crs=4326) %>%
-        ##                     st_make_valid()
-        ## save(bregions.sf,
-        ##      file = paste0(DATA_PATH, 'processed/bregions.sf.RData'))
+        bregions.sf <- read_sf(paste0(DATA_PATH, "spatial/bioregions/Marine_Bioregions_of_the_Great_Barrier_Reef__Reef_.shp")) %>%
+                            st_transform(crs=4326) %>%
+                            st_make_valid()
+        save(bregions.sf,
+             file = paste0(DATA_PATH, 'processed/bregions.sf.RData'))
 
         ## NRM spatial
         nrm.sf  <- read_sf(paste0(DATA_PATH, "spatial/NRM Regions/NRM_MarineRegions.shp")) %>%
@@ -362,8 +362,8 @@ CI_process_assign_regions <- function() {
     CI_tryCatch({
         
         load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
-        ## load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
-        load(paste0(DATA_PATH, 'primary/bioregions.RData'))
+        load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
+        #load(paste0(DATA_PATH, 'primary/bioregions.RData')) #KC - following AT adjustments
         load(paste0(DATA_PATH, 'primary/nrm.sf.RData'))
         load(paste0(DATA_PATH, 'primary/tumra.RData'))
         load(paste0(DATA_PATH, 'primary/gbrmpa.management.RData'))
@@ -377,8 +377,8 @@ CI_process_assign_regions <- function() {
                    Latitude = LATITUDE) %>%
             mutate(SITE_NO = as.character(SITE_NO)) %>%
             st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
-            ## st_join(., bregions.sf, join = st_nearest_feature)%>%
-            st_join(., bioregions, join = st_nearest_feature)%>%
+            st_join(., bregions.sf, join = st_nearest_feature)%>%
+            #st_join(., bioregions, join = st_nearest_feature)%>% #KC - following AT adjustments
             st_drop_geometry()  %>%
             dplyr::select(REEF, DEPTH, SITE_NO, BIOREGION) %>% 
             group_by(REEF, DEPTH) %>%
@@ -483,6 +483,10 @@ CI_process_assign_regions <- function() {
             suppressWarnings() %>%
             suppressMessages()
 
+        ## adjust Lady Elliot to reflect MMP reporting as Burdekin
+        spatial_lookup <- spatial_lookup |> 
+          mutate(NRM=ifelse(REEF=="Lady Elliot", "Burdekin", NRM)) ##KC - An AT adjustment
+
         save(spatial_lookup,
              file = paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
         
@@ -502,16 +506,21 @@ CI_process_juvenile_density <- function() {
     CI_tryCatch({
         
         load(paste0(DATA_PATH, 'primary/juveniles.RData'))
+        load(paste0(DATA_PATH, 'primary/juvenile.samples.RData')) #KC - following an AT change given new juvenile data extraction method
 
         ## convert to density per m2 of transect
         juv.analysis.data <- juveniles %>%
+        right_join(juvenile.samples) %>% ##KC - following AT adjustments
+        mutate(GENUS=ifelse(is.na(GENUS), 'Acropora', GENUS), ##KC - following AT adjustments
+                 ABUNDANCE=ifelse(is.na(ABUNDANCE),0,ABUNDANCE)) |>
             group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO) %>%
-            summarise(total.juv = sum(ABUNDANCE)) %>%
+            summarise(ABUNDANCE = sum(ABUNDANCE)) %>% ##KC - following AT adjustments
             ungroup() %>%
-            left_join(juveniles %>% 
-                      pivot_wider(names_from = GENUS,
-                                  values_from = ABUNDANCE,
-                                  values_fill = 0)) %>%
+            mutate(GENUS='total.juv') %>% ##KC - following AT adjustments
+            rbind(juveniles) %>%  ##KC - following AT adjustments
+            pivot_wider(names_from = GENUS,
+                        values_from = ABUNDANCE,
+                        values_fill = 0) %>%
             suppressMessages() %>%
             suppressWarnings()
 
@@ -520,7 +529,7 @@ CI_process_juvenile_density <- function() {
 
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                              item = 'juvinile_density',status = 'success')
+                              item = 'juvenile_density',status = 'success')
 
     }, logFile=LOG_FILE, Category='--Data processing--',
     msg=paste0('Juvenile density'), return=NULL)
@@ -528,12 +537,14 @@ CI_process_juvenile_density <- function() {
 
 CI_process_juvenile_offset <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                   item = 'juvinile_offset',
+                   item = 'juvenile_offset',
                    label = "Juvenile offset", status = 'pending')
     CI_tryCatch({
         
         load(paste0(DATA_PATH, 'processed/juv.tran.area.RData'))
-        mmp.points <- read.csv(paste0(DATA_PATH, 'primary/mmp.points.csv'), as.is=TRUE)
+        #mmp.points <- read.csv(paste0(DATA_PATH, 'primary/mmp.points.csv'), as.is=TRUE)
+        load(paste0(PRIMARY_DATA_PATH, 'points.raw.RData')) ##KC - following AT adjustments
+        mmp.points <- points.raw |> filter(P_CODE %in% c("IN", "AP", "GH", "RR")) ##KC - following AT adjustments
         video_codes <- read.csv(paste0(DATA_PATH, 'primary/video_codes.csv'), as.is=TRUE)
         
         ## MMP
@@ -564,7 +575,9 @@ CI_process_juvenile_offset <- function() {
             suppressWarnings()
 
         ## LTMP
-        ltmp.points <- read.csv(paste0(DATA_PATH, 'primary/ltmp.points.csv'), as.is=TRUE)
+        #ltmp.points <- read.csv(paste0(DATA_PATH, 'primary/ltmp.points.csv'), as.is=TRUE)
+        load(paste0(PRIMARY_DATA_PATH, 'points.raw.RData')) ##KC - following AT adjustments
+       ltmp.points <- points.raw |> filter(P_CODE %in% c("RM")) # note that RMRAP and RAP have been converted to RM in this dataframe
         ltmp.points.site <- ltmp.points %>%
             left_join(video_codes) %>%
             filter(!BENTHOS_CODE == 'IN' & VISIT_NO > 14) %>% #remove indeterminate points and pre juvenile samples
@@ -639,15 +652,15 @@ CI_process_juvenile_data_for_baselines <- function() {
             ##           distinct()) %>%
             mutate(P_CODE = as.factor(P_CODE),
                    NRM = as.factor(NRM),
-                   DEPTH.f = factor(case_when(DEPTH > 3 ~"deep slope",
-                                  DEPTH <= 3 ~"shallow slope")),
-                   REEF.d = factor(paste(REEF, DEPTH.f)),
-                   REPORT_YEAR = as.numeric(as.character(REPORT_YEAR)),
-                   BIOREGION = as.character(BIOREGION),
-                   BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
-                                                       BIOREGION %in% c("35", "36") ~"35:36",
-                                                       !BIOREGION %in% c("4", "3", "35", "36")
-                                                       ~BIOREGION))
+#DEPTH.f = factor(case_when(DEPTH > 3 ~"deep slope",    # these fields are already factors in spatial_lookup
+                   #               DEPTH <= 3 ~"shallow slope")),
+                   #REEF.d = factor(paste(REEF, DEPTH.f)),
+                   #REPORT_YEAR = as.numeric(as.character(REPORT_YEAR)), # already a numeric field in "sample.reef.report.year"
+                   #BIOREGION = as.character(BIOREGION),
+                   #BIOREGION.agg = as.factor(case_when(BIOREGION %in% c("4", "3") ~"4:3",
+                    #                                   BIOREGION %in% c("35", "36") ~"35:36",
+                     #                                  !BIOREGION %in% c("4", "3", "35", "36")
+                      #                                 ~BIOREGION))
                    ) %>%
             left_join(juvenile.offset %>%
                       mutate(SITE_NO = as.factor(SITE_NO))) %>%
@@ -794,7 +807,7 @@ CI_process_composition_ordi_data <- function() {
                         values_from = cover) %>%
             left_join(sample.reef.report.year %>%
                       dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, REPORT_YEAR)) %>%
-            filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>% 
+            filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>%
             suppressMessages() %>%
             suppressWarnings()
   
@@ -829,7 +842,7 @@ CI_process_composition_data <- function() {
             left_join(sample.reef.report.year %>%
                       dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
                                     SITE_NO, REPORT_YEAR, Date)) %>%
-            filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>% 
+            filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>%
             suppressMessages() %>%
             suppressWarnings()
 
@@ -870,4 +883,3 @@ CI__retrieve_data_from_metadata <- function(file) {
     out_file <- paste0(DATA_PATH, "parameters/", file)
     if (!file.exists(file)) download.file(in_file, out_file) 
 }
-

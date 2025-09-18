@@ -39,37 +39,38 @@ CI_models_CC_prepare_data <- function() {
         load(file = paste0(DATA_PATH, "processed/points.analysis.data.transect.RData"))
         load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
 
-        site.data <- points.analysis.data.transect %>%
-            mutate(DEPTH.f=factor(case_when(DEPTH>3~"deep slope",
-                                            DEPTH<=3~"shallow slope")),
-                   Site=factor(paste(REEF,DEPTH.f,SITE_NO)),
-                   REEF.d=factor(paste(REEF, DEPTH.f)),
-                   Transect=factor(paste(REEF,DEPTH.f,SITE_NO,TRANSECT_NO)),
-                   fYEAR=factor(as.numeric(as.character(REPORT_YEAR)))) %>%
-            group_by(Site) %>%
+        tran.data <- points.analysis.data.transect %>%
+          left_join(spatial_lookup %>%
+                      dplyr::select(REEF, DEPTH, DEPTH.f, REEF.d, BIOREGION, BIOREGION.agg, NRM,Shelf) %>%
+                      distinct()) %>%
+          mutate(P_CODE = as.factor(P_CODE),
+                 NRM = as.factor(NRM),
+                 REEF.d=factor(paste(REEF, DEPTH.f)),
+                Site=factor(paste(REEF.d,SITE_NO)),
+                   Transect=factor(paste(Site,TRANSECT_NO)),
+                   fYEAR=factor(as.numeric(as.character(REPORT_YEAR))))%>%
+            group_by(Transect) %>% #KC - following AT adjustments
             mutate(Obs=factor(1:n())) %>%
-            ungroup
-
-        df.a <- site.data %>% 
-            left_join(spatial_lookup) %>%
-            mutate(BIOREGION = as.factor(BIOREGION)) %>%
-            dplyr::select(-VISIT_NO)
+            ungroup %>%
+          dplyr::select(P_CODE, Shelf,NRM, BIOREGION, BIOREGION.agg, REEF, DEPTH, DEPTH.f,
+                        REEF.d, VISIT_NO, REPORT_YEAR, fYEAR, SITE_NO, Site,Transect,
+                        LATITUDE, LONGITUDE, HC, A, MA, total.points) 
 
         ## Model terminated when there were reefs with only 1 level of
         ## the "REPORT_YEAR" factor. Remove Could use Murray's
         ## function in place of this
-        report.year.ss <- df.a %>%
+        report.year.ss <- tran.data %>% #KC - following AT adjustments
             dplyr::select(Site, REPORT_YEAR) %>%
             unique() %>% 
             group_by(Site) %>%
             summarise(report.year.ss = n())
 
-        df.a <- df.a %>%
+        df.a <- tran.data %>% #KC - following AT adjustments
             left_join(report.year.ss) %>%
             filter(!report.year.ss == "1") %>%
             droplevels
 
-        data <- df.a
+        data_cc <- df.a
         
         ## detect.zeros <- df.a %>%
         ##     group_by(Site, fYEAR) %>%
@@ -80,7 +81,7 @@ CI_models_CC_prepare_data <- function() {
         ##     filter(!HC.transect.sum == 0) %>%
         ##     droplevels
         
-        save(data,
+        save(data_cc,
               file = paste0(DATA_PATH, 'modelled/data_cc.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -98,14 +99,19 @@ CI_models_CC_prepare_nest <- function() {
 
         load(file = paste0(DATA_PATH, "modelled/data_cc.RData"))
         
-        ## nest the data
-        mods <- data %>% 
+                mods <- data_cc %>% 
             ## group_by(Site) %>%  ## Angus said that Site-level models were an accident
             group_by(REEF.d) %>%
             ## note in more recent versions of dplyr (1.1.0 -
             ## cur_data_all has been replaced by pick)
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
             mutate(n = 1:n())
+
+        # ## nest the data
+        # mods <- data_cc %>% 
+        #   nest(data=everything(), .by=REEF.d) %>%
+        #   mutate(n = 1:n()) #KC - following AT adjustments
+
         ## Prepare the data
         mods <- mods %>%
             mutate(newdata = map(.x = data,
@@ -113,7 +119,7 @@ CI_models_CC_prepare_nest <- function() {
                                        droplevels() %>% 
                                        ## tidyr::expand(Site = Site, fYEAR = fYEAR, # replace
                                        tidyr::expand(REEF.d = REEF.d, fYEAR = fYEAR,
-                                                     Transect = NA, Obs = NA,
+                                                     Site=NA, Transect = NA, Obs = NA, #KC - following AT adjustments
                                                      HC = NA, total.points = NA) %>%
                                        distinct()
                                    ),
@@ -133,6 +139,7 @@ CI_models_CC_prepare_nest <- function() {
 CI__fit_CC_model <- function(form, data, family='binomial', n, N) {
     CI_tryCatch({
         ## site <- unique(data$Site)
+        #environment(form)<-environment() #KC - AT adds this. I'm not sure what it does
         reef <- unique(data$REEF.d)
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
@@ -206,7 +213,7 @@ CI_models_CC_fit_models <- function() {
                               item = 'fit_models',status = 'success')
 
     }, logFile=LOG_FILE, Category='--CC models--',
-    msg=paste0('Fit MA models'), return=NULL)
+    msg=paste0('Fit CC models'), return=NULL)
 }
 
 CI__cellmeans_CC_model <- function(obs_data, Full_data, newdata, n, N) {

@@ -10,3 +10,10 @@ data/processed/
 .Rhistory
 output/
 /.quarto/
+*.RData
+*.Rdata
+*.rdata/
+*.jpg
+*.png
+*:Zone.Identifier
+data/spatial/

@@ -14,7 +14,11 @@ CI_29_JU_consequence_models <- function() {
         Crit.value <- IPM_juv$mean[1] %>%  # just inshore at the moment
             round(1)                       # round to align with Manu's documentation
         
-        juv.ma.site <- CI__get_JUV_MA_site_data()
+        CI__get_JUV_MA_site_data()
+       load(file = paste0(DATA_PATH, 'processed/juv.ma.site.RData')) #KC - following AT adjustments
+        
+        ## exclude 2022-24 data as not part of the original baseline
+        
         ## Model to predict the density of Juvenile Acropora ~ MApLag
         ## The desire is to produce a a single value (distribution
         ## perhaps) of MApLag, that can be used to set a value of MAp
@@ -29,6 +33,7 @@ CI_29_JU_consequence_models <- function() {
                             f(reef.depth.site, model = 'iid'))
 
         a <- juv.ma.site %>%
+        filter(REPORT_YEAR<2022) %>% #KC - following AT adjustments
             group_by(Shelf) %>%
             summarise(data = list(data.frame(reef.depth.site, 
                                              MApLag, Acropora, avail.area)),
@@ -53,7 +58,7 @@ CI_29_JU_consequence_models <- function() {
             mutate(Mod = map(.x = fulldata,
                              .f = ~ {
                                  set.seed(123)
-                                 
+                                 #environment(form)<-environment() #KC - AT adds this. what does it do?
                                  inla(form,
                                       offset = log(.x$avail.area),
                                       data = .x, 

@@ -27,7 +27,7 @@ CI_models_JU_preds()
 
 ## Calculate distances to baselines
 CI_models_JU_distance()
-CI_models_aggregation(Indicator = 'JU', level = 'BIOREGION.agg') 
+CI_models_aggregation(Indicator = 'JU', level = 'BIOREGION.agg') #KC - AT uses a JU specific aggregation function in JU_models_functions.R
 CI_models_aggregation(Indicator = 'JU', level = 'NRM') 
 CI_models_aggregation(Indicator = 'JU', level = 'TUMRA') 
 CI_models_aggregation(Indicator = 'JU', level = 'GBRMPA.MA') 

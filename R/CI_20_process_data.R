@@ -70,7 +70,7 @@ if (CI$setting[['RERUN_BASELINES']]) {
 
 ## Check if the baseline models are present.  If they are not, then
 ## retrieve them from the AIMS metadata record
-CI__retrieve_data_from_metadata("MA__baseline_deep.RData")
+CI__retrieve_data_from_metadata("MA__baseline_deep.RData") #KC - the baseline models were present but it downloaded from metadata anyway... will skip this for now
 CI__retrieve_data_from_metadata("MA__baseline_shallow.RData")
 CI__retrieve_data_from_metadata("MA__baseline_offshore.RData")
 

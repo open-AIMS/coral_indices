@@ -19,22 +19,31 @@ CI_34_RPI_baseline_models <- function() {
         source("../R/externalFunctions/RPI_functions_other.R")
         RPI_PURPOSE <<- 'baseline'
         CI_process_rpi_configs()
-        CI_process_rpi_data_spatial()
-        CI_process_rpi_get_cc_data()
-        CI_process_rpi_get_samples_data()
-        CI_process_groups_data()
+        CI_process_rpi_data_spatial() #KC - output is processed/spatial_lookup_rpi.RData
+        CI_process_rpi_get_cc_data()  #KC - output is processed/reef.posteriors.all.RData
+        CI_process_rpi_get_samples_data() #KC - output is processed/samples_rpi_baseline.RData
+        CI_process_groups_data()        #KC - output is processed/groups.site.RData #Does this need to be changed now that CC temporal model is at reef level?
         CI_process_groups_data_part2()
         CI_process_rpi_data()
         CI_process_rpi_filter_trajectories()
         ## Calculate mean, sd and se for HC and Abiotic for each recovery trajectory
         CI_calc_rpi_trajectories()
         ## Fit growth model
-        CI_model_rpi_fitGrowthModel()
+        CI_model_rpi_fitGrowthModel() #KC - could not get this to run. 
+                                      # It needs to be re-run, because the coral cover models are slightly different from the original
+                                      #Unfortunately, output files from this function are currently copied over from KCs last desktop run, 
+                                      # and may not exactly match the input and output files from the baseline functions to this point.
         ## Gather and thin model posteriors
-        CI_model_rpi_gatherThin()       
+        CI_model_rpi_gatherThin()      #KC - output files from this function are currently copied over from KCs last desktop run 
         ## Remove non-convergence and calculate peak density
-        CI_model_rpi_calc_peakDensity()
+        CI_model_rpi_calc_peakDensity() #KC - output files from this function are currently copied over from KCs last desktop run
         ## CI_model_rpi_calc10YearIncrease()
+
+        #KC - as a result of being unable to fit the baseline model, there are 12 files in processed/ that were copied over from:
+        # C:\Users\kjohns\Desktop\RPI\GBR_Recovery\pipelines\RPI\AB.only\alphaTd\baseline\data\processed
+        #and the files from this folder:
+        #C:\Users\kjohns\Desktop\RPI\GBR_Recovery\pipelines\RPI\AB.only\alphaTd\baseline\data\output
+        #have been copied into processed\RPI_baseline
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'rpi_baselines',status = 'success')
@@ -58,7 +67,7 @@ CI_process_rpi_data_spatial <- function() {
         spatial_lookup<- spatial_lookup %>%
             group_by(REEF.d) %>%
             filter(DEPTH==first(DEPTH),
-                   !(REEF.d=="Pandora Reef deep slope" & TUMRA==NA) & 
+                   !(REEF.d=="Pandora Reef deep slope" & is.na(TUMRA)) & #KC - AT corrected filter
                    !(REEF.d=="Farquharson Reef deep slope" & TUMRA=="Mandubarra")) %>% droplevels() %>%
             dplyr::select(-DEPTH )%>%
             suppressMessages() %>%
@@ -1652,7 +1661,7 @@ CI_process_rpi_calc_recovery_index <- function() {
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, REPORT_YEAR) %>%
             rename(index = rescale.dist.met) %>%
-            ## down fill missing values with previous non-NA after arranging
+            ## down fill missing values with previous non-NA after arranging       #KC - interesting, I hadn't noticed these lines. It mustn't have been working though?
             ## by REPORT_YEAR within each draw (TRANSECT_NO)
             ungroup(REPORT_YEAR) %>%
             group_by(TRANSECT_NO, .add = TRUE) %>%
@@ -1671,7 +1680,12 @@ CI_process_rpi_calc_recovery_index <- function() {
             mutate(index = ifelse(Time_since_disturbance > 3 &
                                   modelled.cover < 6 &
                                   !ref.under, 0, index)) %>%
-            dplyr::rename(.draw = TRANSECT_NO)
+            ungroup() %>%                                                                             ##KC added these lines to carry score over when NA
+  group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d, TRANSECT_NO) %>%                ##KC added these lines to carry score over when NA
+  arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d, TRANSECT_NO, REPORT_YEAR) %>%    ##KC added these lines to carry score over when NA
+  tidyr::fill(index, index.upper) %>%                                                                 ##KC added these lines to carry score over when NA
+    dplyr::rename(.draw = TRANSECT_NO) %>%                                                            ##KC added these lines to carry score over when NA                          
+    ungroup()                                                                                         ##KC added these lines to carry score over when NA                               
 
 
         save(RPI_reference_posteriors,
@@ -3201,7 +3215,7 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
             group_by(TRANSECT_NO, .add = TRUE) %>%
             arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, TRANSECT_NO, REPORT_YEAR) %>%
-            tidyr::fill(index, .direction = "down") %>%
+            tidyr::fill(index, .direction = "down") %>%                      #KC - interesting, I hadn't noticed these lines. It mustn't have been working though?
             ungroup() %>%
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, REPORT_YEAR) %>%
@@ -3214,7 +3228,12 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
             mutate(index = ifelse(Time_since_disturbance > 3 &
                                   modelled.cover < 4 &
                                   !critical.under, 0, index)) %>%
-            dplyr::rename(.draw = TRANSECT_NO)
+            ungroup() %>%                                                                                       ## KC added these lines to carry score over when NA
+            group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d, TRANSECT_NO) %>%                ## KC added these lines to carry score over when NA
+            arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, REEF, DEPTH.f, REEF.d, TRANSECT_NO, REPORT_YEAR) %>%    ## KC added these lines to carry score over when NA
+            tidyr::fill(index, index.upper) %>%                                                                 ## KC added these lines to carry score over when NA
+            dplyr::rename(.draw = TRANSECT_NO) %>%                                                              ## KC added these lines to carry score over when NA
+            ungroup()                                                                                           ## KC added these lines to carry score over when NA
 
         save(RPI_critical_posteriors,
              file = paste0(DATA_PATH, "/modelled/RPI_critical_posteriors.RData"))

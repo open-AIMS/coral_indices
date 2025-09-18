@@ -31,10 +31,13 @@ CI_27_JU_baseline_models <- function() {
                    label = "JU baseline model", status = 'pending')
 
     CI_tryCatch({
+        source('CI_30_models_functions.R') #KC - added by AT
         source('../R/functions.R')
-        source('../R/CI_26_CC_baseline_models_functions.R')
+        source('../R/CI_26_CC_baseline_models_functions.R') # KC - Added by AT. includes the function CI_clean_inla_formula.R
 
         load(paste0(DATA_PATH, 'processed/juv.df.RData'))
+        juv.df<-juv.df |>  filter(REPORT_YEAR<2022)  # AT added as states in the methods document that obs up to 2021 used in the baseline
+
         gbrmpa <- get(load(paste0(DATA_PATH, 'primary/gbrmpa.RData')))
         ## load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
         ## load(paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
@@ -47,8 +50,8 @@ CI_27_JU_baseline_models <- function() {
                    Latitude = st_coordinates(.)[,2]) %>%
             select(Longitude, Latitude) %>%
             st_drop_geometry() %>%
-            as.matrix() %>%
-            inla.nonconvex.hull()
+            as.matrix() #%>%
+            #inla.nonconvex.hull() #KC - The package splancs need to be installed. What effect does this have?
 
 
         fitModel_JU <- function(form, stack.est, spde, avail.area,family = 'poisson') {
@@ -67,7 +70,7 @@ CI_27_JU_baseline_models <- function() {
         }
 
 
-        juv.baseline <- juv.df %>%
+        juv.Baseline <- juv.df %>%
             group_by(REEF.d) %>%
             mutate(LONGITUDE = mean(LONGITUDE),
                    LATITUDE = mean(LATITUDE),
@@ -85,7 +88,7 @@ CI_27_JU_baseline_models <- function() {
 
         ## Define the general formula
 
-        juv.baseline <- juv.baseline %>%
+        juv.baseline <- juv.Baseline %>%
             mutate(
                 ## STEP 1 - establish the full spatio-temporal grid #### 
                 ## eventually replace with an expression that will provide unique
@@ -173,7 +176,7 @@ CI_27_JU_baseline_models <- function() {
             )
 
         save(juv.baseline,
-             file=paste0(DATA_PATH, 'parameters/JU__baseline_mod.RData'))
+             file=paste0(DATA_PATH, 'parameters/JU__baseline_mod.RData')) #KC - AT notes: run with data through to 2021
 
 ################################################################################
 ####### PART 3 - get predictions for polygon samples ###########################
@@ -184,6 +187,8 @@ CI_27_JU_baseline_models <- function() {
         newdata <- newdata_grid %>%
             st_drop_geometry() %>%
             dplyr::select(BIOREGION, grid_ID, Longitude, Latitude, Weight) %>%
+            #test influence of weights #KC - AT adds this here. Not sure if what the outcome was
+            #mutate(Weight=1) |>   
             mutate(grid_ID=as.factor(grid_ID),
                    BIOREGION=as.character(BIOREGION),
                    BIOREGION.agg=as.factor(case_when(BIOREGION %in% c("4", "3")~"4:3",
@@ -205,8 +210,12 @@ CI_27_JU_baseline_models <- function() {
                                        cbind(as.data.frame(t(.x))) %>%
                                        pivot_longer(cols=matches('[0-9]'), names_to='Rep') %>%
                                        right_join(newdata) 
-                                   )
-                   )
+                                       #right_join(newdata, by='grid_ID', relationship="many-to-many")  #KC - AT adds this but it returned an error for me
+                                        # Caused by error in `right_join()`:
+                                        # ! `...` must be empty.
+                                        # ✖ Problematic argument:
+                                        # • relationship = "many-to-many"
+                   ))
         ## sum of weighted medians for every Rep
         mods <- mods %>%
             mutate(bio.draws.mesh = map(.x = bio.draws,
@@ -218,11 +227,11 @@ CI_27_JU_baseline_models <- function() {
                                         )
                    )
 
-        juv.baseline <- mods %>%
+        JUV.baseline <- mods %>%
             dplyr::select(bio.draws.mesh) %>%
-            unnest(bio.draws.mesh)
+            unnest(bio.draws.mesh) #KC - AT changed to 'JUV' to differentiate from earlier object
 
-        save(juv.baseline, file = paste0(DATA_PATH, "parameters/JUV_baseline.RData"))
+        save(JUV.baseline, file = paste0(DATA_PATH, "parameters/JUV_baseline.RData")) 
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = 'ju_baseline',status = 'success')

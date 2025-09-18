@@ -59,9 +59,9 @@ CI_get_names_lookups <- function() {
 
         ## Combine
         names.lookup<-mmp_names_lookup %>% 
-            dplyr::select(AIMS_REEF_NAME, REEF_ZONE,REEF) %>%
+            dplyr::select(AIMS_REEF_NAME, REEF_ZONE,REEF,NRM_REGION) %>%
             full_join(ltmp_names_lookup %>%
-                      dplyr::select(AIMS_REEF_NAME, REEF,REEF_ZONE)) %>%
+                      dplyr::select(AIMS_REEF_NAME, REEF,REEF_ZONE,NRM_REGION)) %>%
             distinct() %>%
             suppressMessages() %>%
             suppressWarnings()
@@ -81,11 +81,11 @@ CI_get_mmp_samples_data <- function() {
                    label = "MMP samples", status = 'pending')
     CI_tryCatch({
         writeLines("select p_code, min(lat_dd), min(long_dd), mmp_site_name as reef,site_no,depth,
-          visit_no, to_char(min(sample_date),'DD/MM/YYYY') as sample_date      
+          visit_no, year_code as report_year, to_char(min(sample_date),'DD/MM/YYYY') as sample_date      
           from v_in_sample
            where p_code in ('IN','AP','RR','GH')
             and visit_no >0
-            group by p_code,mmp_site_name,site_no,depth,visit_no",
+            group by p_code,mmp_site_name,site_no,depth,visit_no, year_code",
           paste0(PRIMARY_DATA_PATH, "mmp.sample.sql"))
 
         system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "mmp.sample.sql ",
@@ -113,12 +113,12 @@ CI_get_ltmp_samples_data <- function() {
                    item = 'ltmp_samples',
                    label = "LTMP samples", status = 'pending')
     CI_tryCatch({
-        writeLines("select p_code, min(lat_dd), min(long_dd),aims_reef_name as reef, site_no,visit_no, to_char(min(sample_date),'DD/MM/YYYY') as sample_date  
+        writeLines("select p_code, min(lat_dd), min(long_dd),aims_reef_name as reef, site_no,visit_no, ltmp_report_year as report_year, to_char(min(sample_date),'DD/MM/YYYY') as sample_date  
            from v_in_sample 
            where p_code in ('RM','RAP','RMRAP')
             and visit_no >0
             and sample_type in ('PPOINT', 'VPOINT','VPOINTNOB')
-            group by p_code, aims_reef_name,site_no,visit_no",
+            group by p_code, aims_reef_name,site_no,visit_no, ltmp_report_year",
           paste0(PRIMARY_DATA_PATH, "ltmp.sample.sql"))
 
         system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "ltmp.sample.sql ",
@@ -244,15 +244,15 @@ CI_get_mmp_juveniles_data <- function() {
                    label = "MMP juveniles", status = 'pending')
     CI_tryCatch({
 
-        writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no,genus,sum(abundance) abundance
-           from v_in_sample s, v_demog_zeros b
+        writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no,b.genus,sum(abundance) abundance
+           from v_in_sample s, demog b, juvenile_taxa j
            where s.sample_id = b.sample_id
+           and b.genus = j.taxa
            and p_code  in('IN','RR','AP','GH') 
-           and visit_no >0 
-           and family_group = 'Hard Coral'
+           and visit_no >0
            and size_class in ('000-002','002-005')
            and s.mmp_site_name not like 'Cape%'
-           group by p_code, mmp_site_name, depth, visit_no, site_no, genus",
+           group by p_code, mmp_site_name, depth, visit_no, site_no, b.genus",
           paste0(PRIMARY_DATA_PATH, "juv.mmp.sql"))
 
         system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "juv.mmp.sql ",
@@ -278,11 +278,10 @@ CI_get_ltmp_juveniles_data <- function() {
     CI_tryCatch({
 
         writeLines("select p_code,aims_reef_name as reef, visit_no, site_no, genus,sum(abundance) abundance
-           from v_in_sample s, v_demog_zeros b 
+           from v_in_sample s, demog b 
            where s.sample_id = b.sample_id
            and p_code in ('RM','RMRAP','RAP') 
            and visit_no >0
-           and family_group = 'Hard Coral'
            and transect_no<6
            group by p_code,aims_reef_name,visit_no, site_no, genus",
           paste0(PRIMARY_DATA_PATH, "juv.ltmp.sql"))
@@ -304,6 +303,90 @@ CI_get_ltmp_juveniles_data <- function() {
     msg=paste0('LTMP juveniles.'), return=NULL)
 }
 
+#KC - AT added this function
+CI_get_mmp_juveniles_samples <- function() {
+  CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                 item = 'mmp_juv_samp',
+                 label = "MMP juveniles samples", status = 'pending')
+  CI_tryCatch({
+
+writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no
+           from v_in_sample 
+           where p_code in('IN','RR','AP','GH') 
+           and visit_no >0 
+           and sample_type = 'DEMOG'
+           group by p_code, mmp_site_name, visit_no, site_no, depth",
+           paste0(PRIMARY_DATA_PATH, "juv.mmp.samples.sql"))
+    
+    system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "juv.mmp.samples.sql ",
+                  PRIMARY_DATA_PATH, "juv.mmp.samples.csv reef reefmon"),
+           ignore.stdout = TRUE)
+           
+           juv.mmp.samples<-read.csv(paste0(PRIMARY_DATA_PATH, 'juv.mmp.samples.csv'), as.is = TRUE) %>%
+             filter(SITE_NO != '3')
+           
+           save(juv.mmp.samples, file = paste0(DATA_PATH, 'primary/juv.mmp.samples.RData'))
+           
+           CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                             item = 'mmp_juv_samp',status = 'success')
+           
+           }, logFile=LOG_FILE, Category='--Data extraction--',
+msg=paste0('MMP juveniles samples.'), return=NULL)
+    }
+
+#KC - AT added this function
+CI_get_ltmp_juveniles_samples <- function() {
+  CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                 item = 'ltmp_juv_samp',
+                 label = "LTMP juveniles samples", status = 'pending')
+  CI_tryCatch({
+    
+    writeLines("select p_code, aims_reef_name as reef, visit_no, site_no
+           from v_in_sample 
+           where p_code in('RM','RMRAP','RAP') 
+           and visit_no >14 
+           and sample_type = 'JUVCOR'
+           group by p_code, aims_reef_name, visit_no, site_no",
+               paste0(PRIMARY_DATA_PATH, "juv.ltmp.samples.sql"))
+    
+    system(paste0("java -jar dbExport.jar ", PRIMARY_DATA_PATH, "juv.ltmp.samples.sql ",
+                  PRIMARY_DATA_PATH, "juv.ltmp.samples.csv reef reefmon"),
+           ignore.stdout = TRUE)
+    
+    juv.ltmp.samples<-read.csv(paste0(PRIMARY_DATA_PATH, 'juv.ltmp.samples.csv'), as.is = TRUE) |>
+          mutate(DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8)),
+             P_CODE = ifelse(P_CODE %in% c('RM', 'RMRAP', 'RAP'), 'RM', P_CODE))
+    
+    save(juv.ltmp.samples, file = paste0(DATA_PATH, 'primary/juv.ltmp.samples.RData'))
+    
+    CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                      item = 'ltmp_juv_samp',status = 'success')
+    
+  }, logFile=LOG_FILE, Category='--Data extraction--',
+  msg=paste0('LTMP juveniles samples.'), return=NULL)
+}          
+
+#KC - AT added this function
+CI_combine_juveniles_samples <- function() {
+  CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                 item = 'combine_juv_samples',
+                 label = "Combine juveniles samples", status = 'pending')
+  CI_tryCatch({
+    
+    load(file = paste0(DATA_PATH, 'primary/juv.mmp.samples.RData'))
+    load(file = paste0(DATA_PATH, 'primary/juv.ltmp.samples.RData'))
+    
+    juvenile.samples <- juv.mmp.samples %>%
+      rbind(juv.ltmp.samples)
+    
+    save(juvenile.samples, file = paste0(PRIMARY_DATA_PATH, 'juvenile.samples.RData'))
+    
+    CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                      item = 'combine_juv_samles',status = 'success')
+    
+  }, logFile=LOG_FILE, Category='--Data extraction--',
+  msg=paste0('Combine juvenile samples.'), return=NULL)
+}
 
 CI_combine_juveniles_data <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -416,131 +499,125 @@ CI_combine_point_data <- function() {
     msg=paste0('Combine points.'), return=NULL)
 }
 
-## External data are defined by two files:
-## - points.data.<P_CODE>.csv
-##   this is the observed spatio-temporal benthic points data
-## - samples.<P_CODE>.csv
-##   this provides the sample location geodata
+##########################################
+# External Data
+##########################################
+## KC and AT unable to find the original .csv files that this function was written for
+## (- points.data.<P_CODE>.csv, and samples.<P_CODE>.csv)
+## The function has been adapted for the following data files:
+## - jcu.loc.RData
+## - jcu.points.group.RData
+## They were in monshare/database/data_extract/RIPREP_Indicators/InshoreRAPBenthic/data
+
 CI_get_external_data <- function() {
-    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                   item = 'external_data',
-                   label = "External data", status = 'pending')
-    CI_tryCatch({
+CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+               item = 'external_data',
+               label = "External data", status = 'pending')
+CI_tryCatch({
+  
+  ##JCU data total points jcu exclude the early data based on 25
+  ## points per transect, and impose a visit_no beginning at the
+  ## first year of 50 points per transect.
 
-        ##JCU data total points jcu exclude the early data based on 25
-        ## points per transect, and impose a visit_no beginning at the
-        ## first year of 50 points per transect.
-        files <- list.files(path = paste0(DATA_PATH, 'external'),
-                            pattern = 'points.data.*.csv',
-                            full.names = TRUE)
-        ext.points <- purrr::map(files,
-                                 .f = ~ read_csv(.x) %>%
-                                     dplyr::filter(total.points > 25) %>% 
-                                     ## this record is they only one
-                                     ## in the data set that is not
-                                     ## whole numbers
-                                     filter(!(SITE_NO=='HY2' & TRANSECT=='5' & YEAR=='2012')) %>%  
-                                     mutate(VISIT_NO=YEAR-2002,
-                                            REPORT_YEAR=YEAR) %>%
-                                     filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>%
-                                     rename(TRANSECT_NO=TRANSECT) %>%
-                                     suppressMessages() %>%
-                                     suppressWarnings())
-        ## Total points (transect level)
-        total.points.ext <- purrr::map(.x = ext.points,
-                                       .f = ~ .x %>%
-                                           dplyr::select(P_CODE, REEF,DEPTH, VISIT_NO,
-                                                         REPORT_YEAR, SITE_NO, TRANSECT_NO,
-                                                         total.points) %>%
-                                           group_by(P_CODE, REEF, DEPTH, VISIT_NO,
-                                                    REPORT_YEAR, SITE_NO, TRANSECT_NO) %>%
-                                           summarise(total.points = sum(total.points)) %>%
-                                           ungroup() %>% 
-                                           suppressMessages() %>%
-                                           suppressWarnings())
 
-        ## hard coral points  
-        hc.ext <- purrr::map(.x = ext.points,
-                             .f = ~ .x %>% 
-                                 dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
-                                               REPORT_YEAR, SITE_NO, TRANSECT_NO, HC) %>%
-                                 group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
-                                          SITE_NO, TRANSECT_NO) %>%
-                                 summarise(HC = sum(HC))%>%
-                                 ungroup() %>%
-                                 suppressMessages() %>%
-                                 suppressWarnings())
+############
+#KC adapted the code from here to work with the new data structure
+############
+  load(paste0(DATA_PATH,"external/jcu.points.group.RData"))
+  
+   ext.points <- jcu.points.group %>%
+                             dplyr::filter(total.points > 25) %>% 
+                             ## this record is they only one
+                             ## in the data set that is not
+                             ## whole numbers
+                             filter(!(SITE_NO=='HY2' & TRANSECT=='5' & YEAR=='2012')) %>%  
+                             mutate(VISIT_NO=YEAR-2002,
+                                    REPORT_YEAR=YEAR) %>%
+                             filter(REPORT_YEAR < (CI$setting$FINAL_YEAR + 1)) %>% 
+                             rename(TRANSECT_NO=TRANSECT) %>%
+                             suppressMessages() %>%
+                             suppressWarnings()
+  ## Total points (transect level)
+  total.points.ext <-  ext.points  %>%
+                                   dplyr::select(P_CODE, REEF,DEPTH, VISIT_NO,
+                                                 REPORT_YEAR, SITE_NO, TRANSECT_NO,
+                                                 total.points) %>%
+                                   group_by(P_CODE, REEF, DEPTH, VISIT_NO,
+                                            REPORT_YEAR, SITE_NO, TRANSECT_NO) %>%
+                                   summarise(total.points = sum(total.points)) %>%
+                                   ungroup() %>% 
+                                   suppressMessages() %>%
+                                   suppressWarnings()
+  
+  ## hard coral points  
+  hc.ext <-  ext.points  %>%
+                         dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
+                                       REPORT_YEAR, SITE_NO, TRANSECT_NO, HC) %>%
+                         group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                  SITE_NO, TRANSECT_NO) %>%
+                         summarise(HC = sum(HC))%>%
+                         ungroup() %>%
+                         suppressMessages() %>%
+                         suppressWarnings()
+  
+  ## MA points
+  ma.ext <-  ext.points  %>%
+                         dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
+                                       REPORT_YEAR, SITE_NO, TRANSECT_NO, MA) %>%
+                         group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                  SITE_NO, TRANSECT_NO) %>%
+                         summarise(MA = sum(MA)) %>%
+                         ungroup() %>%
+                         suppressMessages() %>%
+                         suppressWarnings()
 
-        ## MA points
-        ma.ext <- purrr::map(.x = ext.points,
-                             .f = ~ .x %>% 
-                                 dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,
-                                               REPORT_YEAR, SITE_NO, TRANSECT_NO, MA) %>%
-                                 group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
-                                          SITE_NO, TRANSECT_NO) %>%
-                                 summarise(MA = sum(MA)) %>%
-                                 ungroup() %>%
-                                 suppressMessages() %>%
-                                 suppressWarnings())
-
-        ## Algae points 
-        a.ext <- purrr::map(.x = ext.points,
-                            .f = ~ .x %>% 
-                                dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
-                                              SITE_NO, TRANSECT_NO, A) %>%
-                                group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
-                                         SITE_NO, TRANSECT_NO) %>%
-                                summarise(A = sum(A)) %>%
-                                ungroup() %>%
-                                suppressMessages() %>%
-                                suppressWarnings())
-        ## samples data
-        files_samples <- list.files(path = paste0(DATA_PATH, 'external'),
-                                    pattern = 'sample.*.csv',
-                                    full.names = TRUE)
-        ext.samples <- purrr::map(files_samples,
-                                  .f = ~ read_csv(.x) %>%
-                                      dplyr::select(P_CODE,REEF,SITE_NO,Lat,Long) %>%
-                                      unique %>%
-                                      rename(LONGITUDE="Long",
-                                             LATITUDE="Lat") %>%
-                                      mutate(SITE_NO=as.character(SITE_NO)) %>%
-                                      suppressMessages() %>%
-                                      suppressWarnings())
-
-        points.analysis.data.transect.jcu <-
-            purrr::pmap(.l = list(hc.ext, ma.ext, a.ext,
-                                  ext.samples, total.points.ext),
-                        .f = ~ ..1 %>%
-                            left_join(..2) %>%
-                            left_join(..3) %>%
-                            left_join(..4) %>%
-                            left_join(..5) %>%
-                            mutate(REEF = as.factor(REEF),
-                                   reef.site = as.factor(paste0(REEF,'.',SITE_NO)),
-                                   reef.site.tran = as.factor(paste0(reef.site,'.',TRANSECT_NO)),
-                                   Project = as.factor(P_CODE)) %>%
-                            suppressMessages() %>%
-                            suppressWarnings()
-                        ) %>%
-            bind_rows() %>%
-            dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,      
-                            SITE_NO, TRANSECT_NO, HC, REPORT_YEAR,
-                            LATITUDE, LONGITUDE, A, MA,
-                            total.points, reef.site, reef.site.tran,
-                            Project)
-        
-        save(points.analysis.data.transect.jcu,
-             file = paste0(DATA_PATH, 'external/points.analysis.data.transect.jcu.RData'))
-
-        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                          item = 'external_data',status = 'success')
-        
+  ## Algae points
+  a.ext <-  ext.points  %>%
+                        dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                      SITE_NO, TRANSECT_NO, total.algae) %>% #KC change A to total.algae
+                        group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
+                                 SITE_NO, TRANSECT_NO) %>%
+                        summarise(A = sum(total.algae)) %>%  #KC changed this. There is no column called A in the new data format
+                        ungroup() %>%
+                        suppressMessages() %>%
+                        suppressWarnings()
+  
+  ## samples data
+  load(paste0(DATA_PATH,"external/jcu.loc.RData"))
+  ext.samples <- jcu.loc %>%
+                              #dplyr::select(P_CODE,REEF,SITE_NO,Lat,Long) %>%
+                              dplyr::select(SITE_NO,lat,long) %>% #KC changed this. new sample data only has SITE_NO and Lat, Long
+                              unique %>%
+                              rename(LONGITUDE="long",  #KC changed this to "long" from "Long"
+                                     LATITUDE="lat") %>% #KC changed this to "lat" from "Lat"
+                              mutate(SITE_NO=as.character(SITE_NO)) %>%
+                              suppressMessages() %>%
+                              suppressWarnings()
+  
+  points.analysis.data.transect.jcu <- hc.ext %>% 
+  left_join(ma.ext) %>%
+  left_join(a.ext) %>%
+  left_join(ext.samples) %>%
+  left_join(total.points.ext) %>%
+                  mutate(REEF = as.factor(REEF),
+                         reef.site = as.factor(paste0(REEF,'.',SITE_NO)),
+                         reef.site.tran = as.factor(paste0(reef.site,'.',TRANSECT_NO)),
+                         Project = as.factor(P_CODE)) %>%
+    dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO,      
+                  SITE_NO, TRANSECT_NO, HC, REPORT_YEAR,
+                  LATITUDE, LONGITUDE, A, MA,    
+                  total.points, reef.site, reef.site.tran,
+                  Project)
+  
+  save(points.analysis.data.transect.jcu,
+       file = paste0(DATA_PATH, 'external/points.analysis.data.transect.jcu.RData'))
+  
+  CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                    item = 'external_data',status = 'success')
+  
     }, logFile=LOG_FILE, Category='--Data extraction--',
-    msg=paste0('External data'), return=NULL)
+msg=paste0('External data'), return=NULL)
 }
-
-
 
 CI_get_spatial_data <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
