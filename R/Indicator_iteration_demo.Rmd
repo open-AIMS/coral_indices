@@ -49,6 +49,191 @@ Changes made were....
 
 ![](../output/figures/indicator_checks/plot_JU_baselines.png)
 
+### Recovery Performance {.tabset .tabset-faded}
+
+#### Bioregion 3 and 4 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.3and4.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.3and4.deep slope.png)
+
+#### Bioregion 6 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.6.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.6.deep slope.png)
+
+
+#### Bioregion 9 and 26 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.9and26.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.9and26.deep slope.png)
+
+
+#### Bioregion 11 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.11.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.11.deep slope.png)
+
+
+#### Bioregion 12, 35, 36 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.12and35and36.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.12and35and36.deep slope.png)
+
+#### Bioregion 16 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.16.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.16.deep slope.png)
+
+##### Shallow
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.16.shallow slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.16.shallow slope.png)
+
+#### Bioregion 17 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.17.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.17.deep slope.png)
+
+##### Shallow
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.17.shallow slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.17.shallow slope.png)
+
+#### Bioregion 18 and 29 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.18and29.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.18and29.deep slope.png)
+
+##### Shallow
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.18and29.shallow slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.18and29.shallow slope.png)
+
+#### Bioregion 19 and 22 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.19and22.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.19and22.deep slope.png)
+
+##### Shallow
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.19and22.shallow slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.19and22.shallow slope.png)
+
+#### Bioregion 23 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.23.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.23.deep slope.png)
+
+##### Shallow
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.23.shallow slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.23.shallow slope.png)
+
+#### Bioregion 27 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.27.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.27.deep slope.png)
+
+#### Bioregion 34 and 38 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.34and38.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.34and38.deep slope.png)
+
+#### Bioregion 37 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.37.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.37.deep slope.png)
+
+#### Bioregion 39 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.39.deep slope.png)
+
+Sep 2025
+![](../output/figures/qualify.baseline.bio.39.deep slope.png)
+
 
 ## Reef level trends in scores 
 
@@ -706,6 +891,442 @@ Original
 
 Change
 
+### Recovery Performance {.tabset .tabset-faded}
+
+#### Bioregion 4:3 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_4:3_deep_slope.png)
+
+Change
+
+#### Bioregion 6 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_6_deep_slope.png)
+
+Change
+
+
+#### Bioregion 9 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_9_deep_slope.png)
+
+Change
+
+
+#### Bioregion 11 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_11_deep_slope.png)
+
+Change
+
+
+#### Bioregion 12 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_12_deep_slope.png)
+
+Change
+
+#### Bioregion 16 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_16_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_16_shallow_slope.png)
+
+Change
+
+#### Bioregion 17 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_17_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_17_shallow_slope.png)
+
+Change
+
+#### Bioregion 18 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_18_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_18_shallow_slope.png)
+
+Change
+
+#### Bioregion 19 {.tabset .tabset-faded}
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_19_shallow_slope.png)
+
+Change
+
+#### Bioregion 22 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_22_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_22_shallow_slope.png)
+
+Change
+
+#### Bioregion 23 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_23_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_23_shallow_slope.png)
+
+Change
+
+#### Bioregion 26 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_26_deep_slope.png)
+
+Change
+
+#### Bioregion 27 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_27_deep_slope.png)
+
+Change
+
+#### Bioregion 29 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_29_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_29_shallow_slope.png)
+
+Change
+
+#### Bioregion 34 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_34_deep_slope.png)
+
+Change
+
+#### Bioregion 35:36 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_35:36_deep_slope.png)
+
+Change
+
+#### Bioregion 37 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_37_deep_slope.png)
+
+Change
+
+#### Bioregion 38 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_38_deep_slope.png)
+
+Change
+
+#### Bioregion 39 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_39_deep_slope.png)
+
+Change
+
+### Community Composition {.tabset .tabset-faded}
+
+#### Bioregion 4:3 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_4:3_deep_slope.png)
+
+Change
+
+#### Bioregion 6 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_6_deep_slope.png)
+
+Change
+
+
+#### Bioregion 9 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_9_deep_slope.png)
+
+Change
+
+
+#### Bioregion 11 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_11_deep_slope.png)
+
+Change
+
+
+#### Bioregion 12 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_12_deep_slope.png)
+
+Change
+
+#### Bioregion 16 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_16_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_16_shallow_slope.png)
+
+Change
+
+#### Bioregion 17 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_17_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_17_shallow_slope.png)
+
+Change
+
+#### Bioregion 18 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_18_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_18_shallow_slope.png)
+
+Change
+
+#### Bioregion 19 {.tabset .tabset-faded}
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_19_shallow_slope.png)
+
+Change
+
+#### Bioregion 22 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_22_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_22_shallow_slope.png)
+
+Change
+
+#### Bioregion 23 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_23_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_23_shallow_slope.png)
+
+Change
+
+#### Bioregion 26 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_26_deep_slope.png)
+
+Change
+
+#### Bioregion 27 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_27_deep_slope.png)
+
+Change
+
+#### Bioregion 29 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_29_deep_slope.png)
+
+Change
+
+##### Shallow
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_29_shallow_slope.png)
+
+Change
+
+#### Bioregion 34 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_34_deep_slope.png)
+
+Change
+
+#### Bioregion 35:36 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_35:36_deep_slope.png)
+
+Change
+
+#### Bioregion 37 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_37_deep_slope.png)
+
+Change
+
+#### Bioregion 38 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_38_deep_slope.png)
+
+Change
+
+#### Bioregion 39 {.tabset .tabset-faded}
+
+##### Deep
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_39_deep_slope.png)
+
+Change
+
 ## NRM level trends in scores 
 
 ### Coral Cover {.tabset .tabset-faded}
@@ -837,6 +1458,94 @@ Change
 
 Original
 ![](../output/figures/indicator_checks/plot_JU_scores_NRM_Burnett_Mary.png)
+
+Change
+
+### Recovery Performance {.tabset .tabset-faded}
+
+#### Cape York
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Cape_York.png)
+
+Change
+
+#### Wet Tropics
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Wet_Tropics.png)
+
+Change
+
+#### Burdekin
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Burdekin.png)
+
+Change
+
+#### Mackay Whitsunday
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Mackay_Whitsunday.png)
+
+Change
+
+#### Fitzroy
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Fitzroy.png)
+
+Change
+
+#### Burnett Mary
+
+Original
+![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Burnett_Mary.png)
+
+Change
+
+### Community Composition {.tabset .tabset-faded}
+
+#### Cape York
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_NRM_Cape_York.png)
+
+Change
+
+#### Wet Tropics
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_NRM_Wet_Tropics.png)
+
+Change
+
+#### Burdekin
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_NRM_Burdekin.png)
+
+Change
+
+#### Mackay Whitsunday
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_NRM_Mackay_Whitsunday.png)
+
+Change
+
+#### Fitzroy
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_NRM_Fitzroy.png)
+
+Change
+
+#### Burnett Mary
+
+Original
+![](../output/figures/indicator_checks/plot_CO_scores_NRM_Burnett_Mary.png)
 
 Change
 

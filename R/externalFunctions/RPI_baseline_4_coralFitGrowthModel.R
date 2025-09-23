@@ -29,7 +29,7 @@ source(paste0(MODEL_DIR,'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
   conf <- list(chains = 4,        # number of independent chains to use  
                iter = 8000,       # number of sampling iterations (or number of iterations between diagnostic checks) 
                burnin = 8000,     # number of iterations per burning/warmup step 
-               CPUs = 4,          # number of CPUs available for parallel chains (optimal CPUs = chains)
+               CPUs = 1,          # number of CPUs available for parallel chains (optimal CPUs = chains) #KC changed for WSL (from 4 to 1)
                nadapt = 1,        # number of adaptation steps
                initscale = 0.1,
                Rthresh = 1.1,     # stopping criteria threshold for Gelman-Rubin statistic diagnostic check

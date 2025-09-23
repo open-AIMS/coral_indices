@@ -13,7 +13,7 @@
 # save(indicators_all, file = paste0(DATA_PATH, "external/indicators_all.RData"))
 
 load(file = paste0(DATA_PATH, "external/indicators_all.RData"))
-#glimpse(indicators_all)
+glimpse(indicators_all)
 
 #What is the earliest Year in the dataset?
 #min(indicators_all$Year)
@@ -487,13 +487,129 @@ for (nrm in unique_nrm) {
 #***********************
 # CO Indicator trends Reef
 #***********************
+DMS_CO<-indicators_all |> filter(Indicator=="Community.composition", Aggregation=="reef") |>
+mutate(REEF.d = gsub("\\(|\\)", "", Name)) |>
+  dplyr::select(REEF.d, Shelf, Year, Indicator, Reference, Median, Lower, Upper) |>
+  rename('fYEAR'='Year', 'DMS_median'='Median', 'DMS_lower'='Lower', 'DMS_upper'='Upper') |>
+  mutate(Metric= ifelse(Reference=="Baseline", "distance.metric", "consequence.metric"),
+  fYEAR=as.factor(fYEAR))
+
+load(file = paste0(DATA_PATH, 'modelled/CO__scores_reef_year.RData'))
+CO_scores<-mods$Summary
+reef_names_vector <- sapply(CO_scores, function(df) as.character(unique(df$REEF.d)))
+names(CO_scores) <- reef_names_vector
+CO_scores_df<- bind_rows(CO_scores, .id = "REEF.d") |>
+right_join(spatial_lookup |> dplyr::select(REEF.d, DEPTH.f, BIOREGION.agg) |> distinct(), by = "REEF.d") |>
+mutate(Metric= ifelse(Metric=="Reference", "distance.metric", "consequence.metric"))
+
+#Join MA_scores_df with DMS_MA.
+#Join on REEF.d and fYEAR and Metric
+#From DMS_MA keep DMS_median, DMS_lower, DMS_upper and Shelf
+CO_DMS_scores_reef <- CO_scores_df |>
+  left_join(DMS_CO |> dplyr::select(REEF.d, fYEAR, Metric, DMS_median, DMS_lower, DMS_upper, Shelf) |> distinct(), 
+            by = c("REEF.d", "fYEAR", "Metric")) |>
+  tidyr::pivot_longer(
+    cols = c(median, lower, upper, DMS_median, DMS_lower, DMS_upper),
+    names_to = "name"
+  ) |>
+  mutate(
+    source = ifelse(grepl("^DMS_", name), "DMS", "new run"),
+    stat = gsub("DMS_", "", name)
+  ) |>
+  select(DEPTH.f, BIOREGION.agg, REEF.d, fYEAR, Metric, Shelf, source, stat, value) |>
+  tidyr::pivot_wider(names_from = stat, values_from = value)
+
+#Use a loop to plot For each DEPTH.f within each BIOREGION.agg, plot the median by fYEAR with a linerange of lower and upper
+#separate 'Metric' by colour
+#facet by REEF
+#save the plot to output/figures/indicator_checks
+unique_depths <- unique(CO_scores_df$DEPTH.f)
+unique_bioregions <- unique(CO_scores_df$BIOREGION.agg)
+for (bioregion in unique_bioregions) {
+  for (depth in unique_depths) {
+    plot_data <- CO_DMS_scores_reef |> filter(BIOREGION.agg == bioregion, DEPTH.f == depth)
+    if (nrow(plot_data) == 0) next
+
+    # Define custom colors for Metric/Source combinations
+    metric_source_colors <- c(
+      "consequence.metric.DMS" = "#821b9eff",
+      "consequence.metric.new run" = "#c883d7ff",
+      "distance.metric.DMS" = "#0202d9ff",
+      "distance.metric.new run" = "#2a95caff"
+    )
+
+    plot_CO_scores <- ggplot(plot_data, aes(x = as.numeric(as.character(fYEAR)), y = median, color = interaction(Metric, source))) +
+      geom_point(position = position_dodge(width = 0.5), size =4) +
+      geom_line(aes(group = interaction(Metric, source)), position = position_dodge(width = 0.5)) +
+      geom_hline(yintercept = 0.5, color = "red", linetype = "dashed") +
+      geom_linerange(aes(ymin = lower, ymax = upper), position = position_dodge(width = 0.5)) +
+      facet_wrap(~ REEF, scales = "free_y") +
+      theme_classic() +
+      theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+      ) +
+      labs(x = "Year", y = "CO score", title = paste(bioregion, "-", depth),
+         color = "Metric/Source") +
+      scale_color_manual(values = metric_source_colors)
+
+    ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_CO_scores_', gsub(" ", "_", bioregion), '_', gsub(" ", "_", depth), '.png'), 
+           plot = plot_CO_scores, width = 25, height = 12)
+  }
+}
 
 
 
 #***********************
 # CO Indicator trends NRM
 #***********************
+load(file = paste0(DATA_PATH, 'modelled/CO__scores_NRM_year.RData'))
+CO_scores_NRM <- mods$Summary
+NRM_names_vector <- sapply(CO_scores_NRM, function(df) as.character(unique(df$NRM)))
+names(CO_scores_NRM) <- NRM_names_vector
+CO_scores_NRM_df <- bind_rows(CO_scores_NRM, .id = "NRM") |>
+mutate(Metric= ifelse(Metric=="Reference", "distance.metric", "consequence.metric"))
 
+# Filter DMS data for NRM aggregation and join
+DMS_CO_NRM <- indicators_all |> filter(Indicator == "Community.composition", Aggregation == "NRM") |>
+  dplyr::select(Name, Shelf, Year, Indicator, Reference, Median, Lower, Upper) |>
+  rename('fYEAR' = 'Year', 'NRM'='Name', 'DMS_median' = 'Median', 'DMS_lower' = 'Lower', 'DMS_upper' = 'Upper') |>
+  mutate(Metric = ifelse(Reference == "Baseline", "distance.metric", "consequence.metric"),
+         fYEAR = as.factor(fYEAR))
+
+CO_DMS_scores_NRM <- CO_scores_NRM_df |>
+  left_join(DMS_CO_NRM |> dplyr::select(NRM, Shelf, fYEAR, Metric, DMS_median, DMS_lower, DMS_upper) |> distinct(),
+            by = c("NRM", "Shelf", "fYEAR", "Metric")) |>
+  tidyr::pivot_longer(
+    cols = c(median, lower, upper, DMS_median, DMS_lower, DMS_upper),
+    names_to = "name"
+  ) |>
+  mutate(
+    source = ifelse(grepl("^DMS_", name), "DMS", "new run"),
+    stat = gsub("DMS_", "", name)
+  ) |>
+  select(NRM, Shelf, fYEAR, Metric, source, stat, value) |>
+  tidyr::pivot_wider(names_from = stat, values_from = value)
+
+unique_nrm <- unique(CO_DMS_scores_NRM$NRM)
+for (nrm in unique_nrm) {
+
+  plot_data <- CO_DMS_scores_NRM |> filter(NRM == nrm) |> droplevels()
+  if (nrow(plot_data) == 0) next
+
+  plot_CO_scores_NRM <- ggplot(plot_data, aes(x = as.numeric(as.character(fYEAR)), y = median, color = interaction(Metric, source))) +
+    geom_point(position = position_dodge(width = 0.5), size = 4) +
+    geom_line(aes(group = interaction(Metric, source)), position = position_dodge(width = 0.5)) +
+    geom_hline(yintercept = 0.5, color = "red", linetype = "dashed") +
+    geom_linerange(aes(ymin = lower, ymax = upper), position = position_dodge(width = 0.5)) +
+    facet_wrap(~ Shelf, scales = "free_y") +
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = "Year", y = "CO score", title = nrm, color = "Metric/Source") +
+    scale_color_manual(values = metric_source_colors)
+
+  ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_CO_scores_NRM_', gsub(" ", "_", nrm), '.png'),
+         plot = plot_CO_scores_NRM, width = 20, height = 5)
+}
 ##################################
 # RPI
 ##################################
@@ -502,16 +618,212 @@ for (nrm in unique_nrm) {
 # RPI baselines
 #***********************
 
+#Latest run (September 2025)
+load(file='../data/processed/rec.traj.trans.init100.000000.final0.000000.obs4_baseline.RData')
+load(file='../data/processed/spread.parameters.RData')
+load(file='../data/processed/RPI.baseline.RData')
+
+qualify.baseline.trajectory<- spread.parameters %>%
+  mutate(baseline.trajectory=ifelse(proj.site.rpid %in% RPI.baseline$proj.site.rpid, "Yes",
+                                    "No")) %>% dplyr::select(proj.site.rpid, baseline.trajectory) %>% unique()
+
+qualify.with.hc.data<- filt.rec.traj %>%
+  left_join(qualify.baseline.trajectory) %>% filter(!is.na(baseline.trajectory)) %>% droplevels() %>%
+  filter(GROUP_CODE=="HC") %>% droplevels() %>%
+  dplyr::select(-Latitude, -Longitude, -Date) %>%
+  ungroup %>%
+  group_by(ZONE, Shelf, NRM, BIOREGION,
+           REEF, DEPTH.f, REEF.d, RP_ID, proj.site.rpid, baseline.trajectory,
+           REPORT_YEAR, fYEAR) %>%
+  median_hdci(COVER) %>%
+  rename(lower=`.lower`,
+         upper=`.upper`) %>%
+  dplyr::select(-`.width`, -`.point`, -`.interval`)
+
+dates<- filt.rec.traj %>% dplyr::select(proj.site.rpid, REPORT_YEAR, Date) %>% unique() %>%
+  group_by(proj.site.rpid) %>%
+  arrange(proj.site.rpid, REPORT_YEAR) %>%
+  mutate(Time.since.disturbance =  as.double(Date - Date[1])/365)
+
+aggregated.trajectory.data<- qualify.with.hc.data %>% left_join(dates) %>%
+  left_join(RPI.baseline %>% ungroup() %>%
+              dplyr::select(BIOREGION, BIOREGION.rpi.agg) %>% distinct)
+
+
+for (b in unique(aggregated.trajectory.data$BIOREGION.rpi.agg)) {
+  
+  bioregion.data=aggregated.trajectory.data %>% filter(BIOREGION.rpi.agg==b) %>% droplevels()
+  
+  for (d in unique(bioregion.data$DEPTH.f)) {
+    
+    
+    depth.data<- bioregion.data %>% filter(DEPTH.f==d) %>% droplevels
+    
+    if(nrow(depth.data)==0) next else {
+      
+      plot<- ggplot(depth.data, aes(x=Time.since.disturbance, y=COVER, colour=proj.site.rpid), size=3)+
+        ylim(c(0,100))+
+        geom_point()+
+        guides(colour = guide_legend(title = "recovery \ntrajectory"))+
+        geom_ribbon(aes(x=Time.since.disturbance, ymin=lower, ymax=upper, colour=proj.site.rpid, fill=proj.site.rpid), alpha=0.2)+
+        guides(fill = guide_legend(title = "recovery \ntrajectory"))+
+        ylab("hard coral cover (%)")+
+        xlab("Time since disturbance")+
+        facet_wrap(~baseline.trajectory)+
+        theme_bw()+
+        theme(axis.title = element_text(size=20),
+              title= element_text(size=20))
+      
+      ggsave(plot, file=paste0(FIGS_PATH, "/qualify.baseline", ".", b, ".", d, ".png"), width=10, height=5)
+      #save(plot, file=paste0(FIG_DIR, "/RData/qualify.baseline.", K.version, ".", base.traj.filter, ".", b, ".", d, ".RData"))
+      
+    }
+    
+  }
+  
+}
+
+
 
 #***********************
 # RPI Indicator trends Reef
 #***********************
+#Load RPI scores from KCs last original run. The scores on DMS had lots of missing data, so weren't right
+load(file = paste0(DATA_PATH, 'external/current.pred.summary.random.RData'))
+RPI_refs<- current.pred.summary |>
+ungroup() |>
+  dplyr::select(REEF.d, Shelf, REPORT_YEAR, index, index.lower, index.upper) |>
+  rename('fYEAR'='REPORT_YEAR', 'DMS_median'='index', 'DMS_lower'='index.lower', 'DMS_upper'='index.upper') |>
+  mutate(Metric= "distance.metric",
+  fYEAR=as.factor(fYEAR))
+
+load(file = paste0(DATA_PATH, 'external/current.pred.summary.critical.random.RData'))
+RPI_context<- current.pred.summary.critical |>
+ungroup() |>
+  dplyr::select(REEF.d, Shelf, REPORT_YEAR, index, index.lower, index.upper) |>
+  rename('fYEAR'='REPORT_YEAR', 'DMS_median'='index', 'DMS_lower'='index.lower', 'DMS_upper'='index.upper') |>
+  mutate(Metric= "consequence.metric",
+  fYEAR=as.factor(fYEAR))
+
+RPI_original_both<- bind_rows(RPI_refs, RPI_context)
+
+#Load RPI scores from Sep 2025 run
+spatial_lookup <- get(load(paste0(DATA_PATH, "processed/spatial_lookup.RData")))
+load(file = paste0(DATA_PATH, 'modelled/RPI__scores_reef_year.RData'))
+RPI_scores<-mods$Summary
+reef_names_vector <- sapply(RPI_scores, function(df) as.character(unique(df$REEF.d)))
+names(RPI_scores) <- reef_names_vector
+RPI_scores_df <- bind_rows(RPI_scores, .id = "REEF.d") |>
+right_join(spatial_lookup |> dplyr::select(REEF.d, DEPTH.f) |> distinct(), by = "REEF.d") |>
+mutate(Metric= ifelse(Metric=="reference", "distance.metric", "consequence.metric"))
 
 
+#Join MA_scores_df with DMS_MA.
+#Join on REEF.d and fYEAR and Metric
+#From DMS_MA keep DMS_median, DMS_lower, DMS_upper and Shelf
+RPI_DMS_scores_reef <- RPI_scores_df |>
+  left_join(RPI_original_both |> dplyr::select(REEF.d, fYEAR, Metric, DMS_median, DMS_lower, DMS_upper) |> distinct(), 
+            by = c("REEF.d", "fYEAR", "Metric")) |>
+  tidyr::pivot_longer(
+    cols = c(median, lower, upper, DMS_median, DMS_lower, DMS_upper),
+    names_to = "name"
+  ) |>
+  mutate(
+    source = ifelse(grepl("^DMS_", name), "DMS", "new run"),
+    stat = gsub("DMS_", "", name)
+  ) |>
+  select(REEF.d, DEPTH.f, fYEAR, Metric, source, stat, value) |>
+  tidyr::pivot_wider(names_from = stat, values_from = value)
+
+
+#Use a loop to plot For each DEPTH.f within each BIOREGION.agg, plot the median by fYEAR with a linerange of lower and upper
+#separate 'Metric' by colour
+#facet by REEF
+#save the plot to output/figures/indicator_checks
+unique_depths <- unique(RPI_scores_df$DEPTH.f)
+unique_bioregions <- unique(RPI_scores_df$BIOREGION.agg)
+for (bioregion in unique_bioregions) {
+  for (depth in unique_depths) {
+    plot_data <- RPI_DMS_scores_reef |> filter(BIOREGION.agg == bioregion, DEPTH.f == depth)
+    if (nrow(plot_data) == 0) next
+   
+    # Define custom colors for Metric/Source combinations
+    metric_source_colors <- c(
+      "consequence.metric.DMS" = "#821b9eff",
+      "consequence.metric.new run" = "#c883d7ff",
+      "distance.metric.DMS" = "#0202d9ff",
+      "distance.metric.new run" = "#2a95caff"
+    )
+
+    plot_RPI_scores <- ggplot(plot_data, aes(x = as.numeric(as.character(fYEAR)), y = median, color = interaction(Metric, source))) +
+      geom_point(position = position_dodge(width = 0.5), size =4) +
+      geom_line(aes(group = interaction(Metric, source)), position = position_dodge(width = 0.5)) +
+      geom_hline(yintercept = 0.5, color = "red", linetype = "dashed") +
+      geom_linerange(aes(ymin = lower, ymax = upper), position = position_dodge(width = 0.5)) +
+      facet_wrap(~ REEF, scales = "free_y") +
+      theme_classic() +
+      theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+      ) +
+      labs(x = "Year", y = "RPI score", title = paste(bioregion, "-", depth),
+         color = "Metric/Source") +
+      scale_color_manual(values = metric_source_colors)
+
+    ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_RPI_scores_', gsub(" ", "_", bioregion), '_', gsub(" ", "_", depth), '.png'), 
+           plot = plot_RPI_scores, width = 25, height = 12)
+  }
+} 
+
+#Which scores are really different?
+#Reference scores
+check_ref<- RPI_DMS_scores_reef |> filter(Metric=="distance.metric") |>
+dplyr::select(-lower, -upper) |>
+pivot_wider(names_from=source, values_from=median) |>
+mutate(diff=abs(`new run`-DMS)) |>
+arrange(desc(diff)) |>
+filter(diff>0.1)
+
+#contextual scores
+check_conseq<- RPI_DMS_scores_reef |> filter(Metric=="consequence.metric") |>
+dplyr::select(-lower, -upper) |>
+pivot_wider(names_from=source, values_from=median) |>
+mutate(diff=abs(`new run`-DMS)) |>
+arrange(desc(diff)) |>
+filter(diff>0.1)
 
 #***********************
 # RPI Indicator trends NRM
 #***********************
+load(file = paste0(DATA_PATH, 'modelled/RPI__scores_NRM_year.RData'))
+RPI_scores_NRM <- mods$Summary
+NRM_names_vector <- sapply(RPI_scores_NRM, function(df) as.character(unique(df$NRM)))
+names(RPI_scores_NRM) <- NRM_names_vector
+RPI_scores_NRM_df <- bind_rows(RPI_scores_NRM, .id = "NRM")
+
+unique_nrm <- unique(RPI_scores_NRM_df$NRM)
+for (nrm in unique_nrm) {
+  plot_data <- RPI_scores_NRM_df |> filter(NRM == nrm) |> droplevels()
+  if (nrow(plot_data) == 0) next
+
+  # Define custom colors for Metric/Source combinations
+    metric_source_colors <- c(
+      "critical" = "#c883d7ff",
+      "reference" = "#2a95caff"
+    )
+
+  plot_RPI_scores_NRM <- ggplot(plot_data, aes(x = as.numeric(as.character(fYEAR)), y = median, color = Metric)) +
+  scale_color_manual(values = metric_source_colors)+
+    geom_point(position = position_dodge(width = 0.5), size = 4) +
+    geom_line(aes(group = Metric), position = position_dodge(width = 0.5)) +
+    geom_hline(yintercept = 0.5, color = "red", linetype = "dashed") +
+    geom_linerange(aes(ymin = lower, ymax = upper), position = position_dodge(width = 0.5)) +
+    facet_wrap(~ Shelf, scales = "free_y") +
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(x = "Year", y = "RPI score", title = nrm, color = "Metric")
+  ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_RPI_scores_NRM_', gsub(" ", "_", nrm), '.png'),
+         plot = plot_RPI_scores_NRM, width = 20, height = 5)
+}
 
 
 ####################################################

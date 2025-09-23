@@ -715,7 +715,7 @@ CI_model_rpi_critical <- function() {
         conf <- list(chains = 4,        # number of independent chains to use
                      iter = 8000,       # number of sampling iterations (or number of iterations between diagnostic checks)  #default 4000
                      burnin = 8000,     # number of iterations per burning/warmup step #default 4000
-                     CPUs = 4,          # number of CPUs available for parallel chains (optimal CPUs = chains)
+                     CPUs = 1,          # number of CPUs available for parallel chains (optimal CPUs = chains) #KC changed for WSL
                      nadapt = 1,        # number of adaptation steps
                      initscale = 0.1,
                      Rthresh = 1.1,     # stopping criteria threshold for Gelman-Rubin statistic diagnostic check
@@ -851,7 +851,7 @@ CI_process_rpi_augment <- function() {
                            "_stage1.RData"))
 
         rpi_data <- rpi_data %>%
-            mutate(ongoing.df = map2(.x = recovery.trajectories.crp,
+            mutate(ongoing.df = purrr::map2(.x = recovery.trajectories.crp, #KC added purrr::
                                      .y = n,
                                      .f = ~ {
                                          ## CI__append_label(stage = CI__get_stage(),
@@ -1445,13 +1445,13 @@ CI_process_rpi_data_predict_last_obs <- function() {
         ## The following will be run in parallel.  Note that progressor can be
         ## defined inside a function, but cannot be defined in global env, so
         ## do not try to run that line interactively
-        plan(multisession, workers = 10)
-        p <- progressor(steps = 1)
+        #plan(multisession, workers = 10) #KC commented out for testing
+        #p <- progressor(steps = 1) #KC commented out for testing
         rpi_data <-
             rpi_data  %>%
-            mutate(depth_loop = future_map2(.x = ongoing.df, .y = REPORT_YEAR,
+            mutate(depth_loop = purrr::map2(.x = ongoing.df, .y = REPORT_YEAR, #KC changed to purrr::map2 from future_map2
                                             .f = ~ {
-                                                p()
+                                                #p() #KC commented out for testing
                                                 nm <- .x
                                                 .x <- get(load(file = nm))
                                                 rpi_data <- CI__34_RPI_depthLoop(.x,
@@ -1991,7 +1991,7 @@ CI__fit_coral_growth_model <- function(filt.rec.traj.proc.critical, YR) {
     conf <- list(chains = 4,        # number of independent chains to use
                  iter = 8000,       # number of sampling iterations (or number of iterations between diagnostic checks)  #default 4000
                  burnin = 8000,     # number of iterations per burning/warmup step #default 4000
-                 CPUs = 4,          # number of CPUs available for parallel chains (optimal CPUs = chains)
+                 CPUs = 1,          # number of CPUs available for parallel chains (optimal CPUs = chains) #KC changed for WSL
                  nadapt = 1,        # number of adaptation steps
                  initscale = 0.1,
                  Rthresh = 1.1,     # stopping criteria threshold for Gelman-Rubin statistic diagnostic check
@@ -3246,70 +3246,72 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
     msg=paste0("Calculate scores ", RPI_PURPOSE), return=NULL)
 }
 
-CI_models_RPI_distance <- function() {
-    CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                   item = 'indices',
-                   label = "Calculate indices", status = 'pending')
-    CI_tryCatch({
+##KC commented out. This function seems to be defined twice and this first version saves the outputs under 'CC_' which doesn't seem right.
+
+# CI_models_RPI_distance <- function() {
+#     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+#                    item = 'indices',
+#                    label = "Calculate indices", status = 'pending')
+#     CI_tryCatch({
 
 
-        baselines <- get(load(file = paste0(DATA_PATH,
-                                            'modelled/CC__baseline_posteriors.RData')))
-        mods <- get(load(file = paste0(DATA_PATH, "modelled/CC__preds.RData")))
-        load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
-        ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
+#         baselines <- get(load(file = paste0(DATA_PATH,
+#                                             'modelled/CC__baseline_posteriors.RData')))
+#         mods <- get(load(file = paste0(DATA_PATH, "modelled/CC__preds.RData")))
+#         load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
+#         ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
 
-        mods <- mods %>%
-            mutate(Pred = map(.x = Pred,
-                              .f = ~ .x %>%
-                                  left_join(site.location %>%
-                                            dplyr::select(REEF, REEF.d, BIOREGION.agg,
-                                                          DEPTH.f) %>%
-                                            distinct()) 
-                              )) %>% 
-            mutate(Scores = map(.x = Pred,
-                                .f = ~ CI__index_CC(.x, baselines) %>%
-                                    filter(Metric %in% c('rescale.dist.metric',
-                                                         'pcb.rescale.dist.metric')) %>%
-                                    mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
-                                    arrange(fYEAR, .draw)
-                               )) %>%
-            dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
-            mutate(Summary = map(.x = Scores,
-                                 .f = ~ .x %>%
-                                     dplyr::select(-any_of(c(
-                                                "P_CODE",
-                                                "Model",
-                                                "value",
-                                                "baseline",
-                                                "DEPTH.f"))) %>%
-                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
-                                     summarise_draws(median, mean, sd,
-                                                     HDInterval::hdi,
-                                                     `p<0.5` = ~ mean(.x < 0.5)
-                                                     )
-                                 ),
-                   Below = map(.x = Summary,
-                               .f = ~ .x %>%
-                                   ungroup() %>%
-                                   mutate(Below = ifelse(upper < 0.5, 1, 0),
-                                          PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
-                                   dplyr::select(fYEAR, Metric, Below, PBelow) %>%
-                                   distinct()
-                               )
-                   ) %>% 
-            suppressMessages() %>%
-            suppressWarnings()
+#         mods <- mods %>%
+#             mutate(Pred = map(.x = Pred,
+#                               .f = ~ .x %>%
+#                                   left_join(site.location %>%
+#                                             dplyr::select(REEF, REEF.d, BIOREGION.agg,
+#                                                           DEPTH.f) %>%
+#                                             distinct()) 
+#                               )) %>% 
+#             mutate(Scores = map(.x = Pred,
+#                                 .f = ~ CI__index_CC(.x, baselines) %>%
+#                                     filter(Metric %in% c('rescale.dist.metric',
+#                                                          'pcb.rescale.dist.metric')) %>%
+#                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
+#                                     arrange(fYEAR, .draw)
+#                                )) %>%
+#             dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
+#             mutate(Summary = map(.x = Scores,
+#                                  .f = ~ .x %>%
+#                                      dplyr::select(-any_of(c(
+#                                                 "P_CODE",
+#                                                 "Model",
+#                                                 "value",
+#                                                 "baseline",
+#                                                 "DEPTH.f"))) %>%
+#                                      group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
+#                                      summarise_draws(median, mean, sd,
+#                                                      HDInterval::hdi,
+#                                                      `p<0.5` = ~ mean(.x < 0.5)
+#                                                      )
+#                                  ),
+#                    Below = map(.x = Summary,
+#                                .f = ~ .x %>%
+#                                    ungroup() %>%
+#                                    mutate(Below = ifelse(upper < 0.5, 1, 0),
+#                                           PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
+#                                    dplyr::select(fYEAR, Metric, Below, PBelow) %>%
+#                                    distinct()
+#                                )
+#                    ) %>% 
+#             suppressMessages() %>%
+#             suppressWarnings()
 
-        save(mods,
-              file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData'))
+#         save(mods,
+#               file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData'))
         
-        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-                              item = 'indices',status = 'success')
+#         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+#                               item = 'indices',status = 'success')
 
-    }, logFile=LOG_FILE, Category='--CC models--',
-    msg=paste0('Calculate indices'), return=NULL)
-}
+#     }, logFile=LOG_FILE, Category='--CC models--',
+#     msg=paste0('Calculate indices'), return=NULL)
+# }
 
 CI_models_RPI_distance <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),

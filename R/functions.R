@@ -36,7 +36,7 @@ CI_fakeArgs <- function(type) {
     switch(type,
            CI_startMatter(args = c("--final_year=2024",
                                    "--fresh_start=true",
-                                   "--rerun_baselines=true",
+                                   "--rerun_baselines=false",
                                    "--runStage=1:5")),
            CI_startMatter(args = c("--final_year=2023",
                                    "--fresh_start=true",
