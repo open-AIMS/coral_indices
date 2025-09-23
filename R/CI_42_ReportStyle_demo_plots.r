@@ -826,10 +826,45 @@ for (nrm in unique_nrm) {
 }
 
 
+load(file = paste0(DATA_PATH, 'modelled/indices.RData'))
+
 ####################################################
 # Framework grades and indicators on target by reef
 ####################################################
 # Original approach
+load(file = paste0(DATA_PATH, 'modelled/indices.RData'))
+
+reef.indices<-indices |> filter(Level=="reef") |> droplevels()
+
+# framework categories reef
+reef_cats<-reef.indices |> 
+  filter(Reference=="Baseline") |> 
+    mutate(BelowThreshold=ifelse(Upper<0.5, 0, 1),
+      REEF.d=paste(Name, Depth)) |>
+  pivot_wider(id_cols=c(Year, REEF.d),names_from = Indicator, values_from = BelowThreshold) |>   # not here that BelowThreshold=0 
+  mutate(
+         level2=Juvenile.density+Macroalgae+Community.composition,
+         Juv_MA=Juvenile.density+Macroalgae,
+         cat_grade=ifelse(Coral.cover==1 & Recovery.performance==1 & level2==3, 'A',
+                      ifelse(Coral.cover==1 & Recovery.performance==1 & level2>0, 'B',
+                             ifelse(Coral.cover==1 & Recovery.performance==1 & level2==0, 'C',
+                                    ifelse(Coral.cover==1 & Recovery.performance==0 & level2==3, 'B',
+                                           ifelse(Coral.cover==1 & Recovery.performance==0 & level2>0, 'C',
+                                                  ifelse(Coral.cover==1 & Recovery.performance==1 & level2==0, 'D',
+                                                         ifelse(Coral.cover==0 & Recovery.performance==1 & level2==3, 'B',
+                                                                ifelse(Coral.cover==0 & Recovery.performance==1 & level2>0, 'C',
+                                                                       ifelse(Coral.cover==0 & Recovery.performance==1 & level2==0, 'D',
+                                                                              ifelse(Coral.cover==0 & Recovery.performance==0 & level2==3, 'D', 'E'))))))))))) |>
+  left_join(spatial_lookup %>% dplyr::select(REEF.d, DEPTH.f, NRM) |>
+  distinct()) |>
+  rename('Region'='NRM') |>
+    mutate(f.score=case_when(cat_grade == "A" ~ 0.9,
+                             cat_grade == "B" ~ 0.7,
+                             cat_grade == "C" ~ 0.5,
+                             cat_grade == "D" ~ 0.3,
+                             cat_grade == "E" ~ 0.1,
+                             cat_grade == NA ~ NA)) |>
+  mutate(Year=as.numeric(as.character(Year)))
 
 # Mean of reference and contextual metrics for MA, CC, JU
 
@@ -928,7 +963,7 @@ new.rpids<- RPI.baseline |>
   dplyr::select(BIOREGION.rpi.agg, DEPTH.f, proj.site.rpid) |> unique() |>
   arrange(BIOREGION.rpi.agg, DEPTH.f, proj.site.rpid)
 
-#The baseline trajectories in the case study are different to the original, due to a rerun of coral cover model, which is an input for recovery performance
+#The baseline trajectories in the case study are different to the original, due to a rerun of coral cover model, which is an input for recovery Recovery.performance
 #Rerun of baseline lead to different identification of beginning of recovery trajectories (there seem to be fewer trajectories in new version)
 #For inshore bioregions, there were 9 trajectories added and 3 removed.
 #I'm assuming there would be differences in other bioregions too.
@@ -940,18 +975,18 @@ reef_cats<-Framework_indicator_scores_reef |>
   mutate(BelowThreshold=ifelse(upper<0.5, 0, 1)) |>
   pivot_wider(id_cols=c(fYEAR, REEF.d),names_from = Indicator, values_from = BelowThreshold) |>   # not here that BelowThreshold=0 
   mutate(
-         level2=Juvenile+Macroalgae+Composition,
-         Juv_MA=Juvenile+Macroalgae,
-         cat_grade=ifelse(CoralCover==1 & Performance==1 & level2==3, 'A',
-                      ifelse(CoralCover==1 & Performance==1 & level2>0, 'B',
-                             ifelse(CoralCover==1 & Performance==1 & level2==0, 'C',
-                                    ifelse(CoralCover==1 & Performance==0 & level2==3, 'B',
-                                           ifelse(CoralCover==1 & Performance==0 & level2>0, 'C',
-                                                  ifelse(CoralCover==1 & Performance==1 & level2==0, 'D',
-                                                         ifelse(CoralCover==0 & Performance==1 & level2==3, 'B',
-                                                                ifelse(CoralCover==0 & Performance==1 & level2>0, 'C',
-                                                                       ifelse(CoralCover==0 & Performance==1 & level2==0, 'D',
-                                                                              ifelse(CoralCover==0 & Performance==0 & level2==3, 'D', 'E'))))))))))) |>
+         level2=Juvenile.density+Macroalgae+Community.composition,
+         Juv_MA=Juvenile.density+Macroalgae,
+         cat_grade=ifelse(Coral.cover==1 & Recovery.performance==1 & level2==3, 'A',
+                      ifelse(Coral.cover==1 & Recovery.performance==1 & level2>0, 'B',
+                             ifelse(Coral.cover==1 & Recovery.performance==1 & level2==0, 'C',
+                                    ifelse(Coral.cover==1 & Recovery.performance==0 & level2==3, 'B',
+                                           ifelse(Coral.cover==1 & Recovery.performance==0 & level2>0, 'C',
+                                                  ifelse(Coral.cover==1 & Recovery.performance==1 & level2==0, 'D',
+                                                         ifelse(Coral.cover==0 & Recovery.performance==1 & level2==3, 'B',
+                                                                ifelse(Coral.cover==0 & Recovery.performance==1 & level2>0, 'C',
+                                                                       ifelse(Coral.cover==0 & Recovery.performance==1 & level2==0, 'D',
+                                                                              ifelse(Coral.cover==0 & Recovery.performance==0 & level2==3, 'D', 'E'))))))))))) |>
   left_join(spatial_lookup %>% dplyr::select(REEF.d, DEPTH.f, NRM) |>
   distinct()) |>
   rename('Region'='NRM') |>
@@ -1003,7 +1038,7 @@ setdiff(mmp.index.scores.reef$REEF.d, reef_cats$REEF.d)
 setdiff(reef_cats$REEF.d, mmp.index.scores.reef$REEF.d)
 
 framework_index_reef_combined <- reef_cats |> 
-  dplyr::select(Region, REEF.d, DEPTH.f, Year, Juvenile, Macroalgae, CoralCover, Composition, Performance, cat_grade, f.score) |> 
+  dplyr::select(Region, REEF.d, DEPTH.f, Year, Juvenile.density, Macroalgae, Coral.cover, Community.composition, Recovery.performance, cat_grade, f.score) |> 
   left_join(mmp.index.scores.reef |> 
               dplyr::select(Region, REEF.d, DEPTH.f, Year, Score, Grade))
 
@@ -1032,11 +1067,11 @@ for (reg in regions) {
     annotation_data <- region_data |>
       filter(DEPTH.f == dep, !is.na(f.score)) |>
       mutate(
-        label_J = ifelse(!is.na(Juvenile) & Juvenile == 0, "J", ""),
+        label_J = ifelse(!is.na(Juvenile.density) & Juvenile.density == 0, "J", ""),
         label_M = ifelse(!is.na(Macroalgae) & Macroalgae == 0, "M", ""),
-        label_CC = ifelse(!is.na(CoralCover) & CoralCover == 0, "CC", ""),
-        label_CO = ifelse(!is.na(Composition) & Composition == 0, "CO", ""),
-        label_P = ifelse(!is.na(Performance) & Performance == 0, "P", "")
+        label_CC = ifelse(!is.na(Coral.cover) & Coral.cover == 0, "CC", ""),
+        label_CO = ifelse(!is.na(Community.composition) & Community.composition == 0, "CO", ""),
+        label_P = ifelse(!is.na(Recovery.performance) & Recovery.performance == 0, "P", "")
       ) |>
       select(
         REEF.d, Year, Score, f.score, label_J, label_M, label_CC, label_CO, label_P

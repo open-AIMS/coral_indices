@@ -27,14 +27,15 @@ CI_models_collate_indices <- function() {
                                                     level == "ZONE" ~ "ZONE",
                                                     level == "GBRMP" ~ "GBRMP")
                                   indicator <- str_replace(.x,
-                                                           ".*modelled/([A-Z]{2})__.*",
+                                                           #".*modelled/([A-Z]{2})__.*",
+                                                           ".*modelled/([A-Z]{2}).*",
                                                            "\\1") 
                                   indicator <-  case_when(
                                       indicator == "CC" ~ "Coral.cover",
                                       indicator == "MA" ~ "Macroalgae",
                                       indicator == "JU" ~ "Juvenile.density",
                                       indicator == "CO" ~ "Community.composition",
-                                      indicator == "RPI" ~ "Recovery.performance"
+                                      indicator == "RP" ~ "Recovery.performance"
                                   )
                                   x <- get(load(.x)) %>%
                                       dplyr::select(Summary) %>%
@@ -84,8 +85,8 @@ CI_models_collate_indices <- function() {
                                                  Metric == 'Acropora' ~ 'Critical',
                                                  Metric == 'Reference' ~ 'Baseline',
                                                  Metric == 'Critical' ~ 'Critical',
-                                                 Metric == 'Reference' ~ 'reference',
-                                                 Metric == 'Critical' ~ 'critical'
+                                                 Metric == 'reference' ~ 'Baseline',
+                                                 Metric == 'critical' ~ 'Critical'
                                                  )) %>%
                                       dplyr::select(Level,
                                                     Year = fYEAR,
