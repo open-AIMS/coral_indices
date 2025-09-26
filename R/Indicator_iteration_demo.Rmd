@@ -30,24 +30,39 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,cache.lazy = FAL
 
 ## Baselines {.tabset .tabset-faded}
 
-Changes made were....
+We're interested in using a standardised baseline time period for CC, MA, JU and CO. Here is a demonstration of how the baselines change for CC, MA and JU when the standardised timeframe is either 2010 or 2015. For MA and JU, the original baselines are up to 2021, and are in red. A CC baseline up to 2021 has not been run.
+
+Important to note is that I have not change the JU_consequence model, which gives the MAp threshold above which the number of Juveniles required for fast recovery is no longer supported. This model uses all data up to 2021 still, but I am not familiar with it so have not adjusted it yet. 
+
+For RPI, the input data is the modelled cover from the temporal models, which change from site level to reef level. The recognition of recovery trajectories changed slightly as it is triggered by a threshold in % HC loss, which may have change from the site level model to the reef level model. This checks how the baseline trajectories for each Bioregion x Depth change.
 
 ### Coral Cover
 
-![](../output/figures/indicator_checks/plot_CC_baselines.png)
+2010 is the original
+
+![](../output/figures/indicator_checks/original_baselines/plot_CC_baselines_compare.png)
 
 ### Macroalgae 
 
-![](../output/figures/indicator_checks/plot_MA_baselines_shallow.png)
+2021 is the original
 
-![](../output/figures/indicator_checks/plot_MA_baselines_deep.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_baselines_shallow_compare.png)
 
-![](../output/figures/indicator_checks/plot_MA_baselines_offshore.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_baselines_deep_compare.png)
+
+![](../output/figures/indicator_checks/original_baselines/plot_MA_baselines_offshore_compare.png)
 
 
-### Juvenile Coral Density
+### Juvenile Coral Density 
 
-![](../output/figures/indicator_checks/plot_JU_baselines.png)
+2021 is the original
+
+I have left the polygon weights in whereas AT tested removing it. I'm not sure what effect it had.
+
+#### Total
+![](../output/figures/indicator_checks/original_baselines/plot_JU_baselines_Total_compare.png)
+
+
 
 ### Recovery Performance {.tabset .tabset-faded}
 
@@ -59,7 +74,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.3and4.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.3and4.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.3and4.deep slope.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
@@ -69,7 +84,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.6.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.6.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.6.deep slope.png)
 
 
 #### Bioregion 9 and 26 {.tabset .tabset-faded}
@@ -80,7 +95,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.9and26.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.9and26.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.9and26.deep slope.png)
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -91,7 +106,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.11.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.11.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.11.deep slope.png)
 
 
 #### Bioregion 12, 35, 36 {.tabset .tabset-faded}
@@ -102,7 +117,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.12and35and36.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.12and35and36.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.12and35and36.deep slope.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -112,7 +127,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.16.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.16.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.16.deep slope.png)
 
 ##### Shallow
 
@@ -120,7 +135,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.16.shallow slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.16.shallow slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.16.shallow slope.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -130,7 +145,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.17.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.17.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.17.deep slope.png)
 
 ##### Shallow
 
@@ -138,7 +153,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.17.shallow slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.17.shallow slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.17.shallow slope.png)
 
 #### Bioregion 18 and 29 {.tabset .tabset-faded}
 
@@ -148,7 +163,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.18and29.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.18and29.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.18and29.deep slope.png)
 
 ##### Shallow
 
@@ -156,7 +171,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.18and29.shallow slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.18and29.shallow slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.18and29.shallow slope.png)
 
 #### Bioregion 19 and 22 {.tabset .tabset-faded}
 
@@ -166,7 +181,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.19and22.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.19and22.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.19and22.deep slope.png)
 
 ##### Shallow
 
@@ -174,7 +189,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.19and22.shallow slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.19and22.shallow slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.19and22.shallow slope.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -184,7 +199,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.23.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.23.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.23.deep slope.png)
 
 ##### Shallow
 
@@ -192,7 +207,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.23.shallow slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.23.shallow slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.23.shallow slope.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
@@ -202,7 +217,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.27.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.27.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.27.deep slope.png)
 
 #### Bioregion 34 and 38 {.tabset .tabset-faded}
 
@@ -212,7 +227,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.34and38.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.34and38.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.34and38.deep slope.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -222,7 +237,7 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.37.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.37.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.37.deep slope.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
@@ -232,30 +247,44 @@ Original
 ![](../output/figures/RPI_original_baselines/qualify.baseline.AB.only.alphaTd.bio.39.deep slope.png)
 
 Sep 2025
-![](../output/figures/qualify.baseline.bio.39.deep slope.png)
+![](../output/figures/indicator_checks/original_baselines/qualify.baseline.bio.39.deep slope.png)
 
 
 ## Reef level trends in scores 
 
+In the first plot, Dark Blue (reference score) and Dark purple (contextual score) are the data from the DMS
+
+Light blue and light purple of from the re-run in September 2025. So comparing the blues with each other and purples with each other in the 'original plot' demonstrate the effects of the minimum changes that were made to get the code running and get sensible results for juveniles. Changes made followed Angus' changes in his case study, except when they were case study-specific of course, or I couldn't get them to work.
+
+The plot below is then the new run adjusted so that the baseline period is set to data up to 2015.
+
+For the juveniles, the DMS data was wrong, so it isn't used for comparison here. The capping of the distance for the reference metric was also changed from -3,3 to -2,2 in the baselines to 2015 version. You can see that the reference scores cover a greater range of the scale, with more scores getting closer to 1.
+
+For recovery performance, the dark blue and dark purple are from Kerryn's last run on her desktop, because the DMS didn't have the carry-over scores for disturbance years, and therefore a lot of NAs.
+
 ### Coral Cover {.tabset .tabset-faded}
+
+The original model was changed to be a reef level model (per depth) instead of site level model
 
 #### Bioregion 4:3 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_4:3_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_43_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_43_deep_slope_baseline2015.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_6_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_6_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_6_deep_slope_baseline2015.png)
 
 
 #### Bioregion 9 {.tabset .tabset-faded}
@@ -263,9 +292,10 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_9_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_9_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_9_deep_slope_baseline2015.png)
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -273,9 +303,10 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_11_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_11_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_11_deep_slope_baseline2015.png)
 
 
 #### Bioregion 12 {.tabset .tabset-faded}
@@ -283,207 +314,232 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_12_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_12_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_12_deep_slope_baseline2015.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_16_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_16_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_16_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_16_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_16_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_16_shallow_slope_baseline2015.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_17_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_17_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_17_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_17_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_17_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_17_shallow_slope_baseline2015.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_18_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_18_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_18_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_18_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_18_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_18_shallow_slope_baseline2015.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_19_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_19_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_19_shallow_slope_baseline2015.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_22_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_22_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_22_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_22_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_22_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_22_shallow_slope_baseline2015.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_23_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_23_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_23_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_23_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_23_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_23_shallow_slope_baseline2015.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_26_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_26_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_26_deep_slope_baseline2015.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_27_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_27_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_27_deep_slope_baseline2015.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_29_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_29_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_29_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_29_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_29_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_29_shallow_slope_baseline2015.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_34_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_34_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_34_deep_slope_baseline2015.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_35:36_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_3536_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_3536_deep_slope_baseline2015.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_37_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_37_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_37_deep_slope_baseline2015.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_38_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_38_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_38_deep_slope_baseline2015.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_39_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_39_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_39_deep_slope_baseline2015.png)
 
 ### Macroalgae {.tabset .tabset-faded}
 
+I don't really know what is causing the differences between the original MA scores from the DMS and the re-run scores. I implemented Angus' codes changes, but from what I could tell they were mostly tidying up, without fundamental changes to the models. This probably warrants a closer look when I get back on Oct 7th.
+
 #### Bioregion 4:3 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-<!-- ![](../output/figures/indicator_checks/plot_MA_scores_4.3_deep_slope.png) -->
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_43_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_43_deep_slope_baseline2015.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_6_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_6_deep_slope.png)
 
-Change
-
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_6_deep_slope_baseline2015.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_9_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_9_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_9_deep_slope_baseline2015.png)
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -491,217 +547,242 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_11_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_11_deep_slope.png)
 
-Change
-
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_11_deep_slope_baseline2015.png)
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_12_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_12_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_12_deep_slope_baseline2015.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_16_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_16_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_16_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_16_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_16_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_16_shallow_slope_baseline2015.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_17_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_17_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_17_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_17_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_17_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_17_shallow_slope_baseline2015.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_18_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_18_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_18_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_18_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_18_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_18_shallow_slope_baseline2015.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_19_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_19_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_19_shallow_slope_baseline2015.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_22_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_22_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_22_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_22_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_22_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_22_shallow_slope_baseline2015.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_23_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_23_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_23_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_23_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_23_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_23_shallow_slope_baseline2015.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_26_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_26_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_26_deep_slope_baseline2015.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_27_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_27_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_27_deep_slope_baseline2015.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_29_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_29_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_29_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_29_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_29_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_29_shallow_slope_baseline2015.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_34_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_34_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_34_deep_slope_baseline2015.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-<!-- ![](../output/figures/indicator_checks/plot_MA_scores_35:36_deep_slope.png) -->
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_3536_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_3536_deep_slope_baseline2015.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_37_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_37_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_37_deep_slope_baseline2015.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_38_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_38_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_38_deep_slope_baseline2015.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_39_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_39_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_39_deep_slope_baseline2015.png)
 
 ### Juveniles {.tabset .tabset-faded}
 
+Transect level preds removed, avail.area=1 added, added "0+" to make a cell means formula, added in Acropora juvenile limits based on Manu's modelling
+
 #### Bioregion 4:3 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-<!-- ![](../output/figures/indicator_checks/plot_JU_scores_4.3_deep_slope.png) -->
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_43_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_43_deep_slope_baseline2015.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_6_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_6_deep_slope.png)
 
-Change
-
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_6_deep_slope_baseline2015.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_9_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_9_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_9_deep_slope_baseline2015.png)
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -709,187 +790,209 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_11_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_11_deep_slope.png)
 
-Change
-
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_11_deep_slope_baseline2015.png)
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_12_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_12_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_12_deep_slope_baseline2015.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_16_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_16_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_16_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_16_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_16_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_16_shallow_slope_baseline2015.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_17_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_17_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_17_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_17_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_17_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_17_shallow_slope_baseline2015.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_18_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_18_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_18_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_18_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_18_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_18_shallow_slope_baseline2015.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_19_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_19_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_19_shallow_slope_baseline2015.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_22_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_22_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_22_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_22_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_22_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_22_shallow_slope_baseline2015.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_23_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_23_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_23_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_23_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_23_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_23_shallow_slope_baseline2015.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_26_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_26_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_26_deep_slope_baseline2015.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_27_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_27_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_27_deep_slope_baseline2015.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_29_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_29_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_29_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_29_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_29_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_29_shallow_slope_baseline2015.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_34_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_34_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_34_deep_slope_baseline2015.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-<!-- ![](../output/figures/indicator_checks/plot_JU_scores_35:36_deep_slope.png) -->
 
-Change
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_3536_deep_slope.png)
+
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_3536_deep_slope_baseline2015.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_37_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_37_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_37_deep_slope_baseline2015.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_38_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_38_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_38_deep_slope_baseline2015.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_39_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_39_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_39_deep_slope_baseline2015.png)
 
 ### Recovery Performance {.tabset .tabset-faded}
 
@@ -898,18 +1001,18 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_4:3_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_43_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_6_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_6_deep_slope.png)
 
-Change
+Baselines to 2015
 
 
 #### Bioregion 9 {.tabset .tabset-faded}
@@ -917,9 +1020,9 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_9_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_9_deep_slope.png)
 
-Change
+Baselines to 2015
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -927,187 +1030,186 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_11_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_11_deep_slope.png)
 
-Change
-
+Baselines to 2015
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_12_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_12_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_16_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_16_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_16_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_16_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_17_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_17_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_17_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_17_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_18_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_18_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_18_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_18_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_19_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_19_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_22_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_22_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_22_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_22_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_23_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_23_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_23_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_23_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_26_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_26_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_27_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_27_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_29_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_29_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_29_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_29_shallow_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_34_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_34_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_35:36_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_3536_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_37_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_37_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_38_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_38_deep_slope.png)
 
-Change
+Baselines to 2015
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_39_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_39_deep_slope.png)
 
-Change
+Baselines to 2015
 
 ### Community Composition {.tabset .tabset-faded}
 
@@ -1116,28 +1218,30 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_4:3_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_43_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_43_deep_slope_baseline2015.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_6_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_6_deep_slope.png)
 
-Change
-
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_6_deep_slope_baseline2015.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_9_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_9_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_9_deep_slope_baseline2015.png)
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -1145,9 +1249,10 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_11_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_11_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_11_deep_slope_baseline2015.png)
 
 
 #### Bioregion 12 {.tabset .tabset-faded}
@@ -1155,397 +1260,511 @@ Change
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_12_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_12_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_12_deep_slope_baseline2015.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_16_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_16_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_16_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_16_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_16_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_16_shallow_slope_baseline2015.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_17_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_17_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_17_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_17_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_17_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_17_shallow_slope_baseline2015.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_18_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_18_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_18_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_18_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_18_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_18_shallow_slope_baseline2015.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_19_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_19_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_19_shallow_slope_baseline2015.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_22_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_22_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_22_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_22_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_22_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_22_shallow_slope_baseline2015.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_23_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_23_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_23_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_23_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_23_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_23_shallow_slope_baseline2015.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_26_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_26_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_26_deep_slope_baseline2015.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_27_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_27_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_27_deep_slope_baseline2015.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_29_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_29_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_29_deep_slope_baseline2015.png)
 
 ##### Shallow
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_29_shallow_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_29_shallow_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_29_shallow_slope_baseline2015.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_34_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_34_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_34_deep_slope_baseline2015.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_35:36_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_3536_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_3536_deep_slope_baseline2015.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_37_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_37_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_37_deep_slope_baseline2015.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_38_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_38_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_38_deep_slope_baseline2015.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_39_deep_slope.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_39_deep_slope.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_39_deep_slope_baseline2015.png)
 
 ## NRM level trends in scores 
 
+In the first plot, Dark Blue (reference score) and Dark purple (contextual score) are the data from the DMS
+
+Light blue and light purple of from the re-run in September 2025. So comparing the blues with each other and purples with each other in the 'original plot' demonstrate the effects of the minimum changes that were made to get the code running and get sensible results for juveniles.
+
+The plot below is then the new run adjusted so that the baseline period is set to data up to 2015.
+
+For the juveniles, the DMS data was wrong, so it isn't used for comparison here. The capping of the distance for the reference metric was also changed from -3,3 to -2,2. The reference scores should be a bit closer to 1 in the new plot.
+
+For recovery performance, the dark blue and dark purple are from Kerryn's last run on her desktop, because the DMS didn't have the carry-over scores for disturbance years, and therefore a lot of NAs.
+
 ### Coral Cover {.tabset .tabset-faded}
 
 #### Cape York
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_NRM_Cape_York.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_NRM_Cape_York.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Cape_York_baseline2015.png)
 
 #### Wet Tropics
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_NRM_Wet_Tropics.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_NRM_Wet_Tropics.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Wet_Tropics_baseline2015.png)
 
 #### Burdekin
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_NRM_Burdekin.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_NRM_Burdekin.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Burdekin_baseline2015.png)
 
 #### Mackay Whitsunday
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_NRM_Mackay_Whitsunday.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_NRM_Mackay_Whitsunday.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Mackay_Whitsunday_baseline2015.png)
 
 #### Fitzroy
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_NRM_Fitzroy.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_NRM_Fitzroy.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Fitzroy_baseline2015.png)
 
 #### Burnett Mary
 
 Original
-![](../output/figures/indicator_checks/plot_CC_scores_NRM_Burnett_Mary.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CC_scores_NRM_Burnett_Mary.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Burnett_Mary_baseline2015.png)
 
 ### Macroalgae {.tabset .tabset-faded}
 
 #### Cape York
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_NRM_Cape_York.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_NRM_Cape_York.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Cape_York_baseline2015.png)
 
 #### Wet Tropics
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_NRM_Wet_Tropics.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_NRM_Wet_Tropics.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Wet_Tropics_baseline2015.png)
 
 #### Burdekin
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_NRM_Burdekin.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_NRM_Burdekin.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Burdekin_baseline2015.png)
 
 #### Mackay Whitsunday
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_NRM_Mackay_Whitsunday.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_NRM_Mackay_Whitsunday.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Mackay_Whitsunday_baseline2015.png)
 
 #### Fitzroy
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_NRM_Fitzroy.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_NRM_Fitzroy.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Fitzroy_baseline2015.png)
 
 #### Burnett Mary
 
 Original
-![](../output/figures/indicator_checks/plot_MA_scores_NRM_Burnett_Mary.png)
+![](../output/figures/indicator_checks/original_baselines/plot_MA_scores_NRM_Burnett_Mary.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Burnett_Mary_baseline2015.png)
 
 ### Juveniles {.tabset .tabset-faded}
 
 #### Cape York
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_NRM_Cape_York.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_NRM_Cape_York.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Cape_York_baseline2015.png)
 
 #### Wet Tropics
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_NRM_Wet_Tropics.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_NRM_Wet_Tropics.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Wet_Tropics_baseline2015.png)
 
 #### Burdekin
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_NRM_Burdekin.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_NRM_Burdekin.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Burdekin_baseline2015.png)
 
 #### Mackay Whitsunday
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_NRM_Mackay_Whitsunday.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_NRM_Mackay_Whitsunday.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Mackay_Whitsunday_baseline2015.png)
 
 #### Fitzroy
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_NRM_Fitzroy.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_NRM_Fitzroy.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Fitzroy_baseline2015.png)
 
 #### Burnett Mary
 
 Original
-![](../output/figures/indicator_checks/plot_JU_scores_NRM_Burnett_Mary.png)
+![](../output/figures/indicator_checks/original_baselines/plot_JU_scores_NRM_Burnett_Mary.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Burnett_Mary_baseline2015.png)
 
 ### Recovery Performance {.tabset .tabset-faded}
 
 #### Cape York
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Cape_York.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Cape_York.png)
 
-Change
+Baselines to 2015
 
 #### Wet Tropics
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Wet_Tropics.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Wet_Tropics.png)
 
-Change
+Baselines to 2015
 
 #### Burdekin
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Burdekin.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Burdekin.png)
 
-Change
+Baselines to 2015
 
 #### Mackay Whitsunday
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Mackay_Whitsunday.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Mackay_Whitsunday.png)
 
-Change
+Baselines to 2015
 
 #### Fitzroy
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Fitzroy.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Fitzroy.png)
 
-Change
+Baselines to 2015
 
 #### Burnett Mary
 
 Original
-![](../output/figures/indicator_checks/plot_RPI_scores_NRM_Burnett_Mary.png)
+![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Burnett_Mary.png)
 
-Change
+Baselines to 2015
 
 ### Community Composition {.tabset .tabset-faded}
+
+I did not make any changes to the original version of the community composition code, so I'm not sure what the source of the differences are between the DMS data and the September 2025 rerun.
 
 #### Cape York
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_NRM_Cape_York.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_NRM_Cape_York.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Cape_York_baseline2015.png)
 
 #### Wet Tropics
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_NRM_Wet_Tropics.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_NRM_Wet_Tropics.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Wet_Tropics_baseline2015.png)
 
 #### Burdekin
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_NRM_Burdekin.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_NRM_Burdekin.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Burdekin_baseline2015.png)
 
 #### Mackay Whitsunday
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_NRM_Mackay_Whitsunday.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_NRM_Mackay_Whitsunday.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Mackay_Whitsunday_baseline2015.png)
 
 #### Fitzroy
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_NRM_Fitzroy.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_NRM_Fitzroy.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Fitzroy_baseline2015.png)
 
 #### Burnett Mary
 
 Original
-![](../output/figures/indicator_checks/plot_CO_scores_NRM_Burnett_Mary.png)
+![](../output/figures/indicator_checks/original_baselines/plot_CO_scores_NRM_Burnett_Mary.png)
 
-Change
+Baselines to 2015
+![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Burnett_Mary_baseline2015.png)
 
+## Juvenile scaling tests {.tabset .tabset-faded}
+
+So far, I've tested how the capping affects the scaling and score distribution. It looks like different caps might be appropriate for inshore vs offshore in both the reference metric and the contextual metric.
+Alternatively, maybe we need to try a diffferent distance calculation.
+
+The distance calculation for CC, MA and JU are all different. Is there a consistent approach we can use for all three? It especially looks like the Acropora juveniles distance calculation needs a revisit. These are the distance calculations:
+
+CC
+
+reference  
+
+- plogis(log2(value/baseline))
+
+context  
+
+- log2(value/0.2)
+
+
+MA
+
+reference  
+
+- plogis(log2(baseline/value))
+
+context
+
+rescale only?  
+
+- ifelse(value <= consequence, scales::rescale(value, from = c(0, consequence), to = c(1, 0)), 0)
+
+JU
+
+reference  
+
+- log2(baseline/value)
+
+context  
+
+- log2(baseline/value)
+
+The following plots are a horizontal sequence, plotting the distributions for the baseline, then the predictions, then the distance, then the capped distance, then the scores, then a histogram of the scores.
+
+Each row changes at the capped distance plot, showing the effect of three different capping strategies.
+
+The distributions are separated by bioregions, depth and shelf.
+
+Blue is shallow, pink is deep.
+
+I can follow up on this from 7th October when I'm back.
+
+For now, I have set reference cap to -2,2 and left the contextual cap at -3,3, although I think these need revisiting.
+
+### Total AKA reference metric
+![](../output/figures/indicator_checks/original_baselines/plot_JUV_total_rescale_options.png)
+
+### Acropora AKA contextual metric
+![](../output/figures/indicator_checks/original_baselines/plot_JUV_Acropora_rescale_options.png)

@@ -336,20 +336,25 @@ CI_models_JU_preds <- function() {
 
 
 CI__index_JU <- function(dat, taxa, baselines) {
+    cap_low <- if (taxa == "Total") -2 else -3  #KC - changed caps for reference score to -2,2. May still need tweaking
+    cap_high <- if (taxa == "Total") 2 else 3
+
     dat %>%
         left_join(baselines %>%
                   filter(Taxa == taxa) %>%
                   dplyr::rename(baseline = value)) %>%
         mutate(
-            distance.met = log2(baseline/value),
-            cap.dist.met = as.numeric(case_when(distance.met < -3 ~ -3, #KC - The capping at log2(-3 or 3) is outrageous as represents 8* the baseline to score a 1! 
-                                              distance.met > 3 ~3,
-                                              distance.met > -3 & distance.met < 3 ~
-                                                  distance.met)),
-            rescale.dist.metric = scales::rescale(cap.dist.met, from = c(-3, 3), to = c(1, 0))) %>%
+            distance.met = log2(baseline / value),
+            cap.dist.met = as.numeric(case_when(
+                distance.met < cap_low ~ cap_low,
+                distance.met > cap_high ~ cap_high,
+                distance.met >= cap_low & distance.met <= cap_high ~ distance.met
+            )),
+            rescale.dist.metric = scales::rescale(cap.dist.met, from = c(cap_low, cap_high), to = c(1, 0))
+        ) %>%
         dplyr::select(-any_of(ends_with("met"))) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
-        filter(!is.na(REEF.d)) %>% 
+        filter(!is.na(REEF.d)) %>%
         suppressMessages() %>%
         suppressWarnings()
 }

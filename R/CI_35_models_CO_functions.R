@@ -34,7 +34,7 @@ CI_models_CO_prepare_data <- function() {
             mutate(StartYR = min(REPORT_YEAR),
                    EndYR = max(REPORT_YEAR),
                    SurveyDuration = EndYR - StartYR) %>% 
-            filter(EndYR >= 2016,
+            filter(EndYR >= 2015,
                    SurveyDuration >= 5) %>%
             droplevels() %>%
             pivot_wider(id_cols = everything(),
@@ -535,7 +535,7 @@ CI_models_CO_calc_deviation <- function() {
         load(file = paste0(DATA_PATH, 'modelled/reef.nmds.RData'))
 
         ## Deviation indicator (high LOF k value with a reference
-        ## period (here - 1995 to 2016) to detect changes in community
+        ## period (here - 1995 to 2015) to detect changes in community
         ## composition from a previous understanding of reef state)
         GBR.LOF.deviation <- coral.comms %>%
             ungroup() %>%
@@ -552,7 +552,7 @@ CI_models_CO_calc_deviation <- function() {
                    Deviation = map(.x = Composition_data,
                                    .f = ~ LOF.Ref(commData=.x,
                                                   k=6, 
-                                                  timecutoff = c(1995, 2016),
+                                                  timecutoff = c(1995, 2015),
                                                   method='bray')),
                    ## adjust sigmoid.a value to change the sensitivity
                    ## of LOF value threshold.
@@ -880,7 +880,7 @@ Comb.plot <- function(df, reef.name, pool.k) {
                              c('Year','NMDS1','NMDS2')]),
               aes(x=NMDS1, y=NMDS2)) +
     geom_point(data=df[df$Reef==reef.name &
-                         df$Year %in% c(1995:2016),],
+                         df$Year %in% c(1995:2015),],
                aes(x=NMDS1, y=NMDS2), color='forestgreen', size=7, alpha=0.5) +
     geom_point(data=unique(df[df$Reef==reef.name,
                               c('Year','NMDS1','NMDS2')]),

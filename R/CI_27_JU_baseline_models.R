@@ -36,7 +36,7 @@ CI_27_JU_baseline_models <- function() {
         source('../R/CI_26_CC_baseline_models_functions.R') # KC - Added by AT. includes the function CI_clean_inla_formula.R
 
         load(paste0(DATA_PATH, 'processed/juv.df.RData'))
-        juv.df<-juv.df |>  filter(REPORT_YEAR<2022)  # AT added as states in the methods document that obs up to 2021 used in the baseline
+        juv.df<-juv.df |>  filter(REPORT_YEAR<=2015)  # AT added as states in the methods document that obs up to 2021 used in the baseline
 
         gbrmpa <- get(load(paste0(DATA_PATH, 'primary/gbrmpa.RData')))
         ## load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
@@ -50,8 +50,8 @@ CI_27_JU_baseline_models <- function() {
                    Latitude = st_coordinates(.)[,2]) %>%
             select(Longitude, Latitude) %>%
             st_drop_geometry() %>%
-            as.matrix() #%>%
-            #inla.nonconvex.hull() #KC - The package splancs need to be installed. What effect does this have?
+            as.matrix() %>%
+            inla.nonconvex.hull()
 
 
         fitModel_JU <- function(form, stack.est, spde, avail.area,family = 'poisson') {

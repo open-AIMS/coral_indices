@@ -317,6 +317,17 @@ CI__index_CC <- function(dat, baselines) {
                                                     from = list(plogis(log2(1/baseline)), 0.5),
                                                     to = c(1, 0.5)),
                                          calc.met),
+            
+            #KC - this is copilots suggestion for scale values above 0.8 to 1, I haven't implemented it yet
+
+            # calc.met = plogis(log2(value/baseline)),
+            # rescale.dist.metric = case_when(
+            #     value >= 0.8 ~ 1,
+            #     value >= baseline ~ my_rescale(calc.met,
+            #                                    from = list(plogis(log2(1/baseline)), 0.5),
+            #                                    to = c(1, 0.5)),
+            #     TRUE ~ calc.met
+            # ),
             pcb.distance.met = log2(value/0.2),
             pcb.cap.dist.met = as.numeric(case_when(pcb.distance.met < -1 ~ -1,
                                                     pcb.distance.met > 1 ~ 1,

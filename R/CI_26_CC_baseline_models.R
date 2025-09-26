@@ -43,7 +43,7 @@ CI_26_CC_baseline_models <- function() {
         getSource <- FALSE
         while (!getSource) {
             try({
-                gbr <- st_read(paste0("https://services8.arcgis.com/",
+                gbr <- st_read(paste0("https://services8.arcgis.com/", ##KC - this has stopped working, says I need a token
                                       "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
                                       "Great_Barrier_Reef_Marine_Park_Boundary/",
                                       "FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"),
@@ -183,12 +183,15 @@ CI_26_CC_baseline_models <- function() {
                       total.points = sum(total.points))
 
         points.full <- points.site %>%
-            filter(REPORT_YEAR < 2011) %>%
+            filter(REPORT_YEAR <= 2015) %>%
             droplevels() %>%
             group_by(REEF.d) %>%
             mutate(LONGITUDE = mean(LONGITUDE),
                    LATITUDE = mean(LATITUDE))
 
+##KC added because I don't have access to 
+gbr <- read_sf(paste0(DATA_PATH,'spatial/GBRMP boundary/Great_Barrier_Reef_Marine_Park_Boundary.shp')) #%>%
+  #st_transform(3857)
 
         bndry <- gbr %>%
             st_transform(4326) %>%
@@ -197,8 +200,8 @@ CI_26_CC_baseline_models <- function() {
                    Latitude = st_coordinates(.)[,2]) %>%
             select(Longitude, Latitude) %>%
             st_drop_geometry() %>%
-            as.matrix() #%>%
-            #inla.nonconvex.hull() #KC - I don't have splancs. Not sure what the impact is of not using this
+            as.matrix() %>%
+            inla.nonconvex.hull() 
 
         ## Model separately per depth
         mods <- points.site %>%

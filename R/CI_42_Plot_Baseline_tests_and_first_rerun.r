@@ -24,10 +24,9 @@ glimpse(indicators_all)
 #***********************
 # MA baselines
 #***********************
-load(file = paste0(DATA_PATH, 'modelled/MA__baseline_posteriors.RData'))
-#glimpse(baselines)
-
-MA_baseline_summaries<- baselines |> 
+load(file = paste0(DATA_PATH, 'modelled/MA__baseline_posteriors_2021.RData'))
+MA.baselines.original<-baselines
+MA_baseline_summaries_original<- MA.baselines.original |> 
   group_by(BIOREGION.agg, REEF.d, Model) |> 
   summarise(
     lower = quantile(value, 0.025),
@@ -35,7 +34,38 @@ MA_baseline_summaries<- baselines |>
     median = median(value),
     .groups = "drop"
   ) |> 
-  arrange(BIOREGION.agg, REEF.d, Model)
+  arrange(BIOREGION.agg, REEF.d, Model) |>
+  mutate(baseline_period="2021")
+
+load(file = paste0(DATA_PATH, 'modelled/MA__baseline_posteriors_2015.RData'))
+MA.baselines.2015<-baselines
+MA_baseline_summaries_2015<- MA.baselines.2015 |> 
+  group_by(BIOREGION.agg, REEF.d, Model) |> 
+  summarise(
+    lower = quantile(value, 0.025),
+    upper = quantile(value, 0.975),
+    median = median(value),
+    .groups = "drop"
+  ) |> 
+  arrange(BIOREGION.agg, REEF.d, Model) |>
+  mutate(baseline_period="2015")
+
+load(file = paste0(DATA_PATH, 'modelled/MA__baseline_posteriors_2010.RData'))
+MA.baselines.2010<-baselines
+MA_baseline_summaries_2010<- MA.baselines.2010 |> 
+  group_by(BIOREGION.agg, REEF.d, Model) |> 
+  summarise(
+    lower = quantile(value, 0.025),
+    upper = quantile(value, 0.975),
+    median = median(value),
+    .groups = "drop"
+  ) |> 
+  arrange(BIOREGION.agg, REEF.d, Model) |>
+  mutate(baseline_period="2010")
+
+MA_baselines_compare<-rbind(MA_baseline_summaries_original, MA_baseline_summaries_2010, MA_baseline_summaries_2015)
+
+
 
 #if it doesn't already exist, create a directory inside output/figures called 'indicator_checks'
 if(!dir.exists(paste0(FIGS_PATH, '/indicator_checks'))){
@@ -43,14 +73,22 @@ if(!dir.exists(paste0(FIGS_PATH, '/indicator_checks'))){
 }
 
 # Loop over each level of 'Model' and generate a plot for each
-models <- unique(MA_baseline_summaries$Model)
+models <- unique(MA_baselines_compare$Model)
 for (mod in models) {
-  plot_data <- MA_baseline_summaries |> filter(Model == mod) |> droplevels()
-  plot_MA_baselines <- ggplot(plot_data, aes(x = REEF.d, y = median)) +
-    geom_point(size = 4) +
+
+    baseline_period_colors <- c(
+      "2010" = "#eedb0eff",
+      "2015" = "#ea9901ff",
+      "2021" = "#d9370aff"
+    )
+
+  plot_data <- MA_baselines_compare |> filter(Model == mod) |> droplevels()
+  plot_MA_baselines <- ggplot(plot_data, aes(x = REEF.d, y = median, colour=baseline_period)) +
+  scale_color_manual(values = baseline_period_colors)+
+    geom_point(size = 4, position = position_dodge(width = 0.5)) +
     geom_linerange(
       aes(ymin = lower, ymax = upper),
-      alpha = 0.2
+      alpha = 0.5, position = position_dodge(width = 0.5), size=2
     ) +
     facet_wrap(~ BIOREGION.agg, scales = "free_x") +
     theme_classic() +
@@ -60,7 +98,7 @@ for (mod in models) {
     ggtitle(paste("MA Baselines -", mod))
   
   ggsave(
-    filename = paste0(FIGS_PATH, '/indicator_checks/plot_MA_baselines_', mod, '.png'),
+    filename = paste0(FIGS_PATH, '/indicator_checks/plot_MA_baselines_', mod, '_compare.png'),
     plot = plot_MA_baselines, width = 20, height = 15
   )
 }
@@ -199,9 +237,8 @@ for (nrm in unique_nrm) {
 # CC baselines
 #***********************
 load(file = paste0(DATA_PATH, 'modelled/CC__baseline_posteriors.RData'))
-#glimpse(baselines)
-
-CC_baseline_summaries<- baselines |> 
+CC.baselines.original<-baselines
+CC_baseline_summaries_original<- CC.baselines.original |> 
   group_by(BIOREGION.agg, DEPTH.f) |> 
   summarise(
     lower = quantile(value, 0.025),
@@ -209,15 +246,38 @@ CC_baseline_summaries<- baselines |>
     median = median(value),
     .groups = "drop"
   ) |> 
-  arrange(BIOREGION.agg, DEPTH.f)
+  arrange(BIOREGION.agg, DEPTH.f)|>
+  mutate(baseline_period="2010")
+
+load(file = paste0(DATA_PATH, 'modelled/CC__baseline_posteriors_2015.RData'))
+CC.baselines.2015<-baselines
+CC_baseline_summaries_2015<- CC.baselines.2015 |> 
+  group_by(BIOREGION.agg, DEPTH.f) |> 
+  summarise(
+    lower = quantile(value, 0.025),
+    upper = quantile(value, 0.975),
+    median = median(value),
+    .groups = "drop"
+  ) |> 
+  arrange(BIOREGION.agg, DEPTH.f)|>
+  mutate(baseline_period="2015")
+
+CC_baselines_compare<-rbind(CC_baseline_summaries_original, CC_baseline_summaries_2015)
 
 #plot the median and 95% credible intervals of the posterior distributions (named 'value') for each reef/model combination and facet by BIOREGION
-plot_CC_baselines<-ggplot(CC_baseline_summaries,
-aes(x = BIOREGION.agg, y = median*100)) +
-  geom_point(size = 4) +
+
+ baseline_period_colors <- c(
+      "2010" = "#eedb0eff",
+      "2015" = "#ea9901ff"
+    )
+
+plot_CC_baselines<-ggplot(CC_baselines_compare,
+aes(x = BIOREGION.agg, y = median*100, colour=baseline_period)) +
+  scale_color_manual(values = baseline_period_colors)+
+  geom_point(size = 4, position = position_dodge(width = 0.5)) +
   geom_linerange(
-    aes(ymin = lower*100, ymax = upper*100),
-    alpha = 0.2
+    aes(ymin = lower*100, ymax = upper*100, ),
+    alpha = 0.5, position = position_dodge(width = 0.5), size=2
   ) +
   ylab("Hard coral cover (%)") +
   geom_hline(yintercept = 20, color = "red", linetype = "dashed") +
@@ -227,7 +287,7 @@ aes(x = BIOREGION.agg, y = median*100)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_CC_baselines.png'), 
+ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_CC_baselines_compare.png'), 
         plot = plot_CC_baselines, width = 10, height = 10)
 
 #***********************
@@ -366,8 +426,8 @@ for (nrm in unique_nrm) {
 # JU baselines
 #***********************
 load(file = paste0(DATA_PATH, 'modelled/JU__baseline_posteriors.RData'))
-#glimpse(baselines)
-JU_baseline_summaries<- baselines |> 
+JU_baselines_original<-baselines
+JU_baseline_summaries_original<- JU_baselines_original |> 
   group_by(BIOREGION.agg, DEPTH.f, Taxa) |> 
   summarise(
     lower = quantile(value, 0.025),
@@ -375,25 +435,68 @@ JU_baseline_summaries<- baselines |>
     median = median(value),
     .groups = "drop"
   ) |> 
-  arrange(BIOREGION.agg, DEPTH.f, Taxa)
+  arrange(BIOREGION.agg, DEPTH.f, Taxa) |>
+  mutate(baseline_period="2021")
+
+load(file = paste0(DATA_PATH, 'modelled/JU__baseline_posteriors_2010.RData'))
+JU_baselines_2010<-baselines
+JU_baseline_summaries_2010<- JU_baselines_2010 |> 
+  group_by(BIOREGION.agg, DEPTH.f, Taxa) |> 
+  summarise(
+    lower = quantile(value, 0.025),
+    upper = quantile(value, 0.975),
+    median = median(value),
+    .groups = "drop"
+  ) |> 
+  arrange(BIOREGION.agg, DEPTH.f, Taxa) |>
+  mutate(baseline_period="2010")
+
+load(file = paste0(DATA_PATH, 'modelled/JU__baseline_posteriors_2015.RData'))
+JU_baselines_2015<-baselines
+JU_baseline_summaries_2015<- JU_baselines_2015 |> 
+  group_by(BIOREGION.agg, DEPTH.f, Taxa) |> 
+  summarise(
+    lower = quantile(value, 0.025),
+    upper = quantile(value, 0.975),
+    median = median(value),
+    .groups = "drop"
+  ) |> 
+  arrange(BIOREGION.agg, DEPTH.f, Taxa) |>
+  mutate(baseline_period="2015")
+
+JU_baselines_compare<-rbind(JU_baseline_summaries_original, JU_baseline_summaries_2010, JU_baseline_summaries_2015)
 
 #plot the median and 95% credible intervals of the posterior distributions (named 'value') for each reef/model combination and facet by BIOREGION
-plot_JU_baselines<-ggplot(JU_baseline_summaries, 
-aes(x = BIOREGION.agg, y = median, colour=Taxa)) +
-  geom_point(size = 4) +
-  geom_linerange(
-    aes(ymin = lower, ymax = upper),
-    alpha = 0.2
-  ) +
-  facet_wrap(~ DEPTH.f, scales = "free_x", nrow=2) +
-  theme_classic() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-  labs(y = "Juvenile abundance (?)")
+# Loop over each level of Taxa and generate a plot for each
+taxa_levels <- unique(JU_baselines_compare$Taxa)
+for (tax in taxa_levels) {
 
-ggsave(filename = paste0(FIGS_PATH, '/indicator_checks/plot_JU_baselines.png'), 
-        plot = plot_JU_baselines, width = 10, height = 10)
+   baseline_period_colors <- c(
+      "2010" = "#eedb0eff",
+      "2015" = "#ea9901ff",
+      "2021" = "#d9370aff"
+    )
+  plot_data <- JU_baselines_compare |> filter(Taxa == tax) |> droplevels()
+  plot_JU_baselines <- ggplot(plot_data, 
+    aes(x = BIOREGION.agg, y = median, colour = baseline_period)) +
+    scale_color_manual(values = baseline_period_colors) +
+    geom_point(size = 4, position = position_dodge(width = 0.5)) +
+    geom_linerange(
+      aes(ymin = lower, ymax = upper),
+      alpha = 0.5, position = position_dodge(width = 0.5), size = 2
+    ) +
+    facet_wrap(~ DEPTH.f, scales = "free_x", nrow = 2) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    ) +
+    labs(y = "Juvenile abundance (?)", title = paste("JU Baselines -", tax))
+  
+  ggsave(
+    filename = paste0(FIGS_PATH, '/indicator_checks/plot_JU_baselines_', gsub(" ", "_", tax), '_compare.png'),
+    plot = plot_JU_baselines, width = 10, height = 10
+  )
+}
 
 #***********************
 # JU Indicator trends Reef

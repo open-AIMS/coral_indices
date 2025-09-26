@@ -20,7 +20,7 @@ CI_25_MA_baseline_models <- function() {
           mutate(P_CODE=as.factor(P_CODE),
                  REPORT_YEAR=as.numeric(as.character(REPORT_YEAR))) %>%
           filter(REPORT_YEAR >2005,
-                 REPORT_YEAR <= 2021,
+                 REPORT_YEAR <= 2015,
                  DEPTH<9.1) |> 
           mutate(fYEAR = factor(REPORT_YEAR),
                  Site = factor(paste0(REEF.d, SITE_NO)),
@@ -44,7 +44,7 @@ CI_25_MA_baseline_models <- function() {
 
         points <- baseline.points %>%
             filter(REPORT_YEAR >2005,
-                   REPORT_YEAR <= 2021,
+                   REPORT_YEAR <= 2015,
                    DEPTH.f=="shallow slope") %>% 
             droplevels()
         
@@ -144,7 +144,7 @@ CI_25_MA_baseline_models <- function() {
         ## Deep=======================================================================================
         points <- baseline.points %>%
           filter(REPORT_YEAR >2005,
-                 REPORT_YEAR <= 2021,
+                 REPORT_YEAR <= 2015,
                  DEPTH.f=="deep slope",
                  Shelf=='Inshore') %>% 
           droplevels()
@@ -254,7 +254,7 @@ CI_25_MA_baseline_models <- function() {
 
         points <- baseline.points %>%
           filter(REPORT_YEAR >2005,
-                 REPORT_YEAR <= 2021,
+                 REPORT_YEAR <= 2015,
                  Shelf=='Offshore') %>% 
           droplevels()
           
@@ -274,8 +274,6 @@ CI_25_MA_baseline_models <- function() {
         ## STEP 4 - create mesh
         gbr.sf <- sf::read_sf('../data/spatial/GBRMP boundary/Great_Barrier_Reef_Marine_Park_Boundary.shp')
 
-        #KC - function 'inla.nonconvex.hull()' doesn't work because it needs 'splancs', which isn't installed. what does it do?
-
         bndry <- gbr.sf %>%
             st_transform(4326) %>%
             st_cast('POINT') %>%
@@ -283,8 +281,8 @@ CI_25_MA_baseline_models <- function() {
                    Latitude = st_coordinates(.)[,2]) %>%
             select(Longitude, Latitude) %>%
             st_drop_geometry() %>%
-            as.matrix() #%>%
-        #     inla.nonconvex.hull()
+            as.matrix() %>%
+             inla.nonconvex.hull()
         mesh <- inla.mesh.2d(
             loc = points.coords,
             boundary = bndry,
