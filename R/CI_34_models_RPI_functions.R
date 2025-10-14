@@ -1059,7 +1059,8 @@ CI_process_rpi_configs <- function() {
         if (RPI_PURPOSE == "reference") min_obs <<- 2.0
         if (RPI_PURPOSE == "critical") min_obs <<- 1.0
         start_date  <<- lubridate::ymd("1990-01-01") 
-        end_date    <<- lubridate::ymd("2022-01-01")
+        #end_date    <<- lubridate::ymd("2022-01-01") #KC - This probably needs to be not fixed
+        end_date    <<- lubridate::today() # Use current date
 
         DATA_DIR                  <<- paste0(DATA_PATH, "primary/")
         MODEL_DIR                 <<- paste0("../R/externalFunctions/")
@@ -2020,7 +2021,7 @@ CI__fit_coral_growth_model <- function(filt.rec.traj.proc.critical, YR) {
 
             ## one ahead, remove last (N) observation
             n <- dim(traj)[1]
-            traj <- traj[1:(n-1), ]
+            #traj <- traj[1:(n-1), ] #KC - testing new approach 08/10/2025
 
             ## build data object
             data <- list(nVisits = length(traj$HC[-1]),         # number of visits excluding initial visit
@@ -2073,9 +2074,9 @@ CI_process_rpi_gather_posteriors <- function() {
                        pmap(.l = list(REPORT_YEAR, n, filt.rec.traj.proc.mcmc.res.critical,
                                       filt.rec.traj.proc.critical),
                            .f = ~ {
-                               CI__append_label(stage = CI__get_stage(),
-                                                item = paste0('process_rpi_gather_', RPI_PURPOSE),
-                                                ..2, N)
+                            #    CI__append_label(stage = CI__get_stage(),
+                            #                     item = paste0('process_rpi_gather_', RPI_PURPOSE),
+                            #                     ..2, N) #KC - this are not working when I work interactively. I don't know why. I think they are only affecting the console dashboard status??
                                YR <- ..1
                                nm <- ..3
                                .x <- get(load(nm)) 
@@ -2108,7 +2109,7 @@ CI_process_rpi_gather_posteriors <- function() {
 }
 
 CI__gather_posteriors <- function(filt.rec.traj.proc.mcmc.res.critical, YR,
-                                  filt.rec.traj.proc.critical, type = "critical") {
+                                  filt.rec.traj.proc.critical, type = "critical" ) { #type = "critical" #KC - doesn't this fix the type?
     current.report.year <- YR 
     ## load(file=paste(PROC_DATA_DIR,
     ##                 sprintf(FILTER_REFMT_OUT_DATA_FMT,max_init,min_final,min_obs)
@@ -2539,7 +2540,7 @@ CI_process_rpi_predict_last <- function() {
                                } else { 
                                    pred.df.critical.obs3 <- CI__predict_last_obs(.x, .x1, YR)
                                }
-                               nm <- str_replace(nm, "stage.", "stage7")
+                               nm <- str_replace(nm, "stage.", "stage7") #KC - should this say "stage6" instead of "stage."?
                                save(pred.df.critical.obs3, file = nm)
                                nm
                            }
@@ -2613,7 +2614,7 @@ CI_process_rpi_predict_last_less3 <- function() {
 CI__predict_last_obs <- function(filt.rec.traj.critical,
                                  rm.poor.chains.critical,
                                  YR,
-                                 type = "critical"
+                                 type = "critical" #KC - doesn't this 'fix' the type?
                                  ) {
     current.report.year <- YR 
     ## load benthic data
@@ -2688,7 +2689,7 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
             ##use predict.ongoing.random with N=1
             try({
                 if (type == 'critical') {
-                    current.traj.preds <- predict.ongoing.random(rpid.parameters,
+                    current.traj.preds <- predict.5yrs.post.disturbance(rpid.parameters,
                                                                  ongoing.site.a,
                                                                  model,1)  %>%
                         left_join(ongoing.site.a %>%
@@ -2698,7 +2699,7 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
                                         #save(current.traj.preds, file=paste0(MCMC_OUTPUT_DIR, "current.traj.preds.", s, ".depth.", d, ".", y, ".RData"))
                 
                 } else if (type == 'previous') {
-                    current.traj.preds <- predict.previous.random(rpid.parameters,
+                    current.traj.preds <- predict.5yrs.post.disturbance.from.previous(rpid.parameters,
                                                                  ongoing.site.a,
                                                                  model,1)  %>%
                         left_join(ongoing.site.a %>%

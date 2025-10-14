@@ -1,5 +1,5 @@
 source('../R/functions.R')
-CI_fakeArgs(1)
+#CI_fakeArgs(1)
 ## singularity exec -B .:/home/Project ../coral_indicators.sif Rscript 00_main.R --final_year=2023 --fresh_start=true --runStage=1:5 --rerun_baselines=true
 
 if (CI_isParent()) CI_startMatter()

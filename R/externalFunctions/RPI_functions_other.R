@@ -261,3 +261,131 @@ predict.from.fixed.HCstart <- function(baseline.df, model, N, spec.time, HC.star
   }
   return(preds)
 }
+
+predict.5yrs.post.disturbance <- function(baseline.df, ongoing.df,model,N){
+  traj.ids <- ongoing.df %>% select(c("RP_ID")) %>% unique() 
+  # for each ongoing trajectory
+  preds <- data.frame(HC_PRED = c(), RP_ID = c())
+  for (traj.id in traj.ids$RP_ID){
+    # use all samples across past individual estimates
+    rp.mcmc <- baseline.df %>% 
+      ungroup() %>% 
+      select(c("Iteration", "Chain", "RP_ID", "Parameter","value")) %>% 
+      spread(key=Parameter,value=value) %>% 
+      select(-c("Chain","Iteration","RP_ID"))
+    
+    #For 1 parameter per draw, comment these three lines out
+    #Nall <- nrow(rp.mcmc)
+    #pps <- rep(0,N)
+    #samples <- sample(Nall,N,replace=FALSE)
+    
+    traj.rp.id <- ongoing.df  %>% filter(RP_ID == traj.id)
+    for (draw.id in 1:1000){
+      # for 1 parameter per draw
+      Nall <- nrow(rp.mcmc)
+      pps <- rep(0,N)
+      samples <- sample(Nall,N,replace=FALSE)
+      
+      # get obs n and HC n-1 and T of n-1
+      traj <- traj.rp.id %>% filter(TRANSECT_NO == draw.id) %>% arrange(REPORT_YEAR) %>%
+        mutate(T = as.double(Date - Date[1])) # days until 5 years past Date[1]
+      n <- nrow(traj)
+      # build data object 
+      data <- list(nVisits = 1, c0 = traj$HC[n],t0 = traj$T[n]/365.0, 
+                   ts = 5, K = K.limit - traj$AB[n],  #KC - testing new approach 9/10/2025
+                   #C = traj$HC[n], Serr = traj$lower.error[n])
+                   #C = traj$HC[n], 
+                   #Serr = traj$HC_se[n])
+                   Serr = 0.0)
+      
+      for (i in 1:N){
+
+        if (traj$T[n] >= 1826.25 & traj$HC[n] < 20) {
+             pps[i] <- 0      #KC - testing new approach 9/10/2025
+            } 
+
+        if (traj$T[n] >= 1826.25 & traj$HC[n] >= 20) {
+             pps[i] <- "NA"      #KC - testing new approach 9/10/2025
+            } 
+            
+        if (traj$T[n] < 1826.25) {
+
+        theta <- as.numeric(rp.mcmc[samples[i],])
+        names(theta) <- names(rp.mcmc[samples[i],])
+        sim <- model$like_sampler(data,model,theta)
+        pps[i] <- sim[2]
+        }
+
+      }
+      rp.mcmc.pred <- data.frame(HC_PRED = as.numeric(pps), TRANSECT_NO = rep(draw.id,N), RP_ID = rep(traj.id,N),
+                                 #HC_OBS = rep(traj$HC[n],N),HC_se = rep(traj$lower.error[n],N))
+                                 HC_OBS = rep(traj$HC[n],N))#,HC_se = rep(traj$HC_se[n],N))
+      preds <- rbind(preds,rp.mcmc.pred)
+    }
+  }
+  return(preds)
+}
+
+predict.5yrs.post.disturbance.from.previous <- function(baseline.df, ongoing.df,model,N){
+  traj.ids <- ongoing.df %>% select(c("RP_ID")) %>% unique() 
+  # for each ongoing trajectory
+  preds <- data.frame(HC_PRED = c(), RP_ID = c())
+  for (traj.id in traj.ids$RP_ID){
+    # use all samples across past individual estimates
+    rp.mcmc <- baseline.df %>% 
+      ungroup() %>% 
+      select(c("Iteration", "Chain", "previous.RP_ID", "Parameter","value")) %>% 
+      spread(key=Parameter,value=value) %>% 
+      select(-c("Chain","Iteration","previous.RP_ID"))
+    
+    #For 1 parameter per draw, comment these three lines out
+    #Nall <- nrow(rp.mcmc)
+    #pps <- rep(0,N)
+    #samples <- sample(Nall,N,replace=FALSE)
+    
+    traj.rp.id <- ongoing.df  %>% filter(RP_ID == traj.id)
+    for (draw.id in 1:1000){
+      # for 1 parameter per draw
+      Nall <- nrow(rp.mcmc)
+      pps <- rep(0,N)
+      samples <- sample(Nall,N,replace=FALSE)
+      
+      # get obs n and HC n-1 and T of n-1
+      traj <- traj.rp.id %>% filter(TRANSECT_NO == draw.id) %>% arrange(REPORT_YEAR) %>%
+        mutate(T = as.double(Date - Date[1])) #KC - testing new approach 9/10/2025
+      n <- nrow(traj)
+      # build data object 
+      data <- list(nVisits = 1, c0 = traj$HC[n],t0 = traj$T[n]/365.0, 
+                   ts = 5, K = K.limit - traj$AB[n], 
+                   #C = traj$HC[n], Serr = traj$lower.error[n])
+                   #C = traj$HC[n], 
+                   #Serr = traj$HC_se[n])
+                   Serr = 0.0)
+      
+      for (i in 1:N){
+
+         if (traj$T[n] >= 1826.25 & traj$HC[n] < 20) {
+             pps[i] <- 0      #KC - testing new approach 9/10/2025
+            } 
+
+        if (traj$T[n] >= 1826.25 & traj$HC[n] >= 20) {
+             pps[i] <- "NA"      #KC - testing new approach 9/10/2025
+            } 
+            
+        if (traj$T[n] < 1826.25) {
+
+        theta <- as.numeric(rp.mcmc[samples[i],])
+        names(theta) <- names(rp.mcmc[samples[i],])
+        sim <- model$like_sampler(data,model,theta)
+        pps[i] <- sim[2]
+
+            }
+      }
+      rp.mcmc.pred <- data.frame(HC_PRED = as.numeric(pps), TRANSECT_NO = rep(draw.id,N), RP_ID = rep(traj.id,N),
+                                 #HC_OBS = rep(traj$HC[n],N),HC_se = rep(traj$lower.error[n],N))
+                                 HC_OBS = rep(traj$HC[n],N))#,HC_se = rep(traj$HC_se[n],N))
+      preds <- rbind(preds,rp.mcmc.pred)
+    }
+  }
+  return(preds)
+}
