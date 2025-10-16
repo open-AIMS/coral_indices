@@ -339,25 +339,48 @@ CI__index_JU <- function(dat, taxa, baselines) {
     cap_low <- if (taxa == "Total") -2 else -3  #KC - changed caps for reference score to -2,2. May still need tweaking
     cap_high <- if (taxa == "Total") 2 else 3
 
-    dat %>%
-        left_join(baselines %>%
-                  filter(Taxa == taxa) %>%
-                  dplyr::rename(baseline = value)) %>%
-        mutate(
-            distance.met = log2(baseline / value),
-            cap.dist.met = as.numeric(case_when(
-                distance.met < cap_low ~ cap_low,
-                distance.met > cap_high ~ cap_high,
-                distance.met >= cap_low & distance.met <= cap_high ~ distance.met
-            )),
-            rescale.dist.metric = scales::rescale(cap.dist.met, from = c(cap_low, cap_high), to = c(1, 0))
-        ) %>%
-        dplyr::select(-any_of(ends_with("met"))) %>%
-        pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
-        filter(!is.na(REEF.d)) %>%
-        suppressMessages() %>%
-        suppressWarnings()
-}
+    if (taxa == "Total") { #KC - changed so that for Acropora (critical) metric only, the score is rescaled where <0.5 = 0
+        dat %>%
+            left_join(baselines %>%
+                    filter(Taxa == taxa) %>%
+                    dplyr::rename(baseline = value)) %>%
+        
+            mutate(
+                distance.met = log2(baseline / value),
+                cap.dist.met = as.numeric(case_when(
+                    distance.met < cap_low ~ cap_low,
+                    distance.met > cap_high ~ cap_high,
+                    distance.met >= cap_low & distance.met <= cap_high ~ distance.met
+                )),
+                rescale.dist.metric = scales::rescale(cap.dist.met, from = c(cap_low, cap_high), to = c(1, 0)), #KC - testing combined metric
+            )  %>%
+            dplyr::select(-any_of(ends_with("met"))) %>%
+            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+            filter(!is.na(REEF.d)) %>%
+            suppressMessages() %>%
+            suppressWarnings()
+            } else {
+            dat %>%
+                    left_join(baselines %>%
+                            filter(Taxa == taxa) %>%
+                            dplyr::rename(baseline = value)) %>%               
+                    mutate(
+                distance.met = log2(baseline / value),
+                cap.dist.met = as.numeric(case_when(
+                    distance.met < cap_low ~ cap_low,
+                    distance.met > cap_high ~ cap_high,
+                    distance.met >= cap_low & distance.met <= cap_high ~ distance.met
+                )),
+                original.rescale.dist.met = scales::rescale(cap.dist.met, from = c(cap_low, cap_high), to = c(1, 0)), #KC - testing combined metric
+                rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
+                )  %>%
+                    dplyr::select(-any_of(ends_with("met"))) %>%
+                    pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+                    filter(!is.na(REEF.d)) %>%
+                    suppressMessages() %>%
+                    suppressWarnings()           
+            }
+    }
 
 
 CI_models_JU_distance <- function() {
@@ -403,13 +426,12 @@ CI_models_JU_distance <- function() {
                                             distinct()) %>%
                                   suppressMessages() %>%
                                   suppressWarnings())) %>% 
-            mutate(Scores = map2(.x = Pred, .y = Taxa,
-                                .f = ~ CI__index_JU(.x, .y, baselines) %>%
-                                    filter(Metric %in% c('rescale.dist.metric',
-                                                         'pcb.rescale.dist.metric')) %>%
+                        mutate(Scores = map2(.x = Pred, .y = Taxa,
+                            .f = ~ CI__index_JU(.x, .y, baselines) %>%
+                                    filter(Metric %in% c('rescale.dist.metric')) %>% #KC - 'pcb.rescale.dist.metric' doesn't actually exist in JU
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
-                               )) %>% #KC - from here, AT creates a new object for Summary, rather than including it in mods, then only saves the Summary. I haven't followed suit yet....
+                        )) %>% #KC - from here, AT creates a new object for Summary, rather than including it in mods, then only saves the Summary. I haven't followed suit yet....
             dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
             ## Since each of Total and Acropora are modelled separately, we need to unnest
             ## the Scores dataframes and then rbind them together for each Reef, before
@@ -418,6 +440,17 @@ CI_models_JU_distance <- function() {
             unnest(Scores) %>%
             dplyr::select(-Metric) %>%
             dplyr::rename(Metric = Taxa) %>%
+            {                                #KC - calculate a combined metric as the average
+                orig_df <- .
+                combined_df <- orig_df %>%
+                    dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg, DEPTH.f, `.value`) %>%
+                    group_by(fYEAR, DEPTH.f, REEF, REEF.d, BIOREGION.agg, .draw) %>%
+                    summarise(`.value` = mean(`.value`), .groups = "drop") %>%
+                    mutate(Metric = "Combined", value = NA, baseline = NA) %>%
+                    relocate(Metric, baseline, `.value`, .after = DEPTH.f) %>%
+                    relocate(value, .after = `.draw`)
+                bind_rows(orig_df, combined_df)
+            } %>%
             group_by(REEF.d) %>% #KC - AT adds DEPTH.f, not copied over yet
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
             dplyr::rename(Scores = data) %>%

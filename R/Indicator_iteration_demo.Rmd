@@ -276,6 +276,9 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_43_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
@@ -285,6 +288,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_6_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 
 #### Bioregion 9 {.tabset .tabset-faded}
@@ -297,6 +304,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_9_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -307,6 +318,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_11_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 
 #### Bioregion 12 {.tabset .tabset-faded}
@@ -319,6 +334,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_12_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
@@ -329,6 +348,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_16_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -336,6 +359,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_16_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -347,6 +374,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_17_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -354,6 +385,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_17_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -365,6 +400,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_18_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -372,6 +411,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_18_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -383,6 +426,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_19_shallow_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
@@ -393,6 +440,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_22_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -400,6 +451,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_22_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -411,6 +466,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_23_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -418,6 +477,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_23_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -429,6 +492,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_26_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
@@ -438,6 +505,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_27_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -449,6 +520,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_29_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -456,6 +531,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_29_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -467,6 +546,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_34_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
@@ -476,6 +559,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_3536_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -487,6 +574,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_37_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
@@ -497,6 +588,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_38_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
@@ -506,6 +601,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_39_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Macroalgae {.tabset .tabset-faded}
 
@@ -521,6 +620,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_43_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
@@ -531,6 +634,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_6_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
@@ -540,6 +647,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_9_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -552,6 +663,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_11_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
@@ -561,6 +676,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_12_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -572,6 +691,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_16_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -579,6 +702,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_16_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -590,6 +717,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_17_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -597,6 +728,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_17_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -608,6 +743,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_18_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -615,6 +754,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_18_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -626,6 +769,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_19_shallow_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
@@ -636,6 +783,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_22_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -643,6 +794,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_22_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -654,6 +809,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_23_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -661,6 +820,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_23_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -672,6 +835,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_26_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
@@ -681,6 +848,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_27_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -692,6 +863,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_29_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -699,6 +874,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_29_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -710,6 +889,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_34_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
@@ -719,6 +902,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_3536_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -730,6 +917,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_37_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
@@ -740,6 +931,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_38_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
@@ -749,6 +944,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_39_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Juveniles {.tabset .tabset-faded}
 
@@ -764,6 +963,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_43_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
@@ -774,6 +977,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_6_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
@@ -783,6 +990,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_9_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -795,6 +1006,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_11_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
@@ -804,6 +1019,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_12_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -815,6 +1034,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_16_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -822,6 +1045,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_16_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -833,6 +1060,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_17_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -840,6 +1071,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_17_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -851,6 +1086,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_18_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -858,6 +1097,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_18_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -869,6 +1112,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_19_shallow_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
@@ -879,6 +1126,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_22_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -886,6 +1137,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_22_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -897,6 +1152,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_23_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -904,6 +1163,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_23_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -915,6 +1178,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_26_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
@@ -924,6 +1191,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_27_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -935,6 +1206,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_29_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -942,6 +1217,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_29_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -952,6 +1231,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_34_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
@@ -964,6 +1247,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_3536_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 37 {.tabset .tabset-faded}
 
 ##### Deep
@@ -973,6 +1260,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_37_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
@@ -984,6 +1275,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_38_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
@@ -993,6 +1288,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_39_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Recovery Performance {.tabset .tabset-faded}
 
@@ -1005,6 +1304,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1013,6 +1316,10 @@ Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_6_deep_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 
 #### Bioregion 9 {.tabset .tabset-faded}
@@ -1024,6 +1331,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -1034,6 +1345,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1042,6 +1357,10 @@ Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_12_deep_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -1052,12 +1371,20 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_16_shallow_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -1068,12 +1395,20 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_17_shallow_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -1084,12 +1419,20 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_18_shallow_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -1100,6 +1443,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1109,12 +1456,20 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_22_shallow_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -1125,12 +1480,20 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_23_shallow_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -1141,6 +1504,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1149,6 +1516,10 @@ Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_27_deep_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -1159,12 +1530,20 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_29_shallow_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -1175,6 +1554,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1183,6 +1566,10 @@ Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_3536_deep_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -1193,6 +1580,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1202,6 +1593,10 @@ Original
 
 Baselines to 2015
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1210,6 +1605,10 @@ Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_39_deep_slope.png)
 
 Baselines to 2015
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Community Composition {.tabset .tabset-faded}
 
@@ -1223,6 +1622,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_43_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1233,6 +1636,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_6_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1242,6 +1649,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_9_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 
 #### Bioregion 11 {.tabset .tabset-faded}
@@ -1254,6 +1665,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_11_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
@@ -1265,6 +1680,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_12_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 16 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1275,6 +1694,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_16_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -1282,6 +1705,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_16_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -1293,6 +1720,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_17_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -1300,6 +1731,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_17_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -1311,6 +1746,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_18_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -1318,6 +1757,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_18_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -1329,6 +1772,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_19_shallow_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1339,6 +1786,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_22_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -1346,6 +1797,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_22_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -1357,6 +1812,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_23_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -1364,6 +1823,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_23_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -1375,6 +1838,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_26_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1384,6 +1851,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_27_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -1395,6 +1866,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_29_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ##### Shallow
 
 Original
@@ -1402,6 +1877,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_29_shallow_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -1413,6 +1892,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_34_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1422,6 +1905,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_3536_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -1433,6 +1920,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_37_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1443,6 +1934,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_38_deep_slope_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1452,6 +1947,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_39_deep_slope_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ## NRM level trends in scores 
 
@@ -1475,6 +1974,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Cape_York_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Wet Tropics
 
 Original
@@ -1482,6 +1985,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Wet_Tropics_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Burdekin
 
@@ -1491,6 +1998,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Burdekin_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Mackay Whitsunday
 
 Original
@@ -1498,6 +2009,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Mackay_Whitsunday_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Fitzroy
 
@@ -1507,6 +2022,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Fitzroy_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Burnett Mary
 
 Original
@@ -1514,6 +2033,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CC_scores_NRM_Burnett_Mary_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Macroalgae {.tabset .tabset-faded}
 
@@ -1525,6 +2048,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Cape_York_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Wet Tropics
 
 Original
@@ -1532,6 +2059,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Wet_Tropics_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Burdekin
 
@@ -1541,6 +2072,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Burdekin_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Mackay Whitsunday
 
 Original
@@ -1548,6 +2083,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Mackay_Whitsunday_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Fitzroy
 
@@ -1557,6 +2096,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Fitzroy_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Burnett Mary
 
 Original
@@ -1564,6 +2107,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_MA_scores_NRM_Burnett_Mary_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Juveniles {.tabset .tabset-faded}
 
@@ -1575,6 +2122,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Cape_York_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Wet Tropics
 
 Original
@@ -1582,6 +2133,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Wet_Tropics_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Burdekin
 
@@ -1591,6 +2146,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Burdekin_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Mackay Whitsunday
 
 Original
@@ -1598,6 +2157,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Mackay_Whitsunday_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Fitzroy
 
@@ -1607,6 +2170,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Fitzroy_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Burnett Mary
 
 Original
@@ -1615,49 +2182,67 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_JU_scores_NRM_Burnett_Mary_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 ### Recovery Performance {.tabset .tabset-faded}
+
+We did not make changes to fix the baseline period to 2015 for this indicator
 
 #### Cape York
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Cape_York.png)
 
-Baselines to 2015
+Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Wet Tropics
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Wet_Tropics.png)
 
-Baselines to 2015
+Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Burdekin
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Burdekin.png)
 
-Baselines to 2015
+Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Mackay Whitsunday
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Mackay_Whitsunday.png)
 
-Baselines to 2015
+Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Fitzroy
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Fitzroy.png)
 
-Baselines to 2015
+Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Burnett Mary
 
 Original
 ![](../output/figures/indicator_checks/original_baselines/plot_RPI_scores_NRM_Burnett_Mary.png)
 
-Baselines to 2015
+Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ### Community Composition {.tabset .tabset-faded}
 
@@ -1671,6 +2256,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Cape_York_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Wet Tropics
 
 Original
@@ -1678,6 +2267,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Wet_Tropics_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Burdekin
 
@@ -1687,6 +2280,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Burdekin_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Mackay Whitsunday
 
 Original
@@ -1694,6 +2291,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Mackay_Whitsunday_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 #### Fitzroy
 
@@ -1703,6 +2304,10 @@ Original
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Fitzroy_baseline2015.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
+
+
 #### Burnett Mary
 
 Original
@@ -1710,6 +2315,10 @@ Original
 
 Baselines to 2015
 ![](../output/figures/indicator_checks/baseline_2015/plot_CO_scores_NRM_Burnett_Mary_baseline2015.png)
+
+Baselines to 2015, Critical score rescaled and Combined score added
+![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
+
 
 ## Juvenile scaling tests {.tabset .tabset-faded}
 

@@ -86,7 +86,10 @@ CI_models_collate_indices <- function() {
                                                  Metric == 'Reference' ~ 'Baseline',
                                                  Metric == 'Critical' ~ 'Critical',
                                                  Metric == 'reference' ~ 'Baseline', #KC added these lower case ones since RPI had lower case metric names, and 'Baseline' and 'Critical' on right side of tilde weren't matching the others either
-                                                 Metric == 'critical' ~ 'Critical'
+                                                 Metric == 'critical' ~ 'Critical',
+                                                 Metric == 'combined.metric' ~ 'Combined', #KC - adding the combined metrics
+                                                Metric == 'consequence.metric' ~ 'Critical',
+                                                 Metric == 'Combined' ~ 'Combined'
                                                  )) %>%
                                       dplyr::select(Level,
                                                     Year = fYEAR,

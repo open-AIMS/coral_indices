@@ -702,7 +702,7 @@ CI__index_MA <- function(dat, baselines, consequence) {
             consequence.metric = ifelse(value <= consequence,
                                         scales::rescale(value,
                                                       from = c(0, consequence), 
-                                                      to = c(1, 0)),
+                                                      to = c(1, 0.5)), #KC - changed so that the threshold sets a score of 0.5, as it does for HC and JU critical metrics
                                         0),
             combined.metric = (distance.metric + consequence.metric)/2 ) %>%
                         dplyr::select(-calc.met) |> #KC - following AT adjustments
@@ -742,7 +742,8 @@ CI_models_MA_distance <- function() {
             mutate(Scores = map(.x = Pred,
                                 .f = ~ CI__index_MA(.x, baselines, ma_from_juv_consequence) %>%
                                     filter(Metric %in% c('distance.metric',
-                                                         'consequence.metric')) %>%
+                                                         'consequence.metric',
+                                                         'combined.metric')) %>% #KC - adding combined metric
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
                                )) %>%

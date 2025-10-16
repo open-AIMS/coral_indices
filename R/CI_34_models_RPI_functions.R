@@ -845,9 +845,9 @@ CI_process_rpi_augment <- function() {
             mutate(ongoing.df = purrr::map2(.x = recovery.trajectories.crp, #KC added purrr::
                                      .y = n,
                                      .f = ~ {
-                                         ## CI__append_label(stage = CI__get_stage(),
-                                         ##                  item = paste0('process_rpi_augment_', RPI_PURPOSE),
-                                         ##                  .y, N)
+                                         CI__append_label(stage = CI__get_stage(),
+                                                          item = paste0('process_rpi_augment_', RPI_PURPOSE),
+                                                          .y, N)
                                          nm <- .x
                                          .x <- get(load(file = nm))
                                          rpi_data <- CI__34_RPI_augment_trajectories(.x)
@@ -3171,7 +3171,8 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
                                            distance.metric > 2 ~2,
                                            distance.metric > -2 &
                                            distance.metric < 2 ~  distance.metric)),
-                   rescale.dist.met = scales::rescale(cap.dist.met, to = c(0,1))) %>%
+                   original.rescale.dist.met = scales::rescale(cap.dist.met, to = c(0,1)), #KC - rescaling critical metric scores <0.5 to 0
+                   rescale.dist.met = ifelse(original.rescale.dist.met<=0.5,0,original.rescale.dist.met)) %>%
             filter(!distance.metric %in% NaN) %>%
             droplevels()
 
@@ -3327,6 +3328,15 @@ CI_models_RPI_distance <- function() {
                               DEPTH.f, .value = index) %>%
                 mutate(Metric = "critical")
             ) %>%
+            { #KC - adding combined metric
+                orig_df <- .
+                combined_df <- orig_df %>%
+                    dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg, DEPTH.f, `.value`) %>%
+                    group_by(fYEAR, DEPTH.f, REEF, REEF.d, BIOREGION.agg, .draw) %>%
+                    summarise(`.value` = mean(`.value`), .groups = "drop") %>%
+                    mutate(Metric = "Combined")
+                bind_rows(orig_df, combined_df)
+            } %>%
             arrange(REEF.d, fYEAR, .draw, Metric) %>%
             mutate(fYEAR = factor(fYEAR)) %>%
             group_by(REEF.d) %>%

@@ -711,7 +711,21 @@ CI_model_CI_standardise <- function() {
                                      dplyr::select(fYEAR, REEF.d, .draw,
                                                    .value = LOF,
                                                    REEF, DEPTH.f,
-                                                   Metric)
+                                                   Metric) %>% #KC - adding a combined metric
+                                     bind_rows(
+                                         .x %>%
+                                             mutate(fYEAR = factor(REPORT_YEAR),
+                                                    .draw = 1,
+                                                    Metric = ifelse(k == 3, 'Critical', 'Reference')) %>%
+                                             dplyr::select(fYEAR, REEF.d, .draw, .value = LOF, REEF, DEPTH.f, Metric),
+                                         .x %>%
+                                             mutate(fYEAR = factor(REPORT_YEAR),
+                                                    .draw = 1) %>%
+                                             group_by(fYEAR, REEF.d, .draw, REEF, DEPTH.f) %>%
+                                             summarise(.value = mean(LOF, na.rm = TRUE),
+                                                       Metric = "Combined",
+                                                       .groups = "drop")
+                                     )
                                 ),
                    Summary = map(.x = Scores,
                                  .f = ~ .x %>%

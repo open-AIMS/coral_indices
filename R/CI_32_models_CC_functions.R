@@ -333,9 +333,11 @@ CI__index_CC <- function(dat, baselines) {
                                                     pcb.distance.met > 1 ~ 1,
                                                     pcb.distance.met >= -1 & pcb.distance.met <= 1 ~
                                                         pcb.distance.met)),
-            pcb.rescale.dist.metric = scales::rescale(pcb.cap.dist.met,
+            original.pcb.rescale.dist.met = scales::rescale(pcb.cap.dist.met, #KC - adding combined metric
                                                       from = c(-1,1),
-                                                      to = c(0, 1))) %>%
+                                                      to = c(0, 1)),
+            pcb.rescale.dist.metric = as.numeric(ifelse(original.pcb.rescale.dist.met<=0.5, 0, original.pcb.rescale.dist.met)), #KC - testing combined metric
+            combined.metric = ((rescale.dist.metric + pcb.rescale.dist.metric)/2)) %>% #KC - adding combined metric
         dplyr::select(-any_of(ends_with("met"))) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF.d)) %>% 
@@ -367,7 +369,8 @@ CI_models_CC_distance <- function() {
             mutate(Scores = map(.x = Pred,
                                 .f = ~ CI__index_CC(.x, baselines) %>%
                                     filter(Metric %in% c('rescale.dist.metric',
-                                                         'pcb.rescale.dist.metric')) %>%
+                                                         'pcb.rescale.dist.metric',
+                                                         'combined.metric')) %>% #KC - adding combined metric
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
                                )) %>%
