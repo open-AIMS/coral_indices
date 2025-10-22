@@ -114,35 +114,38 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
         spatial_lookup <- get(load(file = paste0(DATA_PATH, 'processed/spatial_lookup.RData')))
 
         ## Number of reefs below 0.5
+        mods <- mods %>%
+            filter(!REEF.d %in% c("Rat shallow slope", "Farmers shallow slope")) #KC - they don't really qualify as 'coral reefs'
+
         mods.n <- mods %>%
             dplyr::select(REEF.d, Below) %>%
             unnest(Below) %>%
             left_join(spatial_lookup %>%
-                      dplyr::select(REEF.d, !!level, Shelf) %>%
-                      distinct()
-                      ) %>%
+                  dplyr::select(REEF.d, !!level, Shelf) %>%
+                  distinct()
+                  ) %>%
             filter(!is.na(!!sym(level))) %>%           ## exclude all reefs outside boundary 
             nest(data = everything()) %>%
             mutate(WithShelf = map(.x = data,
-                                   .f = ~ .x %>% 
-                                       group_by(fYEAR, Metric, !!sym(level),
-                                                Shelf, across(any_of('Taxa'))) %>%
-                                       summarise(n.below = sum(Below, na.rm = TRUE),
-                                                 n.Pbelow = sum(PBelow, na.rm = TRUE),
-                                                 tn.reefs = n()) 
-                                   ),
-                   NoShelf = map(.x = data,
-                                 .f = ~ .x %>% 
-                                     mutate(Shelf = "All") %>% 
-                                     group_by(fYEAR, Metric, !!sym(level),
-                                              Shelf, across(any_of('Taxa'))) %>%
-                                     summarise(n.below = sum(Below, na.rm = TRUE),
-                                               n.Pbelow = sum(PBelow, na.rm = TRUE),
-                                               tn.reefs = n()) 
-                                 ),
-                   Combined = map2(.x = NoShelf, .y = WithShelf,
-                                   .f = ~ .x %>% rbind(.y))
-                   ) %>%
+                       .f = ~ .x %>% 
+                           group_by(fYEAR, Metric, !!sym(level),
+                            Shelf, across(any_of('Taxa'))) %>%
+                           summarise(n.below = sum(Below, na.rm = TRUE),
+                             n.Pbelow = sum(PBelow, na.rm = TRUE),
+                             tn.reefs = n()) 
+                       ),
+               NoShelf = map(.x = data,
+                     .f = ~ .x %>% 
+                         mutate(Shelf = "All") %>% 
+                         group_by(fYEAR, Metric, !!sym(level),
+                              Shelf, across(any_of('Taxa'))) %>%
+                         summarise(n.below = sum(Below, na.rm = TRUE),
+                               n.Pbelow = sum(PBelow, na.rm = TRUE),
+                               tn.reefs = n()) 
+                     ),
+               Combined = map2(.x = NoShelf, .y = WithShelf,
+                       .f = ~ .x %>% rbind(.y))
+               ) %>%
             dplyr::select(Combined) %>% 
             unnest(Combined) %>%
             group_by(!!sym(level)) %>%

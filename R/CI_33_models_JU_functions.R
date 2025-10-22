@@ -336,52 +336,132 @@ CI_models_JU_preds <- function() {
 
 
 CI__index_JU <- function(dat, taxa, baselines) {
-    cap_low <- if (taxa == "Total") -2 else -3  #KC - changed caps for reference score to -2,2. May still need tweaking
-    cap_high <- if (taxa == "Total") 2 else 3
 
-    if (taxa == "Total") { #KC - changed so that for Acropora (critical) metric only, the score is rescaled where <0.5 = 0
+    if (taxa == "Total" & dat$Shelf[[1]]=="Inshore" & dat$DEPTH.f[[1]]=="shallow slope" ) {
+
         dat %>%
-            left_join(baselines %>%
-                    filter(Taxa == taxa) %>%
-                    dplyr::rename(baseline = value)) %>%
-        
-            mutate(
-                distance.met = log2(baseline / value),
-                cap.dist.met = as.numeric(case_when(
-                    distance.met < cap_low ~ cap_low,
-                    distance.met > cap_high ~ cap_high,
-                    distance.met >= cap_low & distance.met <= cap_high ~ distance.met
-                )),
-                rescale.dist.metric = scales::rescale(cap.dist.met, from = c(cap_low, cap_high), to = c(1, 0)), #KC - testing combined metric
-            )  %>%
-            dplyr::select(-any_of(ends_with("met"))) %>%
-            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
-            filter(!is.na(REEF.d)) %>%
-            suppressMessages() %>%
-            suppressWarnings()
-            } else {
-            dat %>%
                     left_join(baselines %>%
                             filter(Taxa == taxa) %>%
-                            dplyr::rename(baseline = value)) %>%               
-                    mutate(
-                distance.met = log2(baseline / value),
-                cap.dist.met = as.numeric(case_when(
-                    distance.met < cap_low ~ cap_low,
-                    distance.met > cap_high ~ cap_high,
-                    distance.met >= cap_low & distance.met <= cap_high ~ distance.met
-                )),
-                original.rescale.dist.met = scales::rescale(cap.dist.met, from = c(cap_low, cap_high), to = c(1, 0)), #KC - testing combined metric
-                rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
-                )  %>%
-                    dplyr::select(-any_of(ends_with("met"))) %>%
-                    pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
-                    filter(!is.na(REEF.d)) %>%
-                    suppressMessages() %>%
-                    suppressWarnings()           
-            }
+                            dplyr::rename(baseline = value)) %>%
+                            mutate(value.raw=value) %>%
+                            dplyr::select(-value) %>%
+                            mutate(value = ifelse(value.raw >8, 8, value.raw),
+                            distance.met = plogis(log2(value/baseline)),
+                            rescale.dist.metric = ifelse(value >= baseline,
+                                                my_rescale(distance.met ,
+                                                            from = list(plogis(log2(8/baseline)), 0.5),
+                                                            to = c(1, 0.5)),
+                                                distance.met), #KC - testing combined metric
+                            ) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
+                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+                            filter(!is.na(REEF.d)) %>%
+                            suppressMessages() %>%
+                            suppressWarnings()
+
+
+    } else if (taxa == "Total" & dat$Shelf[[1]]=="Inshore" & dat$DEPTH.f[[1]]=="deep slope" ) {
+
+        dat %>%
+                    left_join(baselines %>%
+                            filter(Taxa == taxa) %>%
+                            dplyr::rename(baseline = value)) %>%
+                            mutate(value.raw=value) %>%
+                            dplyr::select(-value) %>%
+                            mutate(value = ifelse(value.raw >18, 18, value.raw),
+                            distance.met = plogis(log2(value/baseline)),
+                            rescale.dist.metric = ifelse(value >= baseline,
+                                                my_rescale(distance.met ,
+                                                            from = list(plogis(log2(18/baseline)), 0.5),
+                                                            to = c(1, 0.5)),
+                                                distance.met), #KC - testing combined metric
+                            ) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
+                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+                            filter(!is.na(REEF.d)) %>%
+                            suppressMessages() %>%
+                            suppressWarnings()
+
+
+    } else if (taxa == "Total" & dat$Shelf[[1]]!="Inshore") {
+
+        dat %>%
+                    left_join(baselines %>%
+                            filter(Taxa == taxa) %>%
+                            dplyr::rename(baseline = value)) %>%
+                            mutate(value.raw=value) %>%
+                            dplyr::select(-value) %>%
+                            mutate(value = ifelse(value.raw >28, 28, value.raw),
+                            distance.met = plogis(log2(value/baseline)),
+                            rescale.dist.metric = ifelse(value >= baseline,
+                                                my_rescale(distance.met ,
+                                                            from = list(plogis(log2(28/baseline)), 0.5),
+                                                            to = c(1, 0.5)),
+                                                distance.met), #KC - testing combined metric
+                            ) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
+                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+                            filter(!is.na(REEF.d)) %>%
+                            suppressMessages() %>%
+                            suppressWarnings()
+
+
+    } else if (taxa == "Acropora" & dat$Shelf[[1]]!="Inshore") {
+
+        dat %>%
+                    left_join(baselines %>%
+                            filter(Taxa == taxa) %>%
+                            dplyr::rename(baseline = value)) %>%
+                            mutate(value.raw=value) %>%
+                            dplyr::select(-value) %>%
+                            mutate(value = ifelse(value.raw >2.72, 2.72, value.raw),
+                            distance.met = plogis(log2(value/baseline)),
+                            original.rescale.dist.met = ifelse(value >= baseline,
+                                                my_rescale(distance.met ,
+                                                            from = list(plogis(log2(2.72/baseline)), 0.5),
+                                                            to = c(1, 0.5)),
+                                                distance.met), #KC - testing combined metric
+                            rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
+                            ) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
+                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+                            filter(!is.na(REEF.d)) %>%
+                            suppressMessages() %>%
+                            suppressWarnings()
+
+
+    } else if (taxa == "Acropora" & dat$Shelf[[1]]=="Inshore") {
+
+        dat %>%
+                    left_join(baselines %>%
+                            filter(Taxa == taxa) %>%
+                            dplyr::rename(baseline = value)) %>%
+                            mutate(value.raw=value) %>%
+                            dplyr::select(-value) %>%
+                            mutate(value = ifelse(value.raw >2.08, 2.08, value.raw),
+                            distance.met = plogis(log2(value/baseline)),
+                            original.rescale.dist.met = ifelse(value >= baseline,
+                                                my_rescale(distance.met ,
+                                                            from = list(plogis(log2(2.08/baseline)), 0.5),
+                                                            to = c(1, 0.5)),
+                                                distance.met),
+                            rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
+                            ) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
+                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
+                            filter(!is.na(REEF.d)) %>%
+                            suppressMessages() %>%
+                            suppressWarnings()
+
+
     }
 
+}
 
 CI_models_JU_distance <- function() {
     ## This is going to need modifying once Manu has a model for
@@ -422,15 +502,22 @@ CI_models_JU_distance <- function() {
                               .f = ~ .x %>%
                                   left_join(site.location %>%
                                             dplyr::select(REEF, REEF.d, BIOREGION.agg,
-                                                          DEPTH.f) %>%
+                                                          DEPTH.f, Shelf) %>%
                                             distinct()) %>%
                                   suppressMessages() %>%
                                   suppressWarnings())) %>% 
                         mutate(Scores = map2(.x = Pred, .y = Taxa,
-                            .f = ~ CI__index_JU(.x, .y, baselines) %>%
-                                    filter(Metric %in% c('rescale.dist.metric')) %>% #KC - 'pcb.rescale.dist.metric' doesn't actually exist in JU
-                                    mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
-                                    arrange(fYEAR, .draw)
+                            .f = ~ {
+                                res <- CI__index_JU(.x, .y, baselines)
+                                if (is.null(res)) { #I don't know why NULL results are introduced when they weren't before. THey are JCU reefs. Does this affect the broader spatial aggregations?
+                                    tibble()
+                                } else {
+                                    res %>%
+                                        filter(Metric %in% c('rescale.dist.metric')) %>%
+                                        mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
+                                        arrange(fYEAR, .draw)
+                                }
+                            }
                         )) %>% #KC - from here, AT creates a new object for Summary, rather than including it in mods, then only saves the Summary. I haven't followed suit yet....
             dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
             ## Since each of Total and Acropora are modelled separately, we need to unnest

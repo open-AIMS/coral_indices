@@ -692,11 +692,13 @@ CI__index_MA <- function(dat, baselines, consequence) {
         left_join(baselines %>%
                   dplyr::select(-any_of(c("LONGITUDE", "LATITUDE"))) %>%
                   dplyr::rename(baseline = value)) %>%
-        mutate(
+        mutate(value.raw=value) %>%
+        dplyr::select(-value) %>%
+        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum MAp for a score of 0 at 0.75 cover
             calc.met = plogis(log2(baseline/value)),
             distance.metric = ifelse(value >= baseline,
                                      my_rescale(calc.met,
-                                                from = list(plogis(log2(baseline/1)), 0.5),
+                                                from = list(plogis(log2(baseline/0.8)), 0.5),
                                                 to = c(0, 0.5)),
                                      calc.met),
             consequence.metric = ifelse(value <= consequence,
@@ -705,7 +707,7 @@ CI__index_MA <- function(dat, baselines, consequence) {
                                                       to = c(1, 0.5)), #KC - changed so that the threshold sets a score of 0.5, as it does for HC and JU critical metrics
                                         0),
             combined.metric = (distance.metric + consequence.metric)/2 ) %>%
-                        dplyr::select(-calc.met) |> #KC - following AT adjustments
+                        dplyr::select(-calc.met, -value, -value.raw) |> #KC - following AT adjustments
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 
         suppressMessages() %>%

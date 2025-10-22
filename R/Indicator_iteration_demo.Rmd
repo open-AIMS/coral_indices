@@ -279,6 +279,10 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_43_deep_slope_baseline2015_StandardiseRescale.png)
+
+
 #### Bioregion 6 {.tabset .tabset-faded}
 
 ##### Deep
@@ -292,7 +296,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_6_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
@@ -307,7 +312,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_9_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -322,7 +328,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_11_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
@@ -337,6 +344,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_12_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -351,6 +360,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_16_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -363,6 +374,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_16_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -377,6 +390,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_17_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -389,6 +404,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_17_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -403,6 +420,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_18_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -415,6 +434,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_18_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -429,6 +450,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_19_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
@@ -443,6 +466,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_22_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -455,6 +480,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_22_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -469,6 +496,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_23_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -481,6 +510,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_23_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -495,6 +526,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_26_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
@@ -509,6 +542,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_27_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -523,6 +558,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_29_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -535,6 +572,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_29_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -549,6 +588,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_34_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
@@ -563,6 +604,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_3536_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -577,6 +620,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_37_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
@@ -591,6 +636,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_38_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
@@ -605,6 +652,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_39_deep_slope_baseline2015_StandardiseRescale.png)
 
 ### Macroalgae {.tabset .tabset-faded}
 
@@ -623,6 +672,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_43_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
@@ -637,6 +688,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_6_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
@@ -651,7 +704,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_9_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -666,6 +720,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_11_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
@@ -680,6 +736,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_12_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -694,6 +752,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_16_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -706,6 +766,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_16_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -720,6 +782,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_17_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -732,6 +796,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_17_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -746,6 +812,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_18_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -758,6 +826,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_18_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -772,6 +842,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_19_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
@@ -786,6 +858,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_22_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -798,6 +872,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_22_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -812,6 +888,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_23_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -824,6 +902,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_23_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -838,6 +918,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_26_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
@@ -852,6 +934,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_27_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -866,6 +950,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_29_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -878,6 +964,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_29_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -892,6 +980,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_34_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
@@ -906,6 +996,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_3536_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -920,6 +1012,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_37_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
@@ -934,6 +1028,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_38_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
@@ -948,6 +1044,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_39_deep_slope_baseline2015_StandardiseRescale.png)
 
 ### Juveniles {.tabset .tabset-faded}
 
@@ -966,6 +1064,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_43_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
@@ -980,6 +1080,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_6_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
@@ -994,7 +1096,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_9_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -1009,6 +1112,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_11_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
@@ -1023,6 +1128,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_12_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -1037,6 +1144,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_16_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -1049,6 +1158,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_16_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -1063,6 +1174,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_17_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -1075,6 +1188,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_17_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -1089,6 +1204,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_18_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -1101,6 +1218,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_18_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -1115,6 +1234,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_19_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
@@ -1129,6 +1250,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_22_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -1141,6 +1264,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_22_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -1155,6 +1280,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_23_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -1167,6 +1294,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_23_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -1181,6 +1310,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_26_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
@@ -1195,6 +1326,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_27_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -1209,6 +1342,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_29_deep_slope_baseline2015_StandardiseRescale.png)
 
 ##### Shallow
 
@@ -1221,6 +1356,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_29_shallow_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -1235,6 +1372,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_34_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
@@ -1250,6 +1389,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_3536_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -1264,6 +1405,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_37_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
@@ -1278,6 +1421,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_38_deep_slope_baseline2015_StandardiseRescale.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
@@ -1292,6 +1437,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_39_deep_slope_baseline2015_StandardiseRescale.png)
 
 ### Recovery Performance {.tabset .tabset-faded}
 
@@ -1307,6 +1454,9 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_43_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_43_deep_slope_baseline2015_RPI_k80.png)
+
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
@@ -1320,7 +1470,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_6_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_6_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 9 {.tabset .tabset-faded}
 
@@ -1334,7 +1485,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_9_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
-
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_9_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -1348,6 +1500,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_11_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_11_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 12 {.tabset .tabset-faded}
 
@@ -1361,6 +1515,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_12_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_12_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -1374,6 +1530,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_16_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_16_deep_slope_baseline2015_RPI_k80.png)
 
 ##### Shallow
 
@@ -1385,6 +1543,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_16_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_16_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -1398,6 +1558,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_17_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_17_deep_slope_baseline2015_RPI_k80.png)
 
 ##### Shallow
 
@@ -1409,6 +1571,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_17_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_17_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -1422,6 +1586,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_18_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_18_deep_slope_baseline2015_RPI_k80.png)
 
 ##### Shallow
 
@@ -1433,6 +1599,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_18_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_18_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -1446,6 +1614,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_19_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_19_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 22 {.tabset .tabset-faded}
 
@@ -1459,6 +1629,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_22_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_22_deep_slope_baseline2015_RPI_k80.png)
 
 ##### Shallow
 
@@ -1470,6 +1642,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_22_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_22_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -1483,6 +1657,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_23_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_23_deep_slope_baseline2015_RPI_k80.png)
 
 ##### Shallow
 
@@ -1494,6 +1670,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_23_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_23_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -1507,6 +1685,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_26_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_26_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 27 {.tabset .tabset-faded}
 
@@ -1520,6 +1700,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_27_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_27_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -1533,6 +1715,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_29_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_29_deep_slope_baseline2015_RPI_k80.png)
 
 ##### Shallow
 
@@ -1544,6 +1728,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_29_shallow_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_29_shallow_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -1557,6 +1743,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_34_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_34_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
@@ -1570,6 +1758,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_3536_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_3536_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -1583,6 +1773,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_37_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_37_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 38 {.tabset .tabset-faded}
 
@@ -1596,6 +1788,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_38_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_38_deep_slope_baseline2015_RPI_k80.png)
 
 #### Bioregion 39 {.tabset .tabset-faded}
 
@@ -1609,6 +1803,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Critical score rescaled and Combined score added, K=80
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_43_deep_slope_baseline2015_RPI_k80.png)
 
 ### Community Composition {.tabset .tabset-faded}
 
@@ -1977,6 +2173,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_NRM_Cape_York_baseline2015_StandardiseRescale.png)
 
 #### Wet Tropics
 
@@ -1989,6 +2187,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_NRM_Wet_Tropics_baseline2015_StandardiseRescale.png)
 
 #### Burdekin
 
@@ -2001,6 +2201,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_NRM_Burdekin_baseline2015_StandardiseRescale.png)
 
 #### Mackay Whitsunday
 
@@ -2013,6 +2215,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_NRM_Mackay_Whitsunday_baseline2015_StandardiseRescale.png)
 
 #### Fitzroy
 
@@ -2025,6 +2229,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_NRM_Fitzroy_baseline2015_StandardiseRescale.png)
 
 #### Burnett Mary
 
@@ -2037,6 +2243,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CC_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_CC_scores_NRM_Burnett_Mary_baseline2015_StandardiseRescale.png)
 
 ### Macroalgae {.tabset .tabset-faded}
 
@@ -2051,6 +2259,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_NRM_Cape_York_baseline2015_StandardiseRescale.png)
 
 #### Wet Tropics
 
@@ -2063,6 +2273,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_NRM_Wet_Tropics_baseline2015_StandardiseRescale.png)
 
 #### Burdekin
 
@@ -2075,6 +2287,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_NRM_Burdekin_baseline2015_StandardiseRescale.png)
 
 #### Mackay Whitsunday
 
@@ -2087,6 +2301,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_NRM_Mackay_Whitsunday_baseline2015_StandardiseRescale.png)
 
 #### Fitzroy
 
@@ -2099,6 +2315,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_NRM_Fitzroy_baseline2015_StandardiseRescale.png)
 
 #### Burnett Mary
 
@@ -2111,6 +2329,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_MA_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_MA_scores_NRM_Burnett_Mary_baseline2015_StandardiseRescale.png)
 
 ### Juveniles {.tabset .tabset-faded}
 
@@ -2125,6 +2345,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_NRM_Cape_York_baseline2015_StandardiseRescale.png)
 
 #### Wet Tropics
 
@@ -2137,6 +2359,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_NRM_Wet_Tropics_baseline2015_StandardiseRescale.png)
 
 #### Burdekin
 
@@ -2149,6 +2373,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_NRM_Burdekin_baseline2015_StandardiseRescale.png)
 
 #### Mackay Whitsunday
 
@@ -2161,6 +2387,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_NRM_Mackay_Whitsunday_baseline2015_StandardiseRescale.png)
 
 #### Fitzroy
 
@@ -2173,6 +2401,8 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_NRM_Fitzroy_baseline2015_StandardiseRescale.png)
 
 #### Burnett Mary
 
@@ -2185,10 +2415,14 @@ Baselines to 2015
 Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_JU_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot_JU_scores_NRM_Burnett_Mary_baseline2015_StandardiseRescale.png)
 
 ### Recovery Performance {.tabset .tabset-faded}
 
-We did not make changes to fix the baseline period to 2015 for this indicator
+We did not make changes to fix the baseline period to 2015 for this indicator.
+
+NOTE: The iteration that standardised scaling did not affect RPI and CO. HOWEVER, Rat and Farmers were excluded from the aggregated summaries in that iteration. Since I did not update RPI and CO plots in that iteration, these plots do not demonstrate the effect of that yet.
 
 #### Cape York
 
@@ -2320,60 +2554,95 @@ Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
 
 
-## Juvenile scaling tests {.tabset .tabset-faded}
+## Case Study Fitzroy NRM inshore reefs in 2024
 
-So far, I've tested how the capping affects the scaling and score distribution. It looks like different caps might be appropriate for inshore vs offshore in both the reference metric and the contextual metric.
-Alternatively, maybe we need to try a diffferent distance calculation.
+Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
 
-The distance calculation for CC, MA and JU are all different. Is there a consistent approach we can use for all three? It especially looks like the Acropora juveniles distance calculation needs a revisit. These are the distance calculations:
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/casestudy.plot_baseline2015_StandardiseRescale.png)
 
-CC
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/casestudy.plot.reef_baseline2015_StandardiseRescale.png)
 
-reference  
-
-- plogis(log2(value/baseline))
-
-context  
-
-- log2(value/0.2)
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/casestudy.plot.NRM.png)
 
 
-MA
+## Reef Condition Trends {.tabset .tabset-faded}
 
-reference  
+### Cape York {.tabset .tabset-faded}
 
-- plogis(log2(baseline/value))
+#### Inshore
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Cape_York.Inshore.deep_slope.png)
 
-context
+#### Offshore
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Cape_York.Offshore.deep_slope.png)
 
-rescale only?  
+### Wet Tropics {.tabset .tabset-faded}
 
-- ifelse(value <= consequence, scales::rescale(value, from = c(0, consequence), to = c(1, 0)), 0)
+#### Inshore
 
-JU
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Wet_Tropics.Inshore.deep_slope.png)
 
-reference  
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Wet_Tropics.Inshore.shallow_slope.png)
 
-- log2(baseline/value)
+#### Offshore
 
-context  
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Wet_Tropics.Offshore.deep_slope.png)
 
-- log2(baseline/value)
 
-The following plots are a horizontal sequence, plotting the distributions for the baseline, then the predictions, then the distance, then the capped distance, then the scores, then a histogram of the scores.
+### Burdekin {.tabset .tabset-faded}
 
-Each row changes at the capped distance plot, showing the effect of three different capping strategies.
+#### Inshore
 
-The distributions are separated by bioregions, depth and shelf.
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burdekin.Inshore.deep_slope.png)
 
-Blue is shallow, pink is deep.
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burdekin.Inshore.shallow_slope.png)
 
-I can follow up on this from 7th October when I'm back.
+#### Offshore
 
-For now, I have set reference cap to -2,2 and left the contextual cap at -3,3, although I think these need revisiting.
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burdekin.Offshore.deep_slope.png)
 
-### Total AKA reference metric
-![](../output/figures/indicator_checks/original_baselines/plot_JUV_total_rescale_options.png)
 
-### Acropora AKA contextual metric
-![](../output/figures/indicator_checks/original_baselines/plot_JUV_Acropora_rescale_options.png)
+### Mackay Whitsunday {.tabset .tabset-faded}
+
+#### Inshore
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Mackay_Whitsunday.Inshore.deep_slope.png)
+
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Mackay_Whitsunday.Inshore.shallow_slope.png)
+
+#### Offshore
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Mackay_Whitsunday.Offshore.deep_slope.png)
+
+
+### Fitzroy {.tabset .tabset-faded}
+
+#### Inshore
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Fitzroy.Inshore.deep_slope.png)
+
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Fitzroy.Inshore.shallow_slope.png)
+
+
+#### Offshore
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Fitzroy.Offshore.deep_slope.png)
+
+
+### Burnett Mary {.tabset .tabset-faded}
+
+#### Offshore
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burnett_Mary.Offshore.deep_slope.png)

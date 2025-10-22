@@ -10,9 +10,13 @@ CI_models_collate_indices <- function() {
 
         ## site.location <- get(load(file = paste0(DATA_PATH, 'processed/site.location.RData')))
         spatial_lookup <- get(load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData")))
-        files <- list.files(path = paste0(DATA_PATH, "modelled"),
-                              pattern = "..__scores_.*_year.RData",
-                              full.names = TRUE)
+        files <- list.files(
+            path = paste0(DATA_PATH, "modelled"),
+            pattern = "..__scores_.*_year\\.RData$",
+            full.names = TRUE
+        )
+        files <- files[!grepl("\\.RData:.*", files)] #KC to avoid any weird files with : in the name
+
         indices <- purrr::map_df(.x = files,
                               .f = ~ {
                                   level <- str_replace(.x,
@@ -104,6 +108,7 @@ CI_models_collate_indices <- function() {
                                                     Median = median,
                                                     Lower = lower,
                                                     Upper = upper,
+                                                    p_below_0.5 = `p<0.5`,
                                                     tn.reefs = tn.reefs,
                                                     n.below = n.below) %>% 
                                       suppressMessages() %>%

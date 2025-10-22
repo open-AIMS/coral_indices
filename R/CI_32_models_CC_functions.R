@@ -310,11 +310,13 @@ CI__index_CC <- function(dat, baselines) {
     dat %>%
         left_join(baselines %>%
                   dplyr::rename(baseline = value)) %>%
-        mutate(
+        mutate(value.raw=value) %>%
+        dplyr::select(-value) %>%
+        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum MAp for a score of 0 at 0.75 cover
             calc.met = plogis(log2(value/baseline)),
             rescale.dist.metric = ifelse(value >= baseline,
                                          my_rescale(calc.met,
-                                                    from = list(plogis(log2(1/baseline)), 0.5),
+                                                    from = list(plogis(log2(0.8/baseline)), 0.5),
                                                     to = c(1, 0.5)),
                                          calc.met),
             
@@ -328,17 +330,15 @@ CI__index_CC <- function(dat, baselines) {
             #                                    to = c(1, 0.5)),
             #     TRUE ~ calc.met
             # ),
-            pcb.distance.met = log2(value/0.2),
-            pcb.cap.dist.met = as.numeric(case_when(pcb.distance.met < -1 ~ -1,
-                                                    pcb.distance.met > 1 ~ 1,
-                                                    pcb.distance.met >= -1 & pcb.distance.met <= 1 ~
-                                                        pcb.distance.met)),
-            original.pcb.rescale.dist.met = scales::rescale(pcb.cap.dist.met, #KC - adding combined metric
-                                                      from = c(-1,1),
-                                                      to = c(0, 1)),
+            pcb.distance.met = plogis(log2(value/0.2)),
+            original.pcb.rescale.dist.met = ifelse(value >= 0.2,
+                                         my_rescale(pcb.distance.met,
+                                                    from = list(plogis(log2(0.8/0.2)), 0.5),
+                                                    to = c(1, 0.5)),
+                                         pcb.distance.met),
             pcb.rescale.dist.metric = as.numeric(ifelse(original.pcb.rescale.dist.met<=0.5, 0, original.pcb.rescale.dist.met)), #KC - testing combined metric
             combined.metric = ((rescale.dist.metric + pcb.rescale.dist.metric)/2)) %>% #KC - adding combined metric
-        dplyr::select(-any_of(ends_with("met"))) %>%
+        dplyr::select(-any_of(ends_with("met")), -value.raw, -value) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF.d)) %>% 
         suppressMessages() %>%
