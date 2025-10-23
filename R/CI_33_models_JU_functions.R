@@ -385,7 +385,7 @@ CI__index_JU <- function(dat, taxa, baselines) {
                             suppressWarnings()
 
 
-    } else if (taxa == "Total" & dat$Shelf[[1]]!="Inshore") {
+    } else if (taxa == "Total" & dat$Shelf[[1]]=="Offshore") {
 
         dat %>%
                     left_join(baselines %>%
@@ -393,11 +393,11 @@ CI__index_JU <- function(dat, taxa, baselines) {
                             dplyr::rename(baseline = value)) %>%
                             mutate(value.raw=value) %>%
                             dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >28, 28, value.raw),
+                            mutate(value = ifelse(value.raw >34, 34, value.raw),
                             distance.met = plogis(log2(value/baseline)),
                             rescale.dist.metric = ifelse(value >= baseline,
                                                 my_rescale(distance.met ,
-                                                            from = list(plogis(log2(28/baseline)), 0.5),
+                                                            from = list(plogis(log2(34/baseline)), 0.5),
                                                             to = c(1, 0.5)),
                                                 distance.met), #KC - testing combined metric
                             ) %>%
@@ -409,7 +409,7 @@ CI__index_JU <- function(dat, taxa, baselines) {
                             suppressWarnings()
 
 
-    } else if (taxa == "Acropora" & dat$Shelf[[1]]!="Inshore") {
+    } else if (taxa == "Acropora" & dat$Shelf[[1]]=="Offshore") {
 
         dat %>%
                     left_join(baselines %>%

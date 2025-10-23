@@ -1457,6 +1457,8 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_43_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_43_deep_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 6 {.tabset .tabset-faded}
 
@@ -1473,6 +1475,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_6_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_6_deep_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 9 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1487,6 +1492,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_9_deep_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_9_deep_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 11 {.tabset .tabset-faded}
 
@@ -1503,6 +1511,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_11_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_11_deep_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 12 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1517,6 +1528,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_12_deep_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_12_deep_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 16 {.tabset .tabset-faded}
 
@@ -1533,6 +1547,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_16_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_16_deep_slope_baseline2015_revisitScaling.png)
+
 ##### Shallow
 
 Original
@@ -1545,6 +1562,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_16_shallow_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_16_shallow_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 17 {.tabset .tabset-faded}
 
@@ -1561,6 +1581,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_17_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_17_deep_slope_baseline2015_revisitScaling.png)
+
 ##### Shallow
 
 Original
@@ -1573,6 +1596,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_17_shallow_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_17_shallow_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 18 {.tabset .tabset-faded}
 
@@ -1589,6 +1615,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_18_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_18_deep_slope_baseline2015_revisitScaling.png)
+
 ##### Shallow
 
 Original
@@ -1601,6 +1630,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_18_shallow_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_18_shallow_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 19 {.tabset .tabset-faded}
 
@@ -1617,6 +1649,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_19_shallow_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_19_shallow_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 22 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1632,6 +1667,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_22_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_22_deep_slope_baseline2015_revisitScaling.png)
+
 ##### Shallow
 
 Original
@@ -1644,6 +1682,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_22_shallow_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_22_shallow_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 23 {.tabset .tabset-faded}
 
@@ -1660,6 +1701,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_23_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_23_deep_slope_baseline2015_revisitScaling.png)
+
 ##### Shallow
 
 Original
@@ -1672,6 +1716,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_23_shallow_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_23_shallow_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 26 {.tabset .tabset-faded}
 
@@ -1688,6 +1735,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_26_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_26_deep_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 27 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1702,6 +1752,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_27_deep_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_27_deep_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 29 {.tabset .tabset-faded}
 
@@ -1718,6 +1771,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_29_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_29_deep_slope_baseline2015_revisitScaling.png)
+
 ##### Shallow
 
 Original
@@ -1730,6 +1786,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_29_shallow_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_29_shallow_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 34 {.tabset .tabset-faded}
 
@@ -1746,6 +1805,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_34_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_34_deep_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 35:36 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1760,6 +1822,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_3536_deep_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_3536_deep_slope_baseline2015_revisitScaling.png)
 
 #### Bioregion 37 {.tabset .tabset-faded}
 
@@ -1776,6 +1841,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_37_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_37_deep_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 38 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1791,6 +1859,9 @@ Baselines to 2015, Critical score rescaled and Combined score added
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
 ![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_38_deep_slope_baseline2015_RPI_k80.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_38_deep_slope_baseline2015_revisitScaling.png)
+
 #### Bioregion 39 {.tabset .tabset-faded}
 
 ##### Deep
@@ -1804,7 +1875,10 @@ Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_39_deep_slope_baseline2015_criticalRescaleAndCombinedScore.png)
 
 Baselines to 2015, Critical score rescaled and Combined score added, K=80
-![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_43_deep_slope_baseline2015_RPI_k80.png)
+![](../output/figures/indicator_checks/baseline_2015/RPI_k80/plot_RPI_scores_39_deep_slope_baseline2015_RPI_k80.png)
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_39_deep_slope_baseline2015_revisitScaling.png)
 
 ### Community Composition {.tabset .tabset-faded}
 
@@ -2432,6 +2506,9 @@ Original
 Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Cape_York_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_NRM_Cape_York_baseline2015_revisitScaling.png)
+
 
 #### Wet Tropics
 
@@ -2441,6 +2518,8 @@ Original
 Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Wet_Tropics_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_NRM_Wet_Tropics_baseline2015_revisitScaling.png)
 
 #### Burdekin
 
@@ -2450,6 +2529,8 @@ Original
 Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Burdekin_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_NRM_Burdekin_baseline2015_revisitScaling.png)
 
 #### Mackay Whitsunday
 
@@ -2459,6 +2540,8 @@ Original
 Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Mackay_Whitsunday_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_NRM_Mackay_Whitsunday_baseline2015_revisitScaling.png)
 
 #### Fitzroy
 
@@ -2468,6 +2551,8 @@ Original
 Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Fitzroy_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_NRM_Fitzroy_baseline2015_revisitScaling.png)
 
 #### Burnett Mary
 
@@ -2477,6 +2562,8 @@ Original
 Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_RPI_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
 
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0, K back to 90
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot_RPI_scores_NRM_Burnett_Mary_baseline2015_revisitScaling.png)
 
 ### Community Composition {.tabset .tabset-faded}
 
@@ -2554,7 +2641,102 @@ Baselines to 2015, Critical score rescaled and Combined score added
 ![](../output/figures/indicator_checks/baseline_2015/critical_rescaled/plot_CO_scores_NRM_Burnett_Mary_baseline2015_criticalRescaleAndCombinedScore.png)
 
 
-## Case Study Fitzroy NRM inshore reefs in 2024
+## Case Study 2024 {.tabset .tabset-faded}
+
+### Cape York {.tabset .tabset-faded}
+
+#### Inshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Cape_York_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Cape_York_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Cape_York_Inshore_revisitScaling.png)
+
+#### Offshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Cape_York_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Cape_York_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Cape_York_Offshore_revisitScaling.png)
+
+### Wet Tropics {.tabset .tabset-faded}
+
+#### Inshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Wet_Tropics_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Wet_Tropics_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Wet_Tropics_Inshore_revisitScaling.png)
+
+#### Offshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Wet_Tropics_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Wet_Tropics_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Wet_Tropics_Offshore_revisitScaling.png)
+
+
+### Burdekin {.tabset .tabset-faded}
+
+#### Inshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Burdekin_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Burdekin_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Burdekin_Inshore_revisitScaling.png)
+
+#### Offshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Burdekin_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Burdekin_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Burdekin_Offshore_revisitScaling.png)
+
+
+### Mackay Whitsunday {.tabset .tabset-faded}
+
+#### Inshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Mackay_Whitsunday_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Mackay_Whitsunday_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Mackay_Whitsunday_Inshore_revisitScaling.png)
+
+#### Offshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Mackay_Whitsunday_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Mackay_Whitsunday_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Mackay_Whitsunday_Offshore_revisitScaling.png)
+
+
+### Fitzroy {.tabset .tabset-faded}
+
+#### RPI original
 
 Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farmers excluded from aggregated summaries
 
@@ -2564,20 +2746,79 @@ Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farme
 
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/casestudy.plot.NRM.png)
 
+#### RPI rescaled {.tabset .tabset-faded}
+
+##### Inshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Fitzroy_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Fitzroy_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Fitzroy_Inshore_revisitScaling.png)
+
+##### Offshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Fitzroy_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Fitzroy_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Fitzroy_Offshore_revisitScaling.png)
+
+### Burnett Mary {.tabset .tabset-faded}
+
+#### Inshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Burnett_Mary_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Burnett_Mary_Inshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Burnett_Mary_Inshore_revisitScaling.png)
+
+#### Offshore
+
+Baselines to 2015, Both scores rescaled to 2x expected = score 1 and 1/2 expected = score 0
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot_Burnett_Mary_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.reef_Burnett_Mary_Offshore_baseline2015_revisitScaling.png)
+
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/casestudy.plot.NRM_Burnett_Mary_Offshore_revisitScaling.png)
+
+
 
 ## Reef Condition Trends {.tabset .tabset-faded}
 
+Note: Offshore JU scores will change between original and rescale also, because the cap was wrong in the original.
+
 ### Cape York {.tabset .tabset-faded}
 
-#### Inshore
+#### Inshore {.tabset .tabset-faded}
+
+##### RPI original
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Cape_York.Inshore.deep_slope.png)
 
-#### Offshore
+##### RPI rescaled
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Cape_York.Inshore.deep_slope_revisitScaling.png)
+
+#### Offshore {.tabset .tabset-faded}
+
+##### RPI original
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Cape_York.Offshore.deep_slope.png)
+
+##### RPI rescaled
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Cape_York.Offshore.deep_slope_revisitScaling.png)
 
 ### Wet Tropics {.tabset .tabset-faded}
 
-#### Inshore
+#### Inshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Wet_Tropics.Inshore.deep_slope.png)
@@ -2585,15 +2826,30 @@ Deep
 Shallow
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Wet_Tropics.Inshore.shallow_slope.png)
 
-#### Offshore
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Wet_Tropics.Inshore.deep_slope_revisitScaling.png)
+
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Wet_Tropics.Inshore.shallow_slope_revisitScaling.png)
+
+#### Offshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Wet_Tropics.Offshore.deep_slope.png)
 
+##### RPI rescaled
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Wet_Tropics.Offshore.deep_slope_revisitScaling.png)
 
 ### Burdekin {.tabset .tabset-faded}
 
-#### Inshore
+#### Inshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burdekin.Inshore.deep_slope.png)
@@ -2601,15 +2857,31 @@ Deep
 Shallow
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burdekin.Inshore.shallow_slope.png)
 
-#### Offshore
+##### RPI rescaled
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Burdekin.Inshore.deep_slope_revisitScaling.png)
+
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Burdekin.Inshore.shallow_slope_revisitScaling.png)
+
+#### Offshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burdekin.Offshore.deep_slope.png)
 
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Burdekin.Offshore.deep_slope_revisitScaling.png)
+
 
 ### Mackay Whitsunday {.tabset .tabset-faded}
 
-#### Inshore
+#### Inshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Mackay_Whitsunday.Inshore.deep_slope.png)
@@ -2617,15 +2889,32 @@ Deep
 Shallow
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Mackay_Whitsunday.Inshore.shallow_slope.png)
 
-#### Offshore
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Mackay_Whitsunday.Inshore.deep_slope_revisitScaling.png)
+
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Mackay_Whitsunday.Inshore.shallow_slope_revisitScaling.png)
+
+#### Offshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Mackay_Whitsunday.Offshore.deep_slope.png)
 
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Mackay_Whitsunday.Offshore.deep_slope_revisitScaling.png)
+
 
 ### Fitzroy {.tabset .tabset-faded}
 
-#### Inshore
+#### Inshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Fitzroy.Inshore.deep_slope.png)
@@ -2634,15 +2923,38 @@ Shallow
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Fitzroy.Inshore.shallow_slope.png)
 
 
-#### Offshore
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Fitzroy.Inshore.deep_slope_revisitScaling.png)
+
+Shallow
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Fitzroy.Inshore.shallow_slope_revisitScaling.png)
+
+#### Offshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Fitzroy.Offshore.deep_slope.png)
 
 
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Fitzroy.Offshore.deep_slope_revisitScaling.png)
+
+
 ### Burnett Mary {.tabset .tabset-faded}
 
-#### Offshore
+#### Offshore {.tabset .tabset-faded}
+
+##### RPI original
 
 Deep
 ![](../output/figures/indicator_checks/baseline_2015/standardise_rescale/plot.condition.Burnett_Mary.Offshore.deep_slope.png)
+
+##### RPI rescaled
+
+Deep
+![](../output/figures/indicator_checks/baseline_2015/RPI_revisitScaling/plot.condition.Burnett_Mary.Offshore.deep_slope_revisitScaling.png)

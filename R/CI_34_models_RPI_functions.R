@@ -1604,10 +1604,10 @@ CI_process_rpi_calc_recovery_index <- function() {
                          "/modelled/modelled.v.pred.dist.random.RData"))
         calculate.RPI.score <- modelled.v.pred.dist %>%
             mutate(distance.metric = log2(modelled.cover/expected.cover),
-                   cap.dist.met = as.numeric(case_when(distance.metric < -2 ~ -2,
-                                                       distance.metric > 2 ~ 2,
-                                                       distance.metric > -2 &
-                                                       distance.metric < 2 ~  distance.metric)),
+                   cap.dist.met = as.numeric(case_when(distance.metric < -1 ~ -1,
+                                                       distance.metric > 1 ~ 1,
+                                                       distance.metric > -1 &
+                                                       distance.metric < 1 ~  distance.metric)),
                    rescale.dist.met = scales::rescale(cap.dist.met, to = c(0,1))) %>%
             filter(!distance.metric %in% NaN) %>%
             droplevels() ##There are some negative predictions and so some NaNs are produced by the log2 calculation
@@ -3167,10 +3167,10 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
         ## produced by the log2 calculation
         calculate.critical.score <- modelled.v.pred.dist.critical %>%
             mutate(distance.metric = log2(modelled.cover/expected.cover),
-                   cap.dist.met = as.numeric(case_when(distance.metric < -2 ~ -2,
-                                           distance.metric > 2 ~2,
-                                           distance.metric > -2 &
-                                           distance.metric < 2 ~  distance.metric)),
+                   cap.dist.met = as.numeric(case_when(distance.metric < -1 ~ -1,
+                                           distance.metric > 1 ~1,
+                                           distance.metric > -1 &
+                                           distance.metric < 1 ~  distance.metric)),
                    original.rescale.dist.met = scales::rescale(cap.dist.met, to = c(0,1)), #KC - rescaling critical metric scores <0.5 to 0
                    rescale.dist.met = ifelse(original.rescale.dist.met<=0.5,0,original.rescale.dist.met)) %>%
             filter(!distance.metric %in% NaN) %>%
