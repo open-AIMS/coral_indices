@@ -194,6 +194,7 @@ for (nrm in unique(Case_study_data_1$NRM)) {
 ## Condition scoring
 ########################################################################################
 load(file = paste0(DATA_PATH, 'modelled/indices.RData'))
+spatial_lookup <- get(load(paste0(DATA_PATH, "processed/spatial_lookup.RData")))
 
 # framework categories reef
 condition <-indices |> 

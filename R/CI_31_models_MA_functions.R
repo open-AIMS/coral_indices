@@ -701,13 +701,11 @@ CI__index_MA <- function(dat, baselines, consequence) {
                                                 from = list(plogis(log2(baseline/0.8)), 0.5),
                                                 to = c(0, 0.5)),
                                      calc.met),
-            consequence.metric = ifelse(value <= consequence,
-                                        scales::rescale(value,
-                                                      from = c(0, consequence), 
-                                                      to = c(1, 0.5)), #KC - changed so that the threshold sets a score of 0.5, as it does for HC and JU critical metrics
-                                        0),
+            critical.distance= plogis(log2(consequence/value)),
+            consequence.metric = ifelse(critical.distance >= 0.5, critical.distance, 0),
+            #KC - changed so that the threshold sets a score of 0.5, as it does for HC and JU critical metrics
             combined.metric = (distance.metric + consequence.metric)/2 ) %>%
-                        dplyr::select(-calc.met, -value, -value.raw) |> #KC - following AT adjustments
+                        dplyr::select(-calc.met, -value, -value.raw, -critical.distance) |> #KC - following AT adjustments
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 
         suppressMessages() %>%
