@@ -2,6 +2,7 @@
 by Manuel Gonzalez Rivero, Angus Thompson, Kerryn Crossman, Murray Logan
 
 # About
+This code repository provides the underlying code for the 'Beyond Coral Cover' pre-print. In it's current form, it is tailored for the implementation of the Coral Indicators Framework to data from AIMS' coral reef monitoring programs, and is dependent on these data inputs to run successfully.
 
 # Dependencies
 
