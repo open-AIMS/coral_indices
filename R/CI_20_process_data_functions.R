@@ -362,8 +362,7 @@ CI_process_assign_regions <- function() {
     CI_tryCatch({
         
         load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
-        load(paste0(DATA_PATH, 'processed/bregions.sf.RData'))
-        #load(paste0(DATA_PATH, 'primary/bioregions.RData')) #KC - following AT adjustments
+        load(paste0(DATA_PATH, 'processed/bregions.sf.RData')) 
         load(paste0(DATA_PATH, 'primary/nrm.sf.RData'))
         load(paste0(DATA_PATH, 'primary/tumra.RData'))
         load(paste0(DATA_PATH, 'primary/gbrmpa.management.RData'))
@@ -378,7 +377,6 @@ CI_process_assign_regions <- function() {
             mutate(SITE_NO = as.character(SITE_NO)) %>%
             st_as_sf(., coords = c("Longitude", "Latitude"), crs = 4326) %>%
             st_join(., bregions.sf, join = st_nearest_feature)%>%
-            #st_join(., bioregions, join = st_nearest_feature)%>% #KC - following AT adjustments
             st_drop_geometry()  %>%
             dplyr::select(REEF, DEPTH, SITE_NO, BIOREGION) %>% 
             group_by(REEF, DEPTH) %>%
@@ -485,7 +483,7 @@ CI_process_assign_regions <- function() {
 
         ## adjust Lady Elliot to reflect MMP reporting as Burdekin
         spatial_lookup <- spatial_lookup |> 
-          mutate(NRM=ifelse(REEF=="Lady Elliot", "Burdekin", NRM)) ##KC - An AT adjustment
+          mutate(NRM=ifelse(REEF=="Lady Elliot", "Burdekin", NRM))
 
         save(spatial_lookup,
              file = paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
@@ -506,18 +504,18 @@ CI_process_juvenile_density <- function() {
     CI_tryCatch({
         
         load(paste0(DATA_PATH, 'primary/juveniles.RData'))
-        load(paste0(DATA_PATH, 'primary/juvenile.samples.RData')) #KC - following an AT change given new juvenile data extraction method
+        load(paste0(DATA_PATH, 'primary/juvenile.samples.RData'))
 
         ## convert to density per m2 of transect
         juv.analysis.data <- juveniles %>%
-        right_join(juvenile.samples) %>% ##KC - following AT adjustments
-        mutate(GENUS=ifelse(is.na(GENUS), 'Acropora', GENUS), ##KC - following AT adjustments
+        right_join(juvenile.samples) %>% 
+        mutate(GENUS=ifelse(is.na(GENUS), 'Acropora', GENUS), 
                  ABUNDANCE=ifelse(is.na(ABUNDANCE),0,ABUNDANCE)) |>
             group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO) %>%
-            summarise(ABUNDANCE = sum(ABUNDANCE)) %>% ##KC - following AT adjustments
+            summarise(ABUNDANCE = sum(ABUNDANCE)) %>% 
             ungroup() %>%
-            mutate(GENUS='total.juv') %>% ##KC - following AT adjustments
-            rbind(juveniles) %>%  ##KC - following AT adjustments
+            mutate(GENUS='total.juv') %>% 
+            rbind(juveniles) %>%  
             pivot_wider(names_from = GENUS,
                         values_from = ABUNDANCE,
                         values_fill = 0) %>%
@@ -543,8 +541,8 @@ CI_process_juvenile_offset <- function() {
         
         load(paste0(DATA_PATH, 'processed/juv.tran.area.RData'))
         #mmp.points <- read.csv(paste0(DATA_PATH, 'primary/mmp.points.csv'), as.is=TRUE)
-        load(paste0(PRIMARY_DATA_PATH, 'points.raw.RData')) ##KC - following AT adjustments
-        mmp.points <- points.raw |> filter(P_CODE %in% c("IN", "AP", "GH", "RR")) ##KC - following AT adjustments
+        load(paste0(PRIMARY_DATA_PATH, 'points.raw.RData'))
+        mmp.points <- points.raw |> filter(P_CODE %in% c("IN", "AP", "GH", "RR"))
         video_codes <- read.csv(paste0(DATA_PATH, 'primary/video_codes.csv'), as.is=TRUE)
         
         ## MMP
@@ -576,7 +574,7 @@ CI_process_juvenile_offset <- function() {
 
         ## LTMP
         #ltmp.points <- read.csv(paste0(DATA_PATH, 'primary/ltmp.points.csv'), as.is=TRUE)
-        load(paste0(PRIMARY_DATA_PATH, 'points.raw.RData')) ##KC - following AT adjustments
+        load(paste0(PRIMARY_DATA_PATH, 'points.raw.RData'))
        ltmp.points <- points.raw |> filter(P_CODE %in% c("RM")) # note that RMRAP and RAP have been converted to RM in this dataframe
         ltmp.points.site <- ltmp.points %>%
             left_join(video_codes) %>%

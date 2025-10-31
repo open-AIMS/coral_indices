@@ -16,7 +16,7 @@
 ## --------------------------- #
 ##
 ## Notes :
-##  *) Using all data up to and including REPORT_YEAR 2008
+##  *) Using all data up to and including REPORT_YEAR 2015
 ##  *) Bioregions with small sample sizes are aggregated based on similar
 ##     reef communities
 ##  *) The baseline model structure is set up to treat Site as the unit
@@ -31,17 +31,14 @@ CI_27_JU_baseline_models <- function() {
                    label = "JU baseline model", status = 'pending')
 
     CI_tryCatch({
-        source('CI_30_models_functions.R') #KC - added by AT
+        source('CI_30_models_functions.R') 
         source('../R/functions.R')
-        source('../R/CI_26_CC_baseline_models_functions.R') # KC - Added by AT. includes the function CI_clean_inla_formula.R
+        source('../R/CI_26_CC_baseline_models_functions.R') 
 
         load(paste0(DATA_PATH, 'processed/juv.df.RData'))
-        juv.df<-juv.df |>  filter(REPORT_YEAR<=2015)  # AT added as states in the methods document that obs up to 2021 used in the baseline
+        juv.df<-juv.df |>  filter(REPORT_YEAR<=2015)  
 
         gbrmpa <- get(load(paste0(DATA_PATH, 'primary/gbrmpa.RData')))
-        ## load(paste0(DATA_PATH, 'processed/points.analysis.data.transect.RData'))
-        ## load(paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
-        ## load(paste0(DATA_PATH, 'primary/disturbances.RData'))
 
         bndry <- gbrmpa %>%
             st_transform(4326) %>%
@@ -176,7 +173,7 @@ CI_27_JU_baseline_models <- function() {
             )
 
         save(juv.baseline,
-             file=paste0(DATA_PATH, 'parameters/JU__baseline_mod.RData')) #KC - AT notes: run with data through to 2021
+             file=paste0(DATA_PATH, 'parameters/JU__baseline_mod.RData'))
 
 ################################################################################
 ####### PART 3 - get predictions for polygon samples ###########################
@@ -187,8 +184,7 @@ CI_27_JU_baseline_models <- function() {
         newdata <- newdata_grid %>%
             st_drop_geometry() %>%
             dplyr::select(BIOREGION, grid_ID, Longitude, Latitude, Weight) %>%
-            #test influence of weights #KC - AT adds this here. Not sure if what the outcome was
-            #mutate(Weight=1) |>   
+            #mutate(Weight=1) |>   #test influence of weights
             mutate(grid_ID=as.factor(grid_ID),
                    BIOREGION=as.character(BIOREGION),
                    BIOREGION.agg=as.factor(case_when(BIOREGION %in% c("4", "3")~"4:3",
@@ -210,7 +206,7 @@ CI_27_JU_baseline_models <- function() {
                                        cbind(as.data.frame(t(.x))) %>%
                                        pivot_longer(cols=matches('[0-9]'), names_to='Rep') %>%
                                        right_join(newdata) 
-                                       #right_join(newdata, by='grid_ID', relationship="many-to-many")  #KC - AT adds this but it returned an error for me
+                                       #right_join(newdata, by='grid_ID', relationship="many-to-many")  #KC - alternative approach returned an error for me
                                         # Caused by error in `right_join()`:
                                         # ! `...` must be empty.
                                         # ✖ Problematic argument:
@@ -229,7 +225,7 @@ CI_27_JU_baseline_models <- function() {
 
         JUV.baseline <- mods %>%
             dplyr::select(bio.draws.mesh) %>%
-            unnest(bio.draws.mesh) #KC - AT changed to 'JUV' to differentiate from earlier object
+            unnest(bio.draws.mesh)
 
         save(JUV.baseline, file = paste0(DATA_PATH, "parameters/JUV_baseline.RData")) 
 

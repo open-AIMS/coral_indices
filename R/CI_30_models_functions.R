@@ -115,7 +115,9 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
 
         ## Number of reefs below 0.5
         mods <- mods %>%
-            filter(!REEF.d %in% c("Rat shallow slope", "Farmers shallow slope")) #KC - they don't really qualify as 'coral reefs'
+            filter(!REEF.d %in% c("Rat shallow slope", "Farmers shallow slope")) #they don't really qualify as 'coral reefs'.
+            #                                                                    #Don't want them influencing condition grades at broad spatial aggregations
+                                                                                 #but still want to be able to report on them at the reef level
 
         mods.n <- mods %>%
             dplyr::select(REEF.d, Below) %>%

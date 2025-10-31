@@ -43,7 +43,7 @@ CI_26_CC_baseline_models <- function() {
         getSource <- FALSE
         while (!getSource) {
             try({
-                gbr <- st_read(paste0("https://services8.arcgis.com/", ##KC - this has stopped working, says I need a token
+                gbr <- st_read(paste0("https://services8.arcgis.com/", ##KC - says I need a token
                                       "ll1QQ2mI4WMXIXdm/arcgis/rest/services/",
                                       "Great_Barrier_Reef_Marine_Park_Boundary/",
                                       "FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"),
@@ -72,22 +72,22 @@ CI_26_CC_baseline_models <- function() {
             st_intersection(gbr)
 
         ## Explore this for Bioregion 27
-        bb <- bioregion %>%
-            filter(BIOREGION == 27) %>%
-            st_bbox()
+        # bb <- bioregion %>%
+        #     filter(BIOREGION == 27) %>%
+        #     st_bbox()
 
-        g <- ggplot() +
-            geom_sf(data = hex_grid %>% st_crop(bb), fill = NA) +
-            geom_sf(data = bioregion %>% st_crop(bb), color = 'blue') +
-            coord_sf(xlim = bb[c(1,3)],
-                     ylim = bb[c(2,4)]) +
-            theme_bw() +
-            coord_sf(expand = 0)
+        # g <- ggplot() +
+        #     geom_sf(data = hex_grid %>% st_crop(bb), fill = NA) +
+        #     geom_sf(data = bioregion %>% st_crop(bb), color = 'blue') +
+        #     coord_sf(xlim = bb[c(1,3)],
+        #              ylim = bb[c(2,4)]) +
+        #     theme_bw() +
+        #     coord_sf(expand = 0)
         
-        ggsave(filename = paste0(FIGS_PATH, "/hex_grid__bioregion_27.png"),
-               g,
-               height = 6,
-               width = 6)
+        # ggsave(filename = paste0(FIGS_PATH, "/hex_grid__bioregion_27.png"),
+        #        g,
+        #        height = 6,
+        #        width = 6)
 
 
         ## Further filter the hex grid to just those hexagons that sit over
@@ -95,21 +95,21 @@ CI_26_CC_baseline_models <- function() {
         hex_grid.over_reef <- hex_grid %>%
             filter(lengths(st_intersects(., bioregion)) >0 )
 
-        bb <- bioregion %>%
-            filter(BIOREGION == 27) %>%
-            st_bbox()
-        g <- ggplot() +
-            geom_sf(data = bioregion %>% st_crop(bb), color = 'blue') +
-            geom_sf(data = hex_grid.over_reef %>% st_crop(bb), fill = NA, fill = 'red') +
-            coord_sf(xlim = bb[c(1,3)],
-                     ylim = bb[c(2,4)]) +
-            theme_bw() +
-            coord_sf(expand = 0)
+        # bb <- bioregion %>%
+        #     filter(BIOREGION == 27) %>%
+        #     st_bbox()
+        # g <- ggplot() +
+        #     geom_sf(data = bioregion %>% st_crop(bb), color = 'blue') +
+        #     geom_sf(data = hex_grid.over_reef %>% st_crop(bb), fill = NA, fill = 'red') +
+        #     coord_sf(xlim = bb[c(1,3)],
+        #              ylim = bb[c(2,4)]) +
+        #     theme_bw() +
+        #     coord_sf(expand = 0)
         
-        ggsave(filename = paste0(FIGS_PATH, "/hex_grid__bioregion_27_reef.png"),
-               g,
-               height = 6,
-               width = 6)
+        # ggsave(filename = paste0(FIGS_PATH, "/hex_grid__bioregion_27_reef.png"),
+        #        g,
+        #        height = 6,
+        #        width = 6)
 
         ## Simplify the bioregion object such that it just contains a
         ## multipolygon per bioregion This will prevent duplications when
@@ -123,20 +123,20 @@ CI_26_CC_baseline_models <- function() {
             hex_grid.over_reef %>%
             st_intersection(bioregion_sum)
 
-        bb <- bioregion %>%
-            filter(BIOREGION == 27) %>%
-            st_bbox()
-        g <- ggplot() +
-            geom_sf(data = bioregion %>% st_crop(bb), color = 'blue') +
-            geom_sf(data = hex_grid.just_reef %>% st_crop(bb), fill = NA, fill = 'red') +
-            coord_sf(xlim = bb[c(1,3)],
-                     ylim = bb[c(2,4)]) +
-            theme_bw() +
-            coord_sf(expand = 0)
-        ggsave(filename = paste0(FIGS_PATH, "/hex_grid__bioregion_27_justreef.png"),
-               g,
-               height = 6,
-               width = 6)
+        # bb <- bioregion %>%
+        #     filter(BIOREGION == 27) %>%
+        #     st_bbox()
+        # g <- ggplot() +
+        #     geom_sf(data = bioregion %>% st_crop(bb), color = 'blue') +
+        #     geom_sf(data = hex_grid.just_reef %>% st_crop(bb), fill = NA, fill = 'red') +
+        #     coord_sf(xlim = bb[c(1,3)],
+        #              ylim = bb[c(2,4)]) +
+        #     theme_bw() +
+        #     coord_sf(expand = 0)
+        # ggsave(filename = paste0(FIGS_PATH, "/hex_grid__bioregion_27_justreef.png"),
+        #        g,
+        #        height = 6,
+        #        width = 6)
 
         ## Calculate the reef area and weight within each hexagon
         newdata_grid <- hex_grid.just_reef %>%
@@ -152,22 +152,22 @@ CI_26_CC_baseline_models <- function() {
              file = paste0(DATA_PATH, "parameters/newdata_grid.RData"))
 
         ## Visual check
-        bb <- hex_grid.just_reef %>%
-            filter(BIOREGION == 27) %>%
-            slice(1:10) %>%
-            st_bbox()
+        # bb <- hex_grid.just_reef %>%
+        #     filter(BIOREGION == 27) %>%
+        #     slice(1:10) %>%
+        #     st_bbox()
 
-        g <- ggplot() +
-            geom_sf(data = hex_grid.just_reef %>% st_crop(bb), fill='orange') +
-            geom_sf_text(data = hex_grid.just_reef %>% st_crop(bb), aes(label = grid_ID)) +
-            geom_sf(data = bioregion %>% st_crop(bb), fill = NA, colour = 'blue') +
-            theme_bw() +
-            coord_sf(expand = 0)
+        # g <- ggplot() +
+        #     geom_sf(data = hex_grid.just_reef %>% st_crop(bb), fill='orange') +
+        #     geom_sf_text(data = hex_grid.just_reef %>% st_crop(bb), aes(label = grid_ID)) +
+        #     geom_sf(data = bioregion %>% st_crop(bb), fill = NA, colour = 'blue') +
+        #     theme_bw() +
+        #     coord_sf(expand = 0)
 
-        ggsave(filename = paste0(FIGS_PATH, "/new_grid.png"),
-               g,
-               height = 6,
-               width = 6)
+        # ggsave(filename = paste0(FIGS_PATH, "/new_grid.png"),
+        #        g,
+        #        height = 6,
+        #        width = 6)
 
 ################################################################################
 ############ PART 2 - fit the spatial models               #####################
@@ -356,9 +356,6 @@ gbr <- read_sf(paste0(DATA_PATH,'spatial/GBRMP boundary/Great_Barrier_Reef_Marin
             unnest(bio.draws.mesh)
 
         save(mod, file = paste0(DATA_PATH, "parameters/CC_baseline.RData"))
-        ## load(file = paste0(DATA_PATH, "parameters/CC_baseline.RData"))
-        ## save(mod, file = paste0(DATA_PATH, "parameters/CC_baseline_posteriors.RData"))
-        ## save(mod, file = paste0(DATA_PATH, "parameters/CC_baseline_posteriors.RData"))
 
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = 'cc_baseline',status = 'success')

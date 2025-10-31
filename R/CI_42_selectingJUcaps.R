@@ -1,4 +1,4 @@
-Baselines <- get(load(file = paste0(DATA_PATH, #KC - AT changed
+Baselines <- get(load(file = paste0(DATA_PATH, 
                                             'modelled/JU__baseline_posteriors.RData')))
 
 spatial_lookup <- get(load(paste0(DATA_PATH, "processed/spatial_lookup.RData")))

@@ -15,7 +15,7 @@ library(Rlof)
 library(patchwork)
 library(ggrepel)
 library(ggsci)
-library(tidybayes) #KC - added. Need for function median_hdci() in CI_29_JU_consequence_models.R
+library(tidybayes) #KC - added. Need for function median_hdci()
 ## ----end
 
 source('../R/functions_boxes.R')

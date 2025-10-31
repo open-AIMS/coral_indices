@@ -75,7 +75,7 @@ CI__clean_ju_data <- function(data) {
         summarise(ss.years.morethanzero = n()) %>%
         ungroup
 
-    #df.b %>%  #KC - copying over. AT alteration to retain years with valid zeros when other years at the reef were ok, models still run and maybe this also because of the change to cell mean models
+    #df.b %>%  #alteration to retain years with valid zeros when other years at the reef were ok
       df.a %>%
         left_join(no.variance) %>% 
         filter(ss.years.morethanzero>1) %>% 
@@ -109,7 +109,7 @@ CI_models_JU_prepare_data <- function() {
             group_by(DEPTH.f, Taxa) %>%
             nest()
 
-        data_ju <- juv %>% #KC - AT changed to JU
+        data_ju <- juv %>% 
             mutate(data = map(.x = data,
                               .f = ~ CI__clean_ju_data(.x) %>%
                                   suppressMessages() %>%
@@ -117,7 +117,7 @@ CI_models_JU_prepare_data <- function() {
                               )
                    )
         
-        save(data_ju, #KC - AT changed to JU
+        save(data_ju, 
               file = paste0(DATA_PATH, 'modelled/data_ju.RData'))
         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
@@ -136,16 +136,16 @@ CI_models_JU_prepare_nest <- function() {
         load(file = paste0(DATA_PATH, "modelled/data_ju.RData"))
         
         ## nest the data
-        mods <- data_ju %>%  #KC - AT changed to JU
+        mods <- data_ju %>%  
             unnest(data) %>%
             ungroup() %>% 
-            group_by(REEF.d, Taxa) %>% #KC - AT nests by DEPTH.f also, but not in CC or MA, not copied over yet
+            group_by(REEF.d, Taxa) %>% 
             ## note in more recent versions of dplyr (1.1.0 -
             ## cur_data_all has been replaced by pick)
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
             mutate(n = 1:n()) #
 
-            #KC - AT has this instead of lines 145 and 146, but I couldn't get it to work for MA and CC indicators, so have stuck to original
+            #alternative nesting approach not working
             #nest(data=everything(), .by=c(REEF.d, DEPTH.f,Taxa)) %>%
             #mutate(n = 1:n())
 
@@ -154,10 +154,9 @@ CI_models_JU_prepare_nest <- function() {
             mutate(newdata = map(.x = data,
                                  .f = ~ .x %>%
                                      droplevels() %>% 
-                                     ## tidyr::expand(Site = Site, fYEAR = fYEAR, # replace
                                      tidyr::expand(REEF.d = REEF.d, fYEAR = fYEAR,
-                                                   Site = NA, #Transect = NA,  #KC - AT removed as no Transect level data used
-                                                   avail.area=1,   #KC - AT adds: is this appropriate to add in ??
+                                                   Site = NA, 
+                                                   avail.area=1,   
                                                    value = NA) %>%
                                      distinct()
                                  ),
@@ -177,11 +176,8 @@ CI_models_JU_prepare_nest <- function() {
 
 CI__fit_JU_model <- function(form, data, family='nbinomial', n, N) {
     CI_tryCatch({
-        ## site <- unique(data$Site)
         reef <- unique(data$REEF.d)
         taxa <- na.omit(unique(data$Taxa))
-
-        #environment(form)<-environment() #KC - AT adds this but I'm not sure why
 
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
@@ -220,7 +216,7 @@ CI_models_JU_fit_models <- function() {
         load(file = paste0(DATA_PATH, "modelled/data_ju.RData"))
         load(file = paste0(DATA_PATH, 'modelled/JU__mods.RData'))
 
-        form <- value ~ 0+fYEAR + ##KC - AT added the 0+ to make a cell means formula
+        form <- value ~ 0+fYEAR + ## added the 0+ to make a cell means formula
             f(Site , model='iid')
         
         ## Fit the models - output models and draws to
@@ -417,11 +413,11 @@ CI__index_JU <- function(dat, taxa, baselines) {
                             dplyr::rename(baseline = value)) %>%
                             mutate(value.raw=value) %>%
                             dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >2.72, 2.72, value.raw),
+                            mutate(value = ifelse(value.raw >3.8, 3.8, value.raw), #4x critical threshold
                             distance.met = plogis(log2(value/baseline)),
                             original.rescale.dist.met = ifelse(value >= baseline,
                                                 my_rescale(distance.met ,
-                                                            from = list(plogis(log2(2.72/baseline)), 0.5),
+                                                            from = list(plogis(log2(3.8/baseline)), 0.5), #4x critical threshold
                                                             to = c(1, 0.5)),
                                                 distance.met), #KC - testing combined metric
                             rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
@@ -442,11 +438,11 @@ CI__index_JU <- function(dat, taxa, baselines) {
                             dplyr::rename(baseline = value)) %>%
                             mutate(value.raw=value) %>%
                             dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >2.08, 2.08, value.raw),
+                            mutate(value = ifelse(value.raw >2.16, 2.16, value.raw),#4x critical threshold
                             distance.met = plogis(log2(value/baseline)),
                             original.rescale.dist.met = ifelse(value >= baseline,
                                                 my_rescale(distance.met ,
-                                                            from = list(plogis(log2(2.08/baseline)), 0.5),
+                                                            from = list(plogis(log2(2.16/baseline)), 0.5),#4x critical threshold
                                                             to = c(1, 0.5)),
                                                 distance.met),
                             rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
@@ -464,27 +460,24 @@ CI__index_JU <- function(dat, taxa, baselines) {
 }
 
 CI_models_JU_distance <- function() {
-    ## This is going to need modifying once Manu has a model for
-    ## critical juvenile densities.  The posteriors of this model
-    ## will be compared to the Acropora posteriors (rather than the
-    ## Acropora posteriors of the baseline model)
+
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'indices',
                    label = "Calculate indices", status = 'pending')
     CI_tryCatch({
 
-        Baselines <- get(load(file = paste0(DATA_PATH, #KC - AT changed
+        Baselines <- get(load(file = paste0(DATA_PATH, 
                                             'modelled/JU__baseline_posteriors.RData')))
         mods <- get(load(file = paste0(DATA_PATH, "modelled/JU__preds.RData")))
         load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
         ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
         
-        #KC - AT adds the following
-        # add in Acropora juvenile limits based on Manu's modelling
+        #KC
+        # add in Acropora juvenile limits based on IPM
         load(file=paste0(DATA_PATH, 'parameters/IPM_juv.RData'))
         
         .draw=tibble(.draw=seq(from=1, to=1000, by=1))
-        # updated code to include the IPM_juv estimate - noting this is a little different to the value reported in the indicators tech report.
+        # updated code to include the IPM_juv estimate
         Acr.baseline<- site.location |> 
           dplyr::select(DEPTH.f, BIOREGION.agg, Shelf) |>  
           unique() |> 
@@ -509,7 +502,7 @@ CI_models_JU_distance <- function() {
                         mutate(Scores = map2(.x = Pred, .y = Taxa,
                             .f = ~ {
                                 res <- CI__index_JU(.x, .y, baselines)
-                                if (is.null(res)) { #I don't know why NULL results are introduced when they weren't before. THey are JCU reefs. Does this affect the broader spatial aggregations?
+                                if (is.null(res)) { #NULL results are introduced. THey are JCU reefs. Does this affect the broader spatial aggregations?
                                     tibble()
                                 } else {
                                     res %>%
@@ -518,7 +511,7 @@ CI_models_JU_distance <- function() {
                                         arrange(fYEAR, .draw)
                                 }
                             }
-                        )) %>% #KC - from here, AT creates a new object for Summary, rather than including it in mods, then only saves the Summary. I haven't followed suit yet....
+                        )) %>%
             dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
             ## Since each of Total and Acropora are modelled separately, we need to unnest
             ## the Scores dataframes and then rbind them together for each Reef, before
@@ -538,7 +531,7 @@ CI_models_JU_distance <- function() {
                     relocate(value, .after = `.draw`)
                 bind_rows(orig_df, combined_df)
             } %>%
-            group_by(REEF.d) %>% #KC - AT adds DEPTH.f, not copied over yet
+            group_by(REEF.d) %>% 
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
             dplyr::rename(Scores = data) %>%
             mutate(Summary = map(.x = Scores,
@@ -548,8 +541,8 @@ CI_models_JU_distance <- function() {
                                                 "Model",
                                                 "value",
                                                 "baseline",
-                                                "DEPTH.f"))) %>% #KC - AT removes DEPTH.f here, not copied over yet
-                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>% #KC - AT adds DEPTH.f here, not copied over yet
+                                                "DEPTH.f"))) %>%
+                                     group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
                                      tidybayes::summarise_draws(median, mean, sd,
                                                      HDInterval::hdi,
                                                      `p<0.5` = ~ mean(.x < 0.5)
@@ -569,8 +562,7 @@ CI_models_JU_distance <- function() {
 
         save(mods,
               file = paste0(DATA_PATH, 'modelled/JU__scores_reef_year.RData'))
-              #KC - AT does not save the full mods object here, but saves just the summary instead, as JU__scores_reef_year.RData. Might find out why as I get further....
-        
+              
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                               item = 'indices',status = 'success')
 
@@ -578,7 +570,7 @@ CI_models_JU_distance <- function() {
     msg=paste0('Calculate indices'), return=NULL)
 }
 
-#KC - AT has a different aggregation function for JU here, noting that AT's 'JU__scores_reef_year.RData' is different to the other indicators, and it filters for MMP reefs
+
 # CI_models_JU_aggregation <- function(level = 'NRM') {
   
   

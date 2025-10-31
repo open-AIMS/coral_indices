@@ -23,8 +23,7 @@ CI_models_MA_prepare_data()
 CI_models_MA_prepare_nest() 
 CI_models_MA_fit_models()
 CI_models_MA_diagnostics()
-CI_models_MA_cellmeans() #KC - AT uses this instead
-##CI_models_cellmeans(Indicator = "MA") #KC - This is confusing because it is defined as (Indicator = "CC"), but specifically loads MA data?
+CI_models_MA_cellmeans()
 CI_models_MA_preds()
 CI_models_MA_partialplots()
 

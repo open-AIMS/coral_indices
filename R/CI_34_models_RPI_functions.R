@@ -58,7 +58,7 @@ CI_process_rpi_data_spatial <- function() {
         spatial_lookup<- spatial_lookup %>%
             group_by(REEF.d) %>%
             filter(DEPTH==first(DEPTH),
-                   !(REEF.d=="Pandora Reef deep slope" & is.na(TUMRA)) & #KC - AT corrected filter
+                   !(REEF.d=="Pandora Reef deep slope" & is.na(TUMRA)) &
                    !(REEF.d=="Farquharson Reef deep slope" & TUMRA=="Mandubarra")) %>% droplevels() %>%
             dplyr::select(-DEPTH )%>%
             suppressMessages() %>%
@@ -165,32 +165,6 @@ CI_process_groups_data <- function() {
             suppressWarnings()
 
         
-        ## ##group points     
-        ## groups.transect <- points.raw %>%
-        ##     left_join(video_codes %>% dplyr::select(GROUP_CODE, VIDEO_CODE)) %>%
-        ##     mutate(SITE_NO = as.character(SITE_NO),
-        ##            TRANSECT_NO = as.character(TRANSECT_NO)) %>%
-        ##     group_by(P_CODE, REEF, DEPTH, VISIT_NO, GROUP_CODE, SITE_NO, TRANSECT_NO) %>%
-        ##     summarise(Points = sum(POINTS)) %>%
-        ##     ungroup %>% 
-        ##     left_join(total.points) %>%
-        ##     mutate(COVER = (Points/total.points)*100) %>%
-        ##     dplyr::select(-Points, -total.points)%>%
-        ##     pivot_wider(names_from = "GROUP_CODE", values_from = "COVER", values_fill = 0) %>%
-        ##     pivot_longer(cols = c('A', 'AB', 'HC', 'SC', 'SG', 'SP', 'OT'),
-        ##                  names_to = 'GROUP_CODE', values_to = 'COVER') %>%
-        ##     mutate(P_CODE = as.factor(P_CODE),
-        ##            REEF = as.factor(REEF),
-        ##            SITE_NO = as.integer(SITE_NO),
-        ##            TRANSECT_NO = as.integer(TRANSECT_NO),
-        ##            GROUP_CODE = as.factor(GROUP_CODE)) %>%
-        ##     suppressMessages() %>%
-        ##     suppressWarnings()
-
-
-        ## save(groups.transect,
-        ##      file = paste0(DATA_PATH, 'processed/groups.transect.RData'))
-
         groups.site <- points.raw %>%
             left_join(video_codes %>% dplyr::select(GROUP_CODE, VIDEO_CODE)) %>%
             mutate(SITE_NO = as.character(SITE_NO)) %>%
@@ -296,9 +270,6 @@ CI_process_groups_data_part2 <- function() {
 
         
         ##Load the disturbance table and save to the pipeline-specific primary directory
-
-        ##Why are there two identical records for Farquharson Reef for each year??
-
         load(paste0(DATA_PATH, "primary/disturbances.RData"))
 
         disturbance <- disturbance.reef %>% 
@@ -1245,35 +1216,6 @@ CI_34_RPI_reference_models <- function() {
     msg=paste0('Model RPI references'), return=NULL)
 }
 
-## CI_34_RPI_critical_models <- function() {
-##     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-##                    item = 'rpi_critical',
-##                    label = "Model RPI critical", status = 'pending')
-##     CI_tryCatch({
-
-##         ## only need to do the following once - perhaps move into RERUN_BASELINES section
-##         source("../R/externalFunctions/packages.R")
-##         source("../R/externalFunctions/LTMPDataTools.R")
-##         source("../R/externalFunctions/LTMPModellingTools.R")
-##         source("../R/externalFunctions/RPI_functions_other.R")
-##         RPI_PURPOSE <<- 'critical'
-##         CI_process_rpi_configs()
- 
-##         ## The following must be run after CI_process_rpi_data_reference
-##         ## as it will create the necessary data
-##         CI_process_rpi_crp_critical()
-##         CI_process_rpi_benthic()
-##         CI_model_rpi_critical()
-##         CI_model_rpi_gather()
-##         CI_model_rpi_filter_thin()
-
-##         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-##                               item = 'rpi_critical',status = 'success')
-
-##     }, logFile=LOG_FILE, Category='--Data processing--',
-##     msg=paste0('Model RPI critical'), return=NULL)
-## }
-
 CI__34_RPI_depthLoop <- function(ongoing.df, RPI.baseline, current.report.year) {
    count=0
    ## For each Reef.d, predict HC for the last observation in the
@@ -1436,8 +1378,8 @@ CI_process_rpi_data_predict_last_obs <- function() {
         ## The following will be run in parallel.  Note that progressor can be
         ## defined inside a function, but cannot be defined in global env, so
         ## do not try to run that line interactively
-        #plan(multisession, workers = 10) #KC commented out for testing
-        #p <- progressor(steps = 1) #KC commented out for testing
+        #plan(multisession, workers = 10) #KC commented out due to processing limitations using WSL
+        #p <- progressor(steps = 1) #KC commented out due to processing limitations using WSL
         rpi_data <-
             rpi_data  %>%
             mutate(depth_loop = purrr::map2(.x = ongoing.df, .y = REPORT_YEAR, #KC changed to purrr::map2 from future_map2
@@ -1559,7 +1501,7 @@ CI_process_rpi_critical_gather_preds <- function() {
                                      RPI_PURPOSE,
                                      "_.RData"))
 
-        ## Got up to here
+       
         ## get predictions from critical less than 3
         load(file = paste0(DATA_PATH, "processed/RPI_reference/rpi_data_",
                                          RPI_PURPOSE,
@@ -1652,7 +1594,7 @@ CI_process_rpi_calc_recovery_index <- function() {
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, REPORT_YEAR) %>%
             rename(index = rescale.dist.met) %>%
-            ## down fill missing values with previous non-NA after arranging       #KC - interesting, I hadn't noticed these lines. It mustn't have been working though?
+            ## down fill missing values with previous non-NA after arranging       #KC - This didn't seem to be working. I've implemented further down instead.
             ## by REPORT_YEAR within each draw (TRANSECT_NO)
             ungroup(REPORT_YEAR) %>%
             group_by(TRANSECT_NO, .add = TRUE) %>%
@@ -1681,29 +1623,7 @@ CI_process_rpi_calc_recovery_index <- function() {
 
         save(RPI_reference_posteriors,
              file = paste0(DATA_PATH, "/modelled/RPI_reference_posteriors.RData"))
-            
-
-        ##     ## ################################################################################
-        ##     ## Summarise RPI score
-        ## ## The following is not really used for anything...
-        ##     load(file=paste0(DATA_PATH, "/modelled/calculate.RPI.score.random.RData"))
-
-        ##     current.pred.summary <- calculate.RPI.score %>%
-        ##         group_by(ZONE, Shelf, TUMRA, NRM,BIOREGION,
-        ##                  DEPTH.f, REEF, REEF.d, REPORT_YEAR) %>%
-        ##         rename(index = rescale.dist.met) %>%
-        ##         tidybayes::median_hdci(modelled.cover, index, expected.cover) %>%
-        ##         mutate(fYEAR = factor((REPORT_YEAR))) %>%
-        ##         group_by(ZONE, Shelf, TUMRA, NRM,
-        ##                  BIOREGION, REEF, DEPTH.f, REEF.d) %>%
-        ##         arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION,
-        ##                 REEF, DEPTH.f, REEF.d, REPORT_YEAR) %>%
-        ##         tidyr::fill(index, index.upper, index.lower)  #For disturbance years, the index score from the last time it was measured is carried over
-
-        ##     save(current.pred.summary,
-        ##          file=paste0(DATA_PATH, "/modelled/current.pred.summary.random.RData"))
-                
-                
+                         
         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = paste0('Calculate RPI index'),
                           status = 'success')
@@ -2625,10 +2545,6 @@ CI__predict_last_obs <- function(filt.rec.traj.critical,
     if (type == 'critical') {
         rpids.to.predict.for <- filt.rec.traj.critical %>%
             ungroup() %>%
-            ## { if(type == "critical")
-            ##       filter(., RP_ID %in% rm.poor.chains.critical$RP_ID) %>% droplevels() 
-            ##       else .
-            ## } %>%
             filter(RP_ID %in% rm.poor.chains.critical$RP_ID) %>% droplevels() %>%
             dplyr::select(ZONE, Shelf, NRM, TUMRA, BIOREGION, REEF, DEPTH.f, REEF.d,
                           RP_ID, proj.site.rpid, REPORT_YEAR, max.report.year,
@@ -3121,7 +3037,7 @@ CI_process_rpi_gather_posteriors_less3 <- function() {
 
 
 CI_process_rpi_calc_critical_recovery_index <- function() {
-## CI_34_RPI_calculate_scores <- function() {
+
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                    item = 'rpi_scires',
                    label = "Calculate scores", status = 'pending')
@@ -3207,7 +3123,7 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
             group_by(TRANSECT_NO, .add = TRUE) %>%
             arrange(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, TRANSECT_NO, REPORT_YEAR) %>%
-            tidyr::fill(index, .direction = "down") %>%                      #KC - interesting, I hadn't noticed these lines. It mustn't have been working though?
+            tidyr::fill(index, .direction = "down") %>%                      #KC - this didn't seem to work, have implement below instead.
             ungroup() %>%
             group_by(ZONE, Shelf, TUMRA, NRM, BIOREGION, DEPTH.f,
                      REEF, REEF.d, REPORT_YEAR) %>%
@@ -3238,72 +3154,6 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
     msg=paste0("Calculate scores ", RPI_PURPOSE), return=NULL)
 }
 
-##KC commented out. This function seems to be defined twice and this first version saves the outputs under 'CC_' which doesn't seem right.
-
-# CI_models_RPI_distance <- function() {
-#     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-#                    item = 'indices',
-#                    label = "Calculate indices", status = 'pending')
-#     CI_tryCatch({
-
-
-#         baselines <- get(load(file = paste0(DATA_PATH,
-#                                             'modelled/CC__baseline_posteriors.RData')))
-#         mods <- get(load(file = paste0(DATA_PATH, "modelled/CC__preds.RData")))
-#         load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
-#         ## load(file = paste0(DATA_PATH, "processed/spatial_lookup.RData"))
-
-#         mods <- mods %>%
-#             mutate(Pred = map(.x = Pred,
-#                               .f = ~ .x %>%
-#                                   left_join(site.location %>%
-#                                             dplyr::select(REEF, REEF.d, BIOREGION.agg,
-#                                                           DEPTH.f) %>%
-#                                             distinct()) 
-#                               )) %>% 
-#             mutate(Scores = map(.x = Pred,
-#                                 .f = ~ CI__index_CC(.x, baselines) %>%
-#                                     filter(Metric %in% c('rescale.dist.metric',
-#                                                          'pcb.rescale.dist.metric')) %>%
-#                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
-#                                     arrange(fYEAR, .draw)
-#                                )) %>%
-#             dplyr::select(-any_of(c("data", "newdata","Full_data", "Pred", "Summary"))) %>%
-#             mutate(Summary = map(.x = Scores,
-#                                  .f = ~ .x %>%
-#                                      dplyr::select(-any_of(c(
-#                                                 "P_CODE",
-#                                                 "Model",
-#                                                 "value",
-#                                                 "baseline",
-#                                                 "DEPTH.f"))) %>%
-#                                      group_by(fYEAR, REEF, REEF.d, BIOREGION.agg, Metric) %>%
-#                                      summarise_draws(median, mean, sd,
-#                                                      HDInterval::hdi,
-#                                                      `p<0.5` = ~ mean(.x < 0.5)
-#                                                      )
-#                                  ),
-#                    Below = map(.x = Summary,
-#                                .f = ~ .x %>%
-#                                    ungroup() %>%
-#                                    mutate(Below = ifelse(upper < 0.5, 1, 0),
-#                                           PBelow = ifelse(`p<0.5` > 0.9, 1, 0)) %>%
-#                                    dplyr::select(fYEAR, Metric, Below, PBelow) %>%
-#                                    distinct()
-#                                )
-#                    ) %>% 
-#             suppressMessages() %>%
-#             suppressWarnings()
-
-#         save(mods,
-#               file = paste0(DATA_PATH, 'modelled/CC__scores_reef_year.RData'))
-        
-#         CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
-#                               item = 'indices',status = 'success')
-
-#     }, logFile=LOG_FILE, Category='--CC models--',
-#     msg=paste0('Calculate indices'), return=NULL)
-# }
 
 CI_models_RPI_distance <- function() {
     CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),

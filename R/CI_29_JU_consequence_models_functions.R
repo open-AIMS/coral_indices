@@ -56,7 +56,7 @@ CI__get_JUV_MA_site_data <- function() {
         suppressMessages() %>%
         suppressWarnings()
    save(juv.ma.site,
-         file = paste0(DATA_PATH, 'processed/juv.ma.site.RData')) #KC - following AT adjustments
+         file = paste0(DATA_PATH, 'processed/juv.ma.site.RData'))
     #return(juv.ma.site)
 }
 

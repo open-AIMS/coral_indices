@@ -1,6 +1,4 @@
 ######################################################################
-## Notes made by Angus                                              ##
-##                                                                  ##
 ## For all mmp data use mmp_site_name as REEF                       ##
 ## For al LTMP data use AIMS_REEF_NAME as REEF                      ##
 ######################################################################
@@ -303,7 +301,7 @@ CI_get_ltmp_juveniles_data <- function() {
     msg=paste0('LTMP juveniles.'), return=NULL)
 }
 
-#KC - AT added this function
+
 CI_get_mmp_juveniles_samples <- function() {
   CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                  item = 'mmp_juv_samp',
@@ -334,7 +332,7 @@ writeLines("select p_code, mmp_site_name as reef, depth, visit_no, site_no
 msg=paste0('MMP juveniles samples.'), return=NULL)
     }
 
-#KC - AT added this function
+
 CI_get_ltmp_juveniles_samples <- function() {
   CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                  item = 'ltmp_juv_samp',
@@ -366,7 +364,7 @@ CI_get_ltmp_juveniles_samples <- function() {
   msg=paste0('LTMP juveniles samples.'), return=NULL)
 }          
 
-#KC - AT added this function
+
 CI_combine_juveniles_samples <- function() {
   CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                  item = 'combine_juv_samples',
@@ -502,13 +500,6 @@ CI_combine_point_data <- function() {
 ##########################################
 # External Data
 ##########################################
-## KC and AT unable to find the original .csv files that this function was written for
-## (- points.data.<P_CODE>.csv, and samples.<P_CODE>.csv)
-## The function has been adapted for the following data files:
-## - jcu.loc.RData
-## - jcu.points.group.RData
-## They were in monshare/database/data_extract/RIPREP_Indicators/InshoreRAPBenthic/data
-
 CI_get_external_data <- function() {
 CI__add_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                item = 'external_data',
@@ -520,9 +511,6 @@ CI_tryCatch({
   ## first year of 50 points per transect.
 
 
-############
-#KC adapted the code from here to work with the new data structure
-############
   load(paste0(DATA_PATH,"external/jcu.points.group.RData"))
   
    ext.points <- jcu.points.group %>%
@@ -574,10 +562,10 @@ CI_tryCatch({
   ## Algae points
   a.ext <-  ext.points  %>%
                         dplyr::select(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
-                                      SITE_NO, TRANSECT_NO, total.algae) %>% #KC change A to total.algae
+                                      SITE_NO, TRANSECT_NO, total.algae) %>% 
                         group_by(P_CODE, REEF, DEPTH, VISIT_NO, REPORT_YEAR,
                                  SITE_NO, TRANSECT_NO) %>%
-                        summarise(A = sum(total.algae)) %>%  #KC changed this. There is no column called A in the new data format
+                        summarise(A = sum(total.algae)) %>%  
                         ungroup() %>%
                         suppressMessages() %>%
                         suppressWarnings()
@@ -586,10 +574,10 @@ CI_tryCatch({
   load(paste0(DATA_PATH,"external/jcu.loc.RData"))
   ext.samples <- jcu.loc %>%
                               #dplyr::select(P_CODE,REEF,SITE_NO,Lat,Long) %>%
-                              dplyr::select(SITE_NO,lat,long) %>% #KC changed this. new sample data only has SITE_NO and Lat, Long
+                              dplyr::select(SITE_NO,lat,long) %>% 
                               unique %>%
-                              rename(LONGITUDE="long",  #KC changed this to "long" from "Long"
-                                     LATITUDE="lat") %>% #KC changed this to "lat" from "Lat"
+                              rename(LONGITUDE="long",  
+                                     LATITUDE="lat") %>% 
                               mutate(SITE_NO=as.character(SITE_NO)) %>%
                               suppressMessages() %>%
                               suppressWarnings()

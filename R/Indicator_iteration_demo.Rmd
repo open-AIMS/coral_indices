@@ -657,7 +657,7 @@ Baselines to 2015, scaling approach standardised among CC, MA, JU. Rat and Farme
 
 ### Macroalgae {.tabset .tabset-faded}
 
-I don't really know what is causing the differences between the original MA scores from the DMS and the re-run scores. I implemented Angus' codes changes, but from what I could tell they were mostly tidying up, without fundamental changes to the models. This probably warrants a closer look when I get back on Oct 7th.
+I don't really know what is causing the differences between the original MA scores from the DMS and the re-run scores. I implemented Angus' codes changes, but from what I could tell they were mostly tidying up, without fundamental changes to the models.
 
 #### Bioregion 4:3 {.tabset .tabset-faded}
 

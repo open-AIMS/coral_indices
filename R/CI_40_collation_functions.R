@@ -15,7 +15,7 @@ CI_models_collate_indices <- function() {
             pattern = "..__scores_.*_year\\.RData$",
             full.names = TRUE
         )
-        files <- files[!grepl("\\.RData:.*", files)] #KC to avoid any weird files with : in the name
+        files <- files[!grepl("\\.RData:.*", files)] #KC to avoid zone identifier files
 
         indices <- purrr::map_df(.x = files,
                               .f = ~ {
@@ -31,7 +31,7 @@ CI_models_collate_indices <- function() {
                                                     level == "ZONE" ~ "ZONE",
                                                     level == "GBRMP" ~ "GBRMP")
                                   indicator <- str_replace(.x,
-                                                           #".*modelled/([A-Z]{2})__.*", #KC copied AT change
+                                                           #".*modelled/([A-Z]{2})__.*",
                                                            ".*modelled/([A-Z]{2}).*",
                                                            "\\1") 
                                   indicator <-  case_when(
@@ -39,7 +39,7 @@ CI_models_collate_indices <- function() {
                                       indicator == "MA" ~ "Macroalgae",
                                       indicator == "JU" ~ "Juvenile.density",
                                       indicator == "CO" ~ "Community.composition",
-                                      indicator == "RP" ~ "Recovery.performance" #KC changed from RPI since the string search only searches for 2 letters
+                                      indicator == "RP" ~ "Recovery.performance" 
                                   )
                                   x <- get(load(.x)) %>%
                                       dplyr::select(Summary) %>%
@@ -59,7 +59,7 @@ CI_models_collate_indices <- function() {
                                               ## group_by(!!sym(name), DEPTH.f) %>%
                                               ## summarise(across(c(LATITUDE, LONGITUDE), mean))
                                               ## ensure each reef has same lat/long despite diff
-                                              ## site depths - Manu wanted this
+                                              ## site depths
                                               group_by(!!sym(name)) %>%
                                               mutate(across(c(Latitude, Longitude), mean)) %>%
                                               group_by(!!sym(name), Shelf, DEPTH.f) %>%
@@ -89,9 +89,9 @@ CI_models_collate_indices <- function() {
                                                  Metric == 'Acropora' ~ 'Critical',
                                                  Metric == 'Reference' ~ 'Baseline',
                                                  Metric == 'Critical' ~ 'Critical',
-                                                 Metric == 'reference' ~ 'Baseline', #KC added these lower case ones since RPI had lower case metric names, and 'Baseline' and 'Critical' on right side of tilde weren't matching the others either
+                                                 Metric == 'reference' ~ 'Baseline', 
                                                  Metric == 'critical' ~ 'Critical',
-                                                 Metric == 'combined.metric' ~ 'Combined', #KC - adding the combined metrics
+                                                 Metric == 'combined.metric' ~ 'Combined', 
                                                 Metric == 'consequence.metric' ~ 'Critical',
                                                  Metric == 'Combined' ~ 'Combined'
                                                  )) %>%

@@ -1,4 +1,4 @@
-Baselines <- get(load(file = paste0(DATA_PATH, #KC - AT changed
+Baselines <- get(load(file = paste0(DATA_PATH, 
                                             'modelled/JU__baseline_posteriors.RData')))
 mods <- get(load(file = paste0(DATA_PATH, "modelled/JU__preds.RData")))
 load(file=paste0(DATA_PATH, 'processed/site.location.RData'))

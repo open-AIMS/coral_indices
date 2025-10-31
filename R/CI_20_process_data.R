@@ -5,7 +5,7 @@ if (CI_isParent()) CI_startMatter()
 
 #######################
 ## Reef names lookup 
-## AIMS_REEF_MANE and REEF_ZONE required to link to new disturbance table DISTURBANCES2
+## AIMS_REEF_NAME and REEF_ZONE required to link to new disturbance table DISTURBANCES2
 ## OUTSTANDING is full mapping to potential reporting zones...
 ## This should most probably be done via intersection of sample waypoints with spatial layers.
 #######################
@@ -70,17 +70,15 @@ if (CI$setting[['RERUN_BASELINES']]) {
 
 ## Check if the baseline models are present.  If they are not, then
 ## retrieve them from the AIMS metadata record
-CI__retrieve_data_from_metadata("MA__baseline_deep.RData") #KC - the baseline models were present but it downloaded from metadata anyway... will skip this for now
+CI__retrieve_data_from_metadata("MA__baseline_deep.RData") #KC - the baseline models were present but it downloaded from metadata anyway...
 CI__retrieve_data_from_metadata("MA__baseline_shallow.RData")
 CI__retrieve_data_from_metadata("MA__baseline_offshore.RData")
 
 CI__retrieve_data_from_metadata("CC_baseline.RData")
 CI__retrieve_data_from_metadata("CC__baseline.RData")
-CI__retrieve_data_from_metadata("CC_baseline_posteriors.RData")
 
 CI__retrieve_data_from_metadata("IPM_juv.RData")
 CI__retrieve_data_from_metadata("JUV_baseline.RData")
-CI__retrieve_data_from_metadata("JU__baseline.RData")
 CI__retrieve_data_from_metadata("JU__baseline_mod.RData")
 CI__retrieve_data_from_metadata("JuvCover_Acropora_NA_Inshore_NA_ResJuv_FALSE_Morph_NA.Rdata")
 CI__retrieve_data_from_metadata("JuvCover_Acropora_NA_Offshore_NA_ResJuv_FALSE_Morph_NA.Rdata")

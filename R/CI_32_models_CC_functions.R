@@ -49,7 +49,7 @@ CI_models_CC_prepare_data <- function() {
                 Site=factor(paste(REEF.d,SITE_NO)),
                    Transect=factor(paste(Site,TRANSECT_NO)),
                    fYEAR=factor(as.numeric(as.character(REPORT_YEAR))))%>%
-            group_by(Transect) %>% #KC - following AT adjustments
+            group_by(Transect) %>%
             mutate(Obs=factor(1:n())) %>%
             ungroup %>%
           dplyr::select(P_CODE, Shelf,NRM, BIOREGION, BIOREGION.agg, REEF, DEPTH, DEPTH.f,
@@ -59,13 +59,13 @@ CI_models_CC_prepare_data <- function() {
         ## Model terminated when there were reefs with only 1 level of
         ## the "REPORT_YEAR" factor. Remove Could use Murray's
         ## function in place of this
-        report.year.ss <- tran.data %>% #KC - following AT adjustments
+        report.year.ss <- tran.data %>% 
             dplyr::select(Site, REPORT_YEAR) %>%
             unique() %>% 
             group_by(Site) %>%
             summarise(report.year.ss = n())
 
-        df.a <- tran.data %>% #KC - following AT adjustments
+        df.a <- tran.data %>%
             left_join(report.year.ss) %>%
             filter(!report.year.ss == "1") %>%
             droplevels
@@ -100,26 +100,19 @@ CI_models_CC_prepare_nest <- function() {
         load(file = paste0(DATA_PATH, "modelled/data_cc.RData"))
         
                 mods <- data_cc %>% 
-            ## group_by(Site) %>%  ## Angus said that Site-level models were an accident
             group_by(REEF.d) %>%
             ## note in more recent versions of dplyr (1.1.0 -
             ## cur_data_all has been replaced by pick)
             summarise(data = list(cur_data_all()), .groups = "drop") %>%
             mutate(n = 1:n())
 
-        # ## nest the data
-        # mods <- data_cc %>% 
-        #   nest(data=everything(), .by=REEF.d) %>%
-        #   mutate(n = 1:n()) #KC - following AT adjustments
-
         ## Prepare the data
         mods <- mods %>%
             mutate(newdata = map(.x = data,
                                    .f = ~ .x %>%
                                        droplevels() %>% 
-                                       ## tidyr::expand(Site = Site, fYEAR = fYEAR, # replace
                                        tidyr::expand(REEF.d = REEF.d, fYEAR = fYEAR,
-                                                     Site=NA, Transect = NA, Obs = NA, #KC - following AT adjustments
+                                                     Site=NA, Transect = NA, Obs = NA,
                                                      HC = NA, total.points = NA) %>%
                                        distinct()
                                    ),
@@ -138,8 +131,6 @@ CI_models_CC_prepare_nest <- function() {
 
 CI__fit_CC_model <- function(form, data, family='binomial', n, N) {
     CI_tryCatch({
-        ## site <- unique(data$Site)
-        #environment(form)<-environment() #KC - AT adds this. I'm not sure what it does
         reef <- unique(data$REEF.d)
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
@@ -312,31 +303,20 @@ CI__index_CC <- function(dat, baselines) {
                   dplyr::rename(baseline = value)) %>%
         mutate(value.raw=value) %>%
         dplyr::select(-value) %>%
-        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum MAp for a score of 0 at 0.75 cover
+        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum for a score of 0 at 0.8 cover
             calc.met = plogis(log2(value/baseline)),
             rescale.dist.metric = ifelse(value >= baseline,
                                          my_rescale(calc.met,
                                                     from = list(plogis(log2(0.8/baseline)), 0.5),
                                                     to = c(1, 0.5)),
                                          calc.met),
-            
-            #KC - this is copilots suggestion for scale values above 0.8 to 1, I haven't implemented it yet
-
-            # calc.met = plogis(log2(value/baseline)),
-            # rescale.dist.metric = case_when(
-            #     value >= 0.8 ~ 1,
-            #     value >= baseline ~ my_rescale(calc.met,
-            #                                    from = list(plogis(log2(1/baseline)), 0.5),
-            #                                    to = c(1, 0.5)),
-            #     TRUE ~ calc.met
-            # ),
             pcb.distance.met = plogis(log2(value/0.2)),
             original.pcb.rescale.dist.met = ifelse(value >= 0.2,
                                          my_rescale(pcb.distance.met,
                                                     from = list(plogis(log2(0.8/0.2)), 0.5),
                                                     to = c(1, 0.5)),
                                          pcb.distance.met),
-            pcb.rescale.dist.metric = as.numeric(ifelse(original.pcb.rescale.dist.met<=0.5, 0, original.pcb.rescale.dist.met)), #KC - testing combined metric
+            pcb.rescale.dist.metric = as.numeric(ifelse(original.pcb.rescale.dist.met<=0.5, 0, original.pcb.rescale.dist.met)), #KC - adding combined metric
             combined.metric = ((rescale.dist.metric + pcb.rescale.dist.metric)/2)) %>% #KC - adding combined metric
         dplyr::select(-any_of(ends_with("met")), -value.raw, -value) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%

@@ -12,10 +12,10 @@ CI_29_JU_consequence_models <- function() {
         ## Critical value from IPM
 		
         Crit.value <- IPM_juv$mean[1] %>%  # just inshore at the moment
-            round(1)                       # round to align with Manu's documentation
+            round(1)                       # round to align with Juv documentation
         
         CI__get_JUV_MA_site_data()
-       load(file = paste0(DATA_PATH, 'processed/juv.ma.site.RData')) #KC - following AT adjustments
+       load(file = paste0(DATA_PATH, 'processed/juv.ma.site.RData'))
         
         ## exclude 2022-24 data as not part of the original baseline
         
@@ -23,7 +23,7 @@ CI_29_JU_consequence_models <- function() {
         ## The desire is to produce a a single value (distribution
         ## perhaps) of MApLag, that can be used to set a value of MAp
         ## that corresponds to the critical density of Acropora
-        ## juveniles estimated by Manu for the Juvenile critical
+        ## juveniles estimated by for the Juvenile critical
         ## indicator. I don't have this exact value but suspect it
         ## will be ~0.7 I would like to produce a plot along the lines
         ## of
@@ -33,7 +33,7 @@ CI_29_JU_consequence_models <- function() {
                             f(reef.depth.site, model = 'iid'))
 
         a <- juv.ma.site %>%
-        filter(REPORT_YEAR<2022) %>% #KC - following AT adjustments
+        filter(REPORT_YEAR<2022) %>% 
             group_by(Shelf) %>%
             summarise(data = list(data.frame(reef.depth.site, 
                                              MApLag, Acropora, avail.area)),
@@ -58,7 +58,7 @@ CI_29_JU_consequence_models <- function() {
             mutate(Mod = map(.x = fulldata,
                              .f = ~ {
                                  set.seed(123)
-                                 #environment(form)<-environment() #KC - AT adds this. what does it do?
+                                 #environment(form)<-environment()
                                  inla(form,
                                       offset = log(.x$avail.area),
                                       data = .x, 

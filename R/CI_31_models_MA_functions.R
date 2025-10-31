@@ -302,7 +302,6 @@ CI_models_MA_prepare_nest <- function() {
         
         ## nest the data
         mods <- data %>% 
-            ## group_by(Site) %>%  ## Angus said that Site-level models were an accident
             group_by(REEF.d) %>%
             ## note in more recent versions of dplyr (1.1.0 -
             ## cur_data_all has been replaced by pick)
@@ -311,7 +310,7 @@ CI_models_MA_prepare_nest <- function() {
 
         #  mods <- data %>% 
         #    nest(data=everything(), .by=REEF.d) %>%
-        #    mutate(n = 1:n()) #KC - AT replaced with this
+        #    mutate(n = 1:n()) #KC - this alternative approach not working for me
 
         ## Prepare the data
         mods <- mods %>%
@@ -320,7 +319,7 @@ CI_models_MA_prepare_nest <- function() {
                                        droplevels() %>% 
                                        ## tidyr::expand(Site = Site, fYEAR = fYEAR, # replace
                                        tidyr::expand(REEF.d = REEF.d, fYEAR = fYEAR, 
-                                                     Site=NA, Transect = NA, #KC - AT added Site
+                                                     Site=NA, Transect = NA,
                                                      Obs = NA,
                                                      MA = NA, A = NA) %>%
                                        distinct()
@@ -383,13 +382,13 @@ CI__model_diagnostics <- function(mod, obsdata, type, m, reef) {
                               integerResponse = TRUE
                           )
 
-    ks <- DHARMa::testUniformity(mod.resids) #KC - couldn't get the plots to work either way, so assigned these outside of plotting
+    ks <- DHARMa::testUniformity(mod.resids) #KC - assigned these outside of plotting
     disp <- DHARMa::testDispersion(mod.resids)
 
     ggsave(paste0(FIGS_PATH, "/", type, "_", m, "_DHARMa_", reef, ".png"),
            patchwork::wrap_elements(~DHARMa::testUniformity(mod.resids)) +
            patchwork::wrap_elements(~DHARMa::plotResiduals(mod.resids)) +
-           patchwork::wrap_elements(~DHARMa::testDispersion(mod.resids)),width = 12, height = 4) #KC - for some reason didn't like assigning objects within patchwork
+           patchwork::wrap_elements(~DHARMa::testDispersion(mod.resids)),width = 12, height = 4)
 
     diags <- list(
         KS =  ks$statistic[[1]],
@@ -410,10 +409,7 @@ CI__fit_MA_model <- function(fulldata, obsdata, n, N) {
     CI_tryCatch({
         ## site <- unique(data$Site)
         type <- "MA"
-        reef <- unique(fulldata$REEF.d) |> droplevels() #KC - added droplevels. 
-                                                        # fulldata had retained all levels of REEF.d and 
-                                                        #it was trying to run with all these additional levels of the factor that had no data, or something along those lines.....
-                                                        #Might better be addressed in the prepare_nest function, but not sure how
+        reef <- unique(fulldata$REEF.d) |> droplevels()
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
         if (file.exists(paste0(DATA_PATH, "modelled/MA__", reef, '__model.RData'))) {
@@ -476,8 +472,7 @@ CI__fit_MA_model <- function(fulldata, obsdata, n, N) {
 
 CI__cellmeans_MA_model <- function(obs_data, Full_data, newdata, n, N) {
     CI_tryCatch({
-        reef <- unique(newdata$REEF.d) |> droplevels() #KC added this because it uses the same nested data as for CI__fit_MA_model 
-                                                       #and fixed the problem there....
+        reef <- unique(newdata$REEF.d) |> droplevels()
         CI__append_label(stage = CI__get_stage(), item = 'cellmeans',
                          n, N)
         if (file.exists(paste0(DATA_PATH, "modelled/MA__", reef, '__posteriors.RData'))) {
@@ -550,8 +545,7 @@ CI__DHARMa <- function(type, reef, preds, data, fitted_median_inla) {
 CI__diagnostics_MA_model <- function(REEF.d, data, n, N) {
     CI_tryCatch({
         type <- "MA"
-        reef <- as.character(unlist(REEF.d)) #|> droplevels() #KC added this because it uses the same nested data as for CI__fit_MA_model 
-                                                       #and fixed the problem there....
+        reef <- as.character(unlist(REEF.d)) #|> droplevels()
         CI__append_label(stage = CI__get_stage(), item = 'diagnose_models',
                          n, N)
         
@@ -694,7 +688,7 @@ CI__index_MA <- function(dat, baselines, consequence) {
                   dplyr::rename(baseline = value)) %>%
         mutate(value.raw=value) %>%
         dplyr::select(-value) %>%
-        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum MAp for a score of 0 at 0.75 cover
+        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum MAp for a score of 0 at 0.8
             calc.met = plogis(log2(baseline/value)),
             distance.metric = ifelse(value >= baseline,
                                      my_rescale(calc.met,
@@ -703,9 +697,9 @@ CI__index_MA <- function(dat, baselines, consequence) {
                                      calc.met),
             critical.distance= plogis(log2(consequence/value)),
             consequence.metric = ifelse(critical.distance >= 0.5, critical.distance, 0),
-            #KC - changed so that the threshold sets a score of 0.5, as it does for HC and JU critical metrics
+            #KC - the threshold now sets a score of 0.5, as it does for HC and JU critical metrics
             combined.metric = (distance.metric + consequence.metric)/2 ) %>%
-                        dplyr::select(-calc.met, -value, -value.raw, -critical.distance) |> #KC - following AT adjustments
+                        dplyr::select(-calc.met, -value, -value.raw, -critical.distance) |>
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 
         suppressMessages() %>%

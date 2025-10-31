@@ -10,8 +10,7 @@ CI_25_MA_baseline_models <- function() {
         load(paste0(DATA_PATH, 'processed/spatial_lookup.RData'))
         load(paste0(DATA_PATH, 'primary/disturbances.RData'))
 
-# prepare the data
-      #KC - following AT adjustments  
+# prepare the data  
         baseline.points.a <- points.analysis.data.transect %>%
           ungroup() %>%
           left_join(spatial_lookup |>
@@ -25,7 +24,7 @@ CI_25_MA_baseline_models <- function() {
           mutate(fYEAR = factor(REPORT_YEAR),
                  Site = factor(paste0(REEF.d, SITE_NO)),
                  Transect = factor(paste0(Site, TRANSECT_NO))) %>%
-          group_by(Site) %>% #KC - AT adjusted this from Reef.d to Site.
+          group_by(Site) %>% 
           mutate(LONGITUDE = mean(LONGITUDE),
                  LATITUDE = mean(LATITUDE))%>%
           ungroup
@@ -35,7 +34,6 @@ CI_25_MA_baseline_models <- function() {
         disturbance<-disturbance.reef %>% filter(RANK=='1') %>%
             dplyr::select(P_CODE,REEF,DEPTH,VISIT_NO,DISTURBANCE)
 
-        #baseline.points<-points %>% #KC - this didn't work. no object loaded called 'points'. I assume the following achieves the desired outcome
         baseline.points<-baseline.points.a %>%
             left_join(disturbance) %>%
             filter(!DISTURBANCE %in% c('s','f'))
@@ -56,7 +54,7 @@ CI_25_MA_baseline_models <- function() {
         # points.full.grid <- points %>%
         #     dplyr::select(LONGITUDE, LATITUDE) %>%
         #     distinct() %>%
-        #     tidyr::crossing(fYEAR = points$fYEAR) #KC - following AT adjustments. Has removed this
+        #     tidyr::crossing(fYEAR = points$fYEAR)
 
         ## STEP 2 - establish a spatio-temporal grid of the actual data.class
         ## This is all observed locations for all monitored years
@@ -135,11 +133,6 @@ CI_25_MA_baseline_models <- function() {
 
         save(mod, mesh,
              file=paste0(DATA_PATH, 'parameters/MA__baseline_shallow.RData'))
-        ## meshdraws_MApShallow <- inla.posterior.sample(1000,
-        ##                                               result=baselineMApShallow_mod_mesh,
-        ##                                               seed=123) %>%
-        ##     suppressWarnings()
-        ## save(meshdraws_MApShallow, file=paste0(DATA_PATH, 'modelled/meshdraws_MApShallow.RData'))
 
         ## Deep=======================================================================================
         points <- baseline.points %>%
@@ -242,12 +235,6 @@ CI_25_MA_baseline_models <- function() {
 
         save(mod, mesh,
              file=paste0(DATA_PATH, 'parameters/MA__baseline_deep.RData'))
-
-        ## meshdraws_MApDeep_inshore  <- inla.posterior.sample(1000,
-        ##                                                     result=baselineMApDeep_inshore_mod_mesh,
-        ##                                                     seed=123) %>%
-        ##     suppressWarnings()
-        ## save(meshdraws_MApDeep_inshore , file=paste0(DATA_PATH, 'modelled/meshdraws_MApDeep_inshore.RData'))
 
 
         ## Offshore===================================================================================
@@ -390,14 +377,7 @@ CI_25_MA_baseline_models <- function() {
         save(mod, mesh,
              file=paste0(DATA_PATH, 'parameters/MA__baseline_offshore.RData'))
 
-        ## baselineMAoffshore_mesh_draws<- inla.posterior.sample(1000,
-        ##                                                       result=mod.inla.MA.offshore, seed=123) %>%
-        ##     suppressWarnings()
-
-        ## save(mod.inla.MA.offshore, file=paste0(DATA_PATH, "modelled/mod.inla.MA.offshore.RData"))
-        ## save(baselineMAoffshore_mesh_draws, file=paste0(DATA_PATH, 'modelled/baselineMAoffshore_mesh_draws.RData'))
-
-        CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
+                CI__change_status(stage = paste0('STAGE',CI$setting$CURRENT_STAGE),
                           item = 'ma_baseline',status = 'success')
 
     }, logFile=LOG_FILE, Category='--Data processing--',
