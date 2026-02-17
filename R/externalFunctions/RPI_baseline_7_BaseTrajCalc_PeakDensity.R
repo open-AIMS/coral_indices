@@ -6,7 +6,7 @@
 load(file=paste0(PROC_DATA_DIR, "mcmc.baseline.traj.ess500.RData"))
 
 #There were 2 trajectories that were above 1.1 but barely. After looking at their chains,
-#..... they didn't look bad enough to throw out.
+#..... they didn't look bad enough to throw out. Put in a safety filter anyway.
 rm.poor.chains<- mcmc.baseline.traj.ess500 %>%
   filter(!mpsrf>1.2) %>% droplevels()
 

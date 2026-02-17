@@ -46,7 +46,7 @@ cover.transect<- filt.rec.traj %>% left_join(dates) %>%
 # define the model for prediction
 source(paste0(MODEL_DIR, 'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
 model <- list(ode_func = general_logistic_twophase,       # RHS for ODE model
-              ode_sol = general_logistic_twophase_analytic,
+              ode_sol = general_logistic_twophase_analytic_v2,
               like_sampler = like_sampler,                # simulation of data generation process (for pred. checks)
               varnames = vlab)
 

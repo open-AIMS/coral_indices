@@ -40,6 +40,9 @@ source(paste0(MODEL_DIR,'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
                )  
 
 #*******************************************************************************
+#Load bioregion carrying capacity
+load(file= "../data/processed/highest.total.CC.RData")
+
 ## Fit Growth Model
   
   ## load filter results 
@@ -68,6 +71,12 @@ source(paste0(MODEL_DIR,'DefineTwoPhaseGeneralModelSingleSpeciesTypeII.R'))
     
     rpid.list<- vector(mode='list', length=length(reef.group.list))
     names(rpid.list)<-unique(names(reef.group.list))
+
+        K.limit <- highest.total.CC %>%
+                  filter(BIOREGION == i) %>%
+                  dplyr::select(highest.total.CC) %>%
+                  unique() %>%
+                  as.numeric()
     
     for(jj in unique(names(reef.group.list))){
       

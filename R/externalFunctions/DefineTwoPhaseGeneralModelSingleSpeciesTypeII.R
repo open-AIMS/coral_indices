@@ -119,6 +119,30 @@ general_logistic_twophase_analytic <- function(t, X0, theta) {
   return(out)
 }
 
+general_logistic_twophase_analytic_v2 <- function(t, X0, theta) {
+  alpha <- theta["alpha"]
+  alphaD <- theta["alphaD"]
+  gamma <- theta["gamma"]
+  Td <- theta["Td"]
+  K <- theta["K"]
+  Xt <- rep(0,length(t))
+  if(t[1]<Td){
+  t_ind1 <- which(t < Td)
+  t_ind2 <- which(t >= Td)
+  Xt[t_ind1] <- K*((1+((K/X0)^gamma -1)*exp(-alphaD*alpha*(t[t_ind1]-t[1])))^(-1/gamma))
+  Xd <- K*((1+((K/X0)^gamma -1)*exp(-alphaD*alpha*Td))^(-1/gamma))
+  Xt[t_ind2] <- K*((1+((K/Xd)^gamma -1)*exp(-alpha*(t[t_ind2]-Td)))^(-1/gamma))
+    } else {
+        Xt <- K*((1+((K/X0)^gamma -1)*exp(-alpha*(t-t[1])))^(-1/gamma))
+    }
+  out <- matrix(rep(0,2*length(t)),nrow = length(t), ncol = 2)
+  colnames(out) <- c("time","C")
+  out[,'time'] <- t
+  out[,'C'] <- Xt
+  return(out)
+}
+
+
 #' Log likelihood
 #'
 #' @description Log likelihood for the data given parameters theta under the model 
@@ -188,7 +212,7 @@ param_names <- c("alphaD","alpha", "gamma","Td")
 
 # build model structure
 model <- list(ode_func = general_logistic_twophase,       # RHS for ODE model
-              ode_sol = general_logistic_twophase_analytic,  # to use the analytic solution
+              ode_sol = general_logistic_twophase_analytic_v2,  # to use the analytic solution
               loglike = loglike,                          # log likelihood function
               like_sampler = like_sampler,                # simulation of data generation process (for pred. checks)
               logprior = logprior,                        # log prior density

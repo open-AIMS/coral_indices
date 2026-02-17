@@ -68,7 +68,7 @@ trajectory_filter_condition_no_end <- function(traj) {
 
 
 ################################################################################
-predict.ongoing.random <- function(baseline.df, ongoing.df,model,N){
+predict.ongoing.random <- function(baseline.df, ongoing.df,model,N, K.limit){
   traj.ids <- ongoing.df %>% select(c("RP_ID")) %>% unique() 
   # for each ongoing trajectory
   preds <- data.frame(HC_PRED = c(), RP_ID = c())
@@ -98,6 +98,7 @@ predict.ongoing.random <- function(baseline.df, ongoing.df,model,N){
       n <- nrow(traj)
       # build data object 
       data <- list(nVisits = 1, c0 = traj$HC[n-1],t0 = traj$T[n-1]/365.0, 
+                  #nVisits = 1, c0 = traj$HC[1],t0 = traj$T[1]/365.0, #Test predicting from first recovery trajectory obs
                    ts = traj$T[n]/365.0, K = K.limit - traj$AB[n], 
                    #C = traj$HC[n], Serr = traj$lower.error[n])
                    #C = traj$HC[n], 
@@ -120,7 +121,7 @@ predict.ongoing.random <- function(baseline.df, ongoing.df,model,N){
 }
 
 ################################################################################
-predict.ongoing.fixed <- function(baseline.df, ongoing.df,model,N){
+predict.ongoing.fixed <- function(baseline.df, ongoing.df,model,N, K.limit){
   traj.ids <- ongoing.df %>% select(c("RP_ID")) %>% unique() 
   # for each ongoing trajectory
   preds <- data.frame(HC_PRED = c(), RP_ID = c())
@@ -223,7 +224,7 @@ predict.previous.random <- function(baseline.df, ongoing.df,model,N){
   return(preds)
 }
 
-predict.from.fixed.HCstart <- function(baseline.df, model, N, spec.time, HC.start, AB.cover){
+predict.from.fixed.HCstart <- function(baseline.df, model, N, K.limit, spec.time, HC.start, AB){
   traj.ids <- baseline.df %>% select(c("RP_ID")) %>% unique() 
   # for each ongoing trajectory
   preds <- data.frame(HC_PRED = c(), RP_ID = c())
