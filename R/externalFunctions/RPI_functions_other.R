@@ -86,6 +86,9 @@ predict.ongoing.random <- function(baseline.df, ongoing.df,model,N, K.limit){
     #samples <- sample(Nall,N,replace=FALSE)
     
     traj.rp.id <- ongoing.df  %>% filter(RP_ID == traj.id)
+
+    set.seed(123)
+
     for (draw.id in 1:1000){
       # for 1 parameter per draw
       Nall <- nrow(rp.mcmc)
@@ -139,6 +142,9 @@ predict.ongoing.fixed <- function(baseline.df, ongoing.df,model,N, K.limit){
     samples <- sample(Nall,N,replace=FALSE)
     
     traj.rp.id <- ongoing.df  %>% filter(RP_ID == traj.id)
+
+    set.seed(123)
+
     for (draw.id in 1:1000){
       # for 1 parameter per draw
       #Nall <- nrow(rp.mcmc)
@@ -191,6 +197,9 @@ predict.previous.random <- function(baseline.df, ongoing.df,model,N){
     #samples <- sample(Nall,N,replace=FALSE)
     
     traj.rp.id <- ongoing.df  %>% filter(RP_ID == traj.id)
+
+    set.seed(123)
+    
     for (draw.id in 1:1000){
       # for 1 parameter per draw
       Nall <- nrow(rp.mcmc)
@@ -236,12 +245,14 @@ predict.from.fixed.HCstart <- function(baseline.df, model, N, K.limit, spec.time
       spread(key=Parameter,value=value) %>% 
       select(-c("Chain","Iteration","RP_ID"))
 
+    set.seed(123)
 
     for (draw.id in 1:1000){
       # for 1 parameter per draw
       Nall <- nrow(rp.mcmc)
       pps <- rep(0,N)
       samples <- sample(Nall,N,replace=FALSE)
+      params<-rp.mcmc[samples,]
 
       # build data object 
       data <- list(nVisits = 1, c0 = HC.start,t0 = 0, 
@@ -254,7 +265,8 @@ predict.from.fixed.HCstart <- function(baseline.df, model, N, K.limit, spec.time
         sim <- model$like_sampler(data,model,theta)
         pps[i] <- sim[2]
       }
-      rp.mcmc.pred <- data.frame(HC_PRED = pps, TRANSECT_NO = rep(draw.id,N), RP_ID = rep(traj.id,N)
+      rp.mcmc.pred <- data.frame(HC_PRED = pps, TRANSECT_NO = rep(draw.id,N), RP_ID = rep(traj.id,N),
+      params, K=K.limit-AB
                                  #HC_OBS = rep(traj$HC[n],N),HC_se = rep(traj$lower.error[n],N))
       )#,HC_se = rep(traj$HC_se[n],N))
       preds <- rbind(preds,rp.mcmc.pred)

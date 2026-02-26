@@ -2786,7 +2786,7 @@ CI__predict_5yrs_from_HC5 <- function(filt.rec.traj.critical,
     site.list<- vector(mode="list", length=length(unique(ongoing.df$RP_ID)))
     names(site.list)<- unique(ongoing.df$RP_ID)
 
-    print(unique(rm.poor.chains.critical$previous.RP_ID))
+#    print(unique(rm.poor.chains.critical$previous.RP_ID))
     for(rpid in unique(ongoing.df$RP_ID)){
 
         count=count+1
