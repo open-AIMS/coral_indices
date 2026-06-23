@@ -93,7 +93,10 @@ CI_models_collate_indices <- function() {
                                                  Metric == 'critical' ~ 'Critical',
                                                  Metric == 'combined.metric' ~ 'Combined', 
                                                 Metric == 'consequence.metric' ~ 'Critical',
-                                                 Metric == 'Combined' ~ 'Combined'
+                                                 Metric == 'Combined' ~ 'Combined',
+                                                 Metric == 'Combined_adjusted' ~ 'Combined_adjusted',
+                                                 Metric == 'combined.adjusted.metric' ~ 'Combined_adjusted',
+
                                                  )) %>%
                                       dplyr::select(Level,
                                                     Year = fYEAR,

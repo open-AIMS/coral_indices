@@ -599,7 +599,7 @@ CI_process_juvenile_offset <- function() {
             left_join(juv.tran.area) %>%
             mutate(avail.sub = (MA+ST+TA+CA+AO)/n.point,
                    avail.area = tran.area*avail.sub,
-                   DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8))) %>%
+                   DEPTH = as.numeric(ifelse(REEF == 'Middle Reef', 2, 8))) %>%
             suppressMessages() %>%
             suppressWarnings()
         

@@ -30,7 +30,8 @@ CI_26_CC_baseline_models <- function() {
                                                        BIOREGION %in% c("35", "36") ~"35:36",
                                                        !BIOREGION %in% c("4", "3", "35", "36") ~BIOREGION))) %>%
             ungroup() %>%
-            filter(DEPTH < 9.1) %>%
+            filter(DEPTH < 9.1,
+                    !REEF %in% c("Facing", "Manning", "Farmers", "Rat")) %>% #These locations do not really qualify as true coral reefs, so we do not want them influencing bioregional baselines
             droplevels() %>%
             mutate(fYEAR = factor(REPORT_YEAR),
                    Site = factor(paste0(REEF.d, SITE_NO)),
@@ -55,6 +56,9 @@ CI_26_CC_baseline_models <- function() {
             },
             silent = TRUE)
         }
+
+        ##KC added because I don't have access to 
+        gbr <- read_sf(paste0(DATA_PATH,'spatial/GBRMP boundary/Great_Barrier_Reef_Marine_Park_Boundary.shp'))
 
         ## load(paste0(DATA_PATH, "processed/bregions.sf.RData"))
         load(paste0(DATA_PATH, "primary/bioregions.RData"))
@@ -93,6 +97,13 @@ CI_26_CC_baseline_models <- function() {
         ## Further filter the hex grid to just those hexagons that sit over
         ## reef
         hex_grid.over_reef <- hex_grid %>%
+            st_transform(st_crs(bioregion)) %>% ##KC added this because of:
+
+# Error in `stopifnot()`:
+# ℹ In argument: `lengths(st_intersects(., bioregion)) > 0`.
+# Caused by error in `st_geos_binop()`:
+# ! st_crs(x) == st_crs(y) is not TRUE
+
             filter(lengths(st_intersects(., bioregion)) >0 )
 
         # bb <- bioregion %>%
@@ -176,11 +187,11 @@ CI_26_CC_baseline_models <- function() {
                                         #The baseline model structure is set up to treat Site as the unit of
                                         #sampling. That is, points are summed across transects
         points.site <- points %>% 
-            group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, REPORT_YEAR, LATITUDE, 
-                     LONGITUDE, Project, BIOREGION, NRM, DEPTH.f, REEF.d, BIOREGION.agg, fYEAR, 
-                     Site) %>% 
-            summarise(HC = sum(HC),
-                      total.points = sum(total.points))
+        group_by(P_CODE, REEF, DEPTH, VISIT_NO, SITE_NO, REPORT_YEAR, LATITUDE, 
+                    LONGITUDE, Project, BIOREGION, NRM, DEPTH.f, REEF.d, BIOREGION.agg, fYEAR, 
+                    Site) %>% 
+        summarise(HC = sum(HC),
+                    total.points = sum(total.points))
 
         points.full <- points.site %>%
             filter(REPORT_YEAR <= 2015) %>%

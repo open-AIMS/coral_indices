@@ -36,7 +36,10 @@ CI_27_JU_baseline_models <- function() {
         source('../R/CI_26_CC_baseline_models_functions.R') 
 
         load(paste0(DATA_PATH, 'processed/juv.df.RData'))
-        juv.df<-juv.df |>  filter(REPORT_YEAR<=2015)  
+        juv.df<-juv.df |>  
+            filter(REPORT_YEAR<=2015,
+                    !REEF %in% c("Facing", "Manning", "Farmers", "Rat")) %>% #These locations do not really qualify as true coral reefs, so we do not want them influencing bioregional baselines)  
+            droplevels()
 
         gbrmpa <- get(load(paste0(DATA_PATH, 'primary/gbrmpa.RData')))
 

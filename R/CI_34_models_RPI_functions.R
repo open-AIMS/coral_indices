@@ -1622,6 +1622,7 @@ CI_process_rpi_calc_recovery_index <- function() {
         cover.for.score.limits<- modelled.v.pred.dist %>%
             group_by(REEF, DEPTH.f, REPORT_YEAR) %>%
             summarise(median.modelled.cover = median(modelled.cover),
+                      median.expected.cover = median(expected.cover),
                       upper.expected.cover = quantile(expected.cover, 0.975, na.rm = TRUE)) %>%
             ungroup() %>%
             group_by(REEF, DEPTH.f) %>%
@@ -1629,29 +1630,21 @@ CI_process_rpi_calc_recovery_index <- function() {
             mutate(previous.cover = lag(median.modelled.cover, n=1, order_by = REPORT_YEAR),
                    score.zero.cover = previous.cover - 3) |>
             ungroup() |>
-            dplyr::select(REEF, DEPTH.f, REPORT_YEAR, score.zero.cover, upper.expected.cover)
+            dplyr::select(REEF, DEPTH.f, REPORT_YEAR, score.zero.cover,median.expected.cover, upper.expected.cover)
 
         calculate.RPI.score <- modelled.v.pred.dist %>%
         left_join(cover.for.score.limits) |>
-            mutate(distance.metric = log2(modelled.cover/expected.cover),
-               upper.cap = log2(upper.expected.cover/expected.cover),
-                   lower.cap = log2(score.zero.cover/expected.cover),
-                cap.dist.met = case_when(distance.metric>upper.cap ~ upper.cap,
-                                         distance.metric<lower.cap ~ lower.cap,
-                                         TRUE ~ distance.metric),
-                rescale.dist.met.1 = ifelse(cap.dist.met>=0,
-                                     my_rescale(cap.dist.met,
-                                                from = list(upper.cap, 0),
-                                                to = c(1, 0.5)),
-                                      my_rescale(cap.dist.met,
-                                                from = list(lower.cap, 0),
-                                                to = c(0, 0.5))),
-                rescale.dist.met = ifelse(
-                    ((rescale.dist.met.1 > 1 | rescale.dist.met.1 < 0) & (lower.cap > upper.cap)),1, rescale.dist.met.1)) %>%
-            filter(!distance.metric %in% NaN) %>%
-            droplevels() ##There are some negative predictions and so some NaNs are produced by the log2 calculation
+            mutate(
+                rescale.dist.met.1=logistic_cap_scaling(value= modelled.cover, baseline=median.expected.cover, 
+                                                        upper_cap=upper.expected.cover, lower_cap=score.zero.cover, 
+                                                        T=1, lambda = 1, reverse = FALSE)) |>
+                mutate(rescale.dist.met= case_when(is.na(expected.cover) ~ NA_real_,
+                                             !is.na(expected.cover) & modelled.cover > upper.expected.cover ~ 1,
+                                             !is.na(expected.cover) & modelled.cover < score.zero.cover ~ 0,
+                                             TRUE ~ rescale.dist.met.1))
 
-            save(calculate.RPI.score,
+
+save(calculate.RPI.score,
                  file=paste0(DATA_PATH, "/modelled/calculate.RPI.score.random.RData"))
 
         ##############################
@@ -2537,7 +2530,6 @@ CI_process_rpi_predict_last <- function() {
                                     "_stage6.RData"))
         N <- max(rpi_data$n)
         rpi_data <- rpi_data %>%
-        #dplyr::slice(28) %>% #for testing
             mutate(mcmc.traj.ess.critical =
                        pmap(.l = list(REPORT_YEAR, n,
                                       filt.rec.traj.critical,
@@ -3322,21 +3314,10 @@ CI_process_rpi_calc_critical_recovery_index <- function() {
         ##There are some negative predictions and so some NaNs are
         ## produced by the log2 calculation
         calculate.critical.score <- modelled.v.pred.dist.critical %>%
-            mutate(distance.metric = log2(expected.cover/20),
-                   cap.dist.met = as.numeric(case_when(distance.metric < -1 ~ -1,
-                                           distance.metric > 1 ~1,
-                                           distance.metric > -1 &
-                                           distance.metric < 1 ~  distance.metric)),
-                   original.rescale.dist.met = ifelse(cap.dist.met>=0,
-                                     my_rescale(cap.dist.met,
-                                                from = list(1, 0),
-                                                to = c(1, 0.5)),
-                                      my_rescale(cap.dist.met,
-                                                from = list(-1, 0),
-                                                to = c(0, 0.5))), #KC - rescaling critical metric scores <0.5 to 0
-                   rescale.dist.met = ifelse(original.rescale.dist.met<0.5,0,original.rescale.dist.met)) %>%
-            filter(!distance.metric %in% NaN) %>%
-            droplevels()
+             mutate(
+            rescale.dist.met=logistic_cap_scaling(value= expected.cover, baseline=20, 
+                                                        upper_cap=40, lower_cap=10, 
+                                                        T=1, lambda = 1, reverse = FALSE))
 
         save(calculate.critical.score,
              file = paste0(DATA_PATH, "/modelled/calculate.critical.score.random.RData"))
@@ -3413,12 +3394,18 @@ CI_models_RPI_distance <- function() {
                                           !is.na(reference) & is.na(critical) ~ reference,
                                           TRUE ~ critical)) |>
                 mutate(Combined = (reference + critical.for.combined.calc)/2) |>
-                dplyr::select(-critical.for.combined.calc) |>
+                mutate(critical_adjusted = ifelse(critical <0.5, 0, critical)) |> 
+                mutate(critical.for.adjusted.combined.calc=case_when(is.na(reference) & is.na(critical_adjusted)~NA,
+                                          !is.na(reference) & is.na(critical_adjusted) ~ reference,
+                                          TRUE ~ critical_adjusted)) |>
+                ##KC added this line to adjust critical scores <0.5 to 0
+                mutate(Combined_adjusted = (reference + critical.for.adjusted.combined.calc)/2) |>
+                dplyr::select(-critical.for.combined.calc, -critical_adjusted, -critical.for.adjusted.combined.calc) |>
                 group_by(REEF, DEPTH.f, REEF.d, .draw) %>%                ##KC added these lines to carry combined score over when NA
                 arrange(REEF.d, .draw, as.numeric(as.character(fYEAR))) %>%    ##KC added these lines to carry combined score over when NA
-                tidyr::fill(Combined, .direction = "down") %>%                                                                 ##KC added these lines to carry combined score over when NA
+                tidyr::fill(Combined_adjusted, Combined, .direction = "down") %>%                                                                 ##KC added these lines to carry combined score over when NA
                 ungroup() |>
-                pivot_longer(cols = c("reference", "critical", "Combined"),
+                pivot_longer(cols = c("reference", "critical", "Combined", "Combined_adjusted"),
                              names_to = "Metric",
                              values_to = ".value") |>
             arrange(REEF.d, fYEAR, .draw, Metric) %>%

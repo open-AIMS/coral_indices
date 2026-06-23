@@ -181,7 +181,8 @@ CI__fit_JU_model <- function(form, data, family='nbinomial', n, N) {
 
         CI__append_label(stage = CI__get_stage(), item = 'fit_models',
                          n, N)
-        if (file.exists(paste0(DATA_PATH, "modelled/JU__", reef, '_', taxa, '__model.RData'))) {
+        if (file.exists(paste0(DATA_PATH, "modelled/JU__", reef, '_', taxa, '__model.RData')) &
+        file.exists(file = paste0(DATA_PATH, "modelled/JU__", reef, '_', taxa, '__draws.RData'))) {
             CI_log(status = 'INFO', logFile = LOG_FILE, Category = "--JU models--",
                    msg = paste0("Reuse ", reef, " (", taxa, ") JU model"))
             return(NULL)
@@ -299,24 +300,40 @@ CI_models_JU_preds <- function() {
                Category = list.files(paste0(DATA_PATH,"modelled"), pattern = "JU__mods"),
                msg=NULL)
         mods <- mods %>%
-            mutate(Pred = map2(.x = REEF.d, .y = Taxa,
-                               .f = ~ get(load(file = paste0(DATA_PATH,
-                                                             "modelled/JU__", .x, '_', .y, '__posteriors.RData'))) %>%
-                                   dplyr::select(fYEAR, REEF.d, .draw, value)),
-                   Summary = pmap(.l = list(data, Pred),
-                                  .f = ~  ..2 %>% posterior::as_draws() %>%
-                                      group_by(fYEAR, REEF.d) %>%  
-                                      tidybayes::summarise_draws(mean,
-                                                                 sd,
-                                                                 median,
-                                                                 HDInterval::hdi) %>%
-                                      left_join(..1 %>%
-                                                dplyr::select(fYEAR, Site) %>%
-                                                distinct()) %>%
-                                      suppressMessages() %>%
-                                      suppressWarnings()
-                              )
-               )
+            mutate(
+            Pred = purrr::map2(
+                .x = REEF.d,
+                .y = Taxa,
+                .f = ~ {
+                get(load(file = paste0(
+                    DATA_PATH, "modelled/JU__", .x, "_", .y, "__posteriors.RData"
+                ))) %>%
+                    dplyr::select(fYEAR, REEF.d, .draw, value)
+                }
+            ),
+            Summary = pmap(
+                .l = list(data, Pred),
+                .f = ~ {
+                if (nrow(..2) == 0) return(tibble::tibble())
+                ..2 %>%
+                    posterior::as_draws() %>%
+                    group_by(fYEAR, REEF.d) %>%
+                    tidybayes::summarise_draws(
+                    mean,
+                    sd,
+                    median,
+                    HDInterval::hdi
+                    ) %>%
+                    left_join(
+                    ..1 %>%
+                        dplyr::select(fYEAR, Site) %>%
+                        distinct()
+                    ) %>%
+                    suppressMessages() %>%
+                    suppressWarnings()
+                }
+            )
+            )
         pwalk(.l = list(mods$REEF.d, mods$Taxa, mods$Summary),
               .f = ~ ..3 %>% save(file = paste0(DATA_PATH, "modelled/JU__", ..1, '_', ..2, '__summary.RData')))
         
@@ -339,18 +356,10 @@ CI__index_JU <- function(dat, taxa, baselines) {
                     left_join(baselines %>%
                             filter(Taxa == taxa) %>%
                             dplyr::rename(baseline = value)) %>%
-                            mutate(value.raw=value) %>%
-                            dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >8, 8, value.raw),
-                            distance.met = plogis(log2(value/baseline)),
-                            rescale.dist.metric = ifelse(value >= baseline,
-                                                my_rescale(distance.met ,
-                                                            from = list(plogis(log2(8/baseline)), 0.5),
-                                                            to = c(1, 0.5)),
-                                                distance.met), #KC - testing combined metric
+                            mutate(
+                            rescale.dist.metric = logistic_cap_scaling(value, baseline, upper_cap = 8, lower_cap = 0, T = 1, lambda = 1, reverse = FALSE)
                             ) %>%
-                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
-                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value, -Shelf) %>%
                             pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
                             filter(!is.na(REEF.d)) %>%
                             suppressMessages() %>%
@@ -363,18 +372,10 @@ CI__index_JU <- function(dat, taxa, baselines) {
                     left_join(baselines %>%
                             filter(Taxa == taxa) %>%
                             dplyr::rename(baseline = value)) %>%
-                            mutate(value.raw=value) %>%
-                            dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >18, 18, value.raw),
-                            distance.met = plogis(log2(value/baseline)),
-                            rescale.dist.metric = ifelse(value >= baseline,
-                                                my_rescale(distance.met ,
-                                                            from = list(plogis(log2(18/baseline)), 0.5),
-                                                            to = c(1, 0.5)),
-                                                distance.met), #KC - testing combined metric
+                            mutate(
+                            rescale.dist.metric = logistic_cap_scaling(value, baseline, upper_cap = 18, lower_cap = 0, T = 1, lambda = 1, reverse = FALSE)
                             ) %>%
-                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
-                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value, -Shelf) %>%
                             pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
                             filter(!is.na(REEF.d)) %>%
                             suppressMessages() %>%
@@ -387,18 +388,10 @@ CI__index_JU <- function(dat, taxa, baselines) {
                     left_join(baselines %>%
                             filter(Taxa == taxa) %>%
                             dplyr::rename(baseline = value)) %>%
-                            mutate(value.raw=value) %>%
-                            dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >34, 34, value.raw),
-                            distance.met = plogis(log2(value/baseline)),
-                            rescale.dist.metric = ifelse(value >= baseline,
-                                                my_rescale(distance.met ,
-                                                            from = list(plogis(log2(34/baseline)), 0.5),
-                                                            to = c(1, 0.5)),
-                                                distance.met), #KC - testing combined metric
+                            mutate(
+                            rescale.dist.metric = logistic_cap_scaling(value, baseline, upper_cap = 34, lower_cap = 0, T = 1, lambda = 1, reverse = FALSE)
                             ) %>%
-                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
-                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value, -Shelf) %>%
                             pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
                             filter(!is.na(REEF.d)) %>%
                             suppressMessages() %>%
@@ -411,19 +404,10 @@ CI__index_JU <- function(dat, taxa, baselines) {
                     left_join(baselines %>%
                             filter(Taxa == taxa) %>%
                             dplyr::rename(baseline = value)) %>%
-                            mutate(value.raw=value) %>%
-                            dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >3.8, 3.8, value.raw), #4x critical threshold
-                            distance.met = plogis(log2(value/baseline)),
-                            original.rescale.dist.met = ifelse(value >= baseline,
-                                                my_rescale(distance.met ,
-                                                            from = list(plogis(log2(3.8/baseline)), 0.5), #4x critical threshold
-                                                            to = c(1, 0.5)),
-                                                distance.met), #KC - testing combined metric
-                            rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
+                            mutate(
+                            rescale.dist.metric = logistic_cap_scaling(value, baseline, upper_cap = 3.8, lower_cap = 0, T = 1, lambda = 1, reverse = FALSE) 
                             ) %>%
-                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
-                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value, -Shelf) %>%
                             pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
                             filter(!is.na(REEF.d)) %>%
                             suppressMessages() %>%
@@ -436,19 +420,10 @@ CI__index_JU <- function(dat, taxa, baselines) {
                     left_join(baselines %>%
                             filter(Taxa == taxa) %>%
                             dplyr::rename(baseline = value)) %>%
-                            mutate(value.raw=value) %>%
-                            dplyr::select(-value) %>%
-                            mutate(value = ifelse(value.raw >2.16, 2.16, value.raw),#4x critical threshold
-                            distance.met = plogis(log2(value/baseline)),
-                            original.rescale.dist.met = ifelse(value >= baseline,
-                                                my_rescale(distance.met ,
-                                                            from = list(plogis(log2(2.16/baseline)), 0.5),#4x critical threshold
-                                                            to = c(1, 0.5)),
-                                                distance.met),
-                            rescale.dist.metric = ifelse(original.rescale.dist.met <= 0.5, 0, original.rescale.dist.met) #KC - testing combined metric
+                            mutate(
+                            rescale.dist.metric = logistic_cap_scaling(value, baseline, upper_cap = 2.16, lower_cap = 0, T = 1, lambda = 1, reverse = FALSE)
                             ) %>%
-                            dplyr::select(-any_of(ends_with("met")), -value.raw, -value, -Shelf) %>%
-                            #dplyr::select(-Shelf, -DEPTH.f) %>%
+                            dplyr::select(-any_of(ends_with("met")), -value, -Shelf) %>%
                             pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
                             filter(!is.na(REEF.d)) %>%
                             suppressMessages() %>%
@@ -502,7 +477,7 @@ CI_models_JU_distance <- function() {
                         mutate(Scores = map2(.x = Pred, .y = Taxa,
                             .f = ~ {
                                 res <- CI__index_JU(.x, .y, baselines)
-                                if (is.null(res)) { #NULL results are introduced. THey are JCU reefs. Does this affect the broader spatial aggregations?
+                                if (is.null(res)) { #NULL results are introduced. THey are JCU reefs.
                                     tibble()
                                 } else {
                                     res %>%
@@ -520,10 +495,24 @@ CI_models_JU_distance <- function() {
             unnest(Scores) %>%
             dplyr::select(-Metric) %>%
             dplyr::rename(Metric = Taxa) %>%
-            {                                #KC - calculate a combined metric as the average
+            {                                #KC - calculate a combined metric as the average (adjusted version)
                 orig_df <- .
                 combined_df <- orig_df %>%
-                    dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg, DEPTH.f, `.value`) %>%
+                    dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg, DEPTH.f, Metric, `.value`) %>%
+                    mutate(`.value` = ifelse(Metric=="Acropora" & `.value` < 0.5, 0, `.value`)) %>%
+                    ungroup() %>%
+                    group_by(fYEAR, DEPTH.f, REEF, REEF.d, BIOREGION.agg, .draw) %>%
+                    summarise(`.value` = mean(`.value`), .groups = "drop") %>%
+                    mutate(Metric = "Combined_adjusted", value = NA, baseline = NA) %>%
+                    relocate(Metric, baseline, `.value`, .after = DEPTH.f) %>%
+                    relocate(value, .after = `.draw`)
+                bind_rows(orig_df, combined_df)
+            } %>%
+                        {                                #KC - calculate a combined metric as the average
+                orig_df <- .
+                combined_df <- orig_df %>%
+                    dplyr::select(fYEAR, REEF.d, .draw, REEF, BIOREGION.agg, DEPTH.f, Metric, `.value`) %>%
+                    ungroup() %>%
                     group_by(fYEAR, DEPTH.f, REEF, REEF.d, BIOREGION.agg, .draw) %>%
                     summarise(`.value` = mean(`.value`), .groups = "drop") %>%
                     mutate(Metric = "Combined", value = NA, baseline = NA) %>%

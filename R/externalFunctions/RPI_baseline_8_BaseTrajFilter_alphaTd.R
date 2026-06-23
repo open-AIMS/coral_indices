@@ -26,6 +26,10 @@ load(file=paste0(PROC_DATA_DIR, "filter.Td.RData"))
 
 RPI.baseline<- rm.poor.chains %>%
   left_join(filt.rec.traj %>% dplyr::select(proj.site.rpid, max.report.year) %>% distinct) %>%
+  filter(!REEF.d %in% c("Manning shallow slope","Facing shallow slope","Rat shallow slope", "Farmers shallow slope")) |>
+  #these are not being used for any coral-related baselines or indicator score aggregations because they don't really meet the definition of a true coral reef.
+  #They are only being used the Macroalgae indicator
+  droplevels() |>
   #filter(proj.site.rpid %in% filter.Td$proj.site.rpid) %>% droplevels() %>%
   mutate(BIOREGION.rpi.agg=factor(case_when(BIOREGION %in% c("18", "29")~"bio.18and29",
                                             BIOREGION %in% c("9", "26")~"bio.9and26",

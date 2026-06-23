@@ -301,24 +301,15 @@ CI__index_CC <- function(dat, baselines) {
     dat %>%
         left_join(baselines %>%
                   dplyr::rename(baseline = value)) %>%
-        mutate(value.raw=value) %>%
-        dplyr::select(-value) %>%
-        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum for a score of 0 at 0.8 cover
-            calc.met = plogis(log2(value/baseline)),
-            rescale.dist.metric = ifelse(value >= baseline,
-                                         my_rescale(calc.met,
-                                                    from = list(plogis(log2(0.8/baseline)), 0.5),
-                                                    to = c(1, 0.5)),
-                                         calc.met),
-            pcb.distance.met = plogis(log2(value/0.2)),
-            original.pcb.rescale.dist.met = ifelse(value >= 0.2,
-                                         my_rescale(pcb.distance.met,
-                                                    from = list(plogis(log2(0.8/0.2)), 0.5),
-                                                    to = c(1, 0.5)),
-                                         pcb.distance.met),
-            pcb.rescale.dist.metric = as.numeric(ifelse(original.pcb.rescale.dist.met<=0.5, 0, original.pcb.rescale.dist.met)), #KC - adding combined metric
-            combined.metric = ((rescale.dist.metric + pcb.rescale.dist.metric)/2)) %>% #KC - adding combined metric
-        dplyr::select(-any_of(ends_with("met")), -value.raw, -value) %>%
+        mutate(
+            rescale.dist.metric = logistic_cap_scaling(value, baseline, upper_cap= 0.75, lower_cap=0, T=1, lambda = 1, reverse = FALSE),
+                ##0.75 is double the highest bioregional baseline
+
+            pcb.rescale.dist.metric = logistic_cap_scaling(value, 0.2, upper_cap= 0.75, lower_cap=0, T=1, lambda = 1, reverse = FALSE), 
+            pcb.rescale.dist.metric.adjusted = as.numeric(ifelse(pcb.rescale.dist.metric<0.5, 0, pcb.rescale.dist.metric)), #KC - adding combined metric
+            combined.metric = ((rescale.dist.metric + pcb.rescale.dist.metric)/2), #KC - adding combined metric
+            combined.adjusted.metric = ((rescale.dist.metric + pcb.rescale.dist.metric.adjusted)/2)) %>% #KC - adding combined metric
+        dplyr::select(-pcb.rescale.dist.metric.adjusted, -value) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF.d)) %>% 
         suppressMessages() %>%
@@ -350,7 +341,7 @@ CI_models_CC_distance <- function() {
                                 .f = ~ CI__index_CC(.x, baselines) %>%
                                     filter(Metric %in% c('rescale.dist.metric',
                                                          'pcb.rescale.dist.metric',
-                                                         'combined.metric')) %>% #KC - adding combined metric
+                                                         'combined.metric', 'combined.adjusted.metric')) %>% #KC - adding combined metric
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
                                )) %>%

@@ -124,7 +124,7 @@ CI_get_ltmp_samples_data <- function() {
                ignore.stdout = TRUE)
 
         sample.reef.ltmp <- read.csv(paste0(PRIMARY_DATA_PATH, "ltmp.sample.csv")) %>%
-            mutate(DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8)),
+            mutate(DEPTH = as.numeric(ifelse(REEF == 'Middle Reef', 2, 8)),
                    LATITUDE = as.numeric(as.character(MIN.LAT_DD.)),
                    LONGITUDE = as.numeric(as.character(MIN.LONG_DD.)),
                    Date = as.Date(SAMPLE_DATE, format = '%d/%m/%Y'),
@@ -152,7 +152,7 @@ CI_combine_samples_data <- function() {
             rbind(sample.reef.ltmp) %>%
             mutate(P_CODE = factor(P_CODE),
                    REEF = factor(REEF),
-                   DEPTH = as.integer(ifelse(P_CODE == 'RM', '8',
+                   DEPTH = as.numeric(ifelse(P_CODE == 'RM', '8',
                                       ifelse(REEF == 'Middle Reef','2', DEPTH))))
 
         save(sample.reef, file = paste0(DATA_PATH, 'primary/sample.reef.RData'))
@@ -192,7 +192,7 @@ CI_get_disturbances_data <- function() {
             mutate(REEF = ifelse(P_CODE == "RM", as.character(AIMS_REEF_NAME), REEF)) %>%
             dplyr::select(-AIMS_REEF_NAME, -REEF_ZONE) %>%
             mutate(DISTURBANCE_DATE = as.Date(DISTURBANCE_DATE, format = '%d/%m/%Y'),
-                   DEPTH = as.integer(ifelse(P_CODE == "RM", '8',
+                   DEPTH = as.numeric(ifelse(P_CODE == "RM", '8',
                                       ifelse(REEF == 'Middle Reef', '2', DEPTH)))) %>%
             suppressMessages() %>%
             suppressWarnings()
@@ -289,7 +289,7 @@ CI_get_ltmp_juveniles_data <- function() {
                ignore.stdout = TRUE)
 
         juv.ltmp = read.csv(paste0(PRIMARY_DATA_PATH, 'juv.ltmp.csv'), as.is=TRUE) %>%
-            mutate(DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8)),
+            mutate(DEPTH = as.numeric(ifelse(REEF == 'Middle Reef', 2, 8)),
                    P_CODE = ifelse(P_CODE %in% c('RM', 'RMRAP', 'RAP'), 'RM', P_CODE))
 
         save(juv.ltmp, file = paste0(DATA_PATH, 'primary/juv.ltmp.RData'))
@@ -352,7 +352,7 @@ CI_get_ltmp_juveniles_samples <- function() {
            ignore.stdout = TRUE)
     
     juv.ltmp.samples<-read.csv(paste0(PRIMARY_DATA_PATH, 'juv.ltmp.samples.csv'), as.is = TRUE) |>
-          mutate(DEPTH = as.integer(ifelse(REEF == 'Middle Reef', 2, 8)),
+          mutate(DEPTH = as.numeric(ifelse(REEF == 'Middle Reef', 2, 8)),
              P_CODE = ifelse(P_CODE %in% c('RM', 'RMRAP', 'RAP'), 'RM', P_CODE))
     
     save(juv.ltmp.samples, file = paste0(DATA_PATH, 'primary/juv.ltmp.samples.RData'))

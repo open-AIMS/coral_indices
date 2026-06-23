@@ -172,6 +172,25 @@ LOF.Ref <- function(commData, k, timecutoff = NULL, method=method) {
                   c(timecutoff[1]:timecutoff[2]))) {
           ## start row is first row >= to start cutoff
           startRow <- which(as.numeric(row.names(commData)) >= timecutoff[1])[1]
+        #' Identify End Row Based on Cutoff Criteria
+        #'
+        #' @description
+        #' Determines the row index that meets the specified end cutoff threshold.
+        #' This function is used in coral index modeling to identify the boundary row
+        #' for data processing in CO (presumably coral observation or similar) analyses.
+        #'
+        #' @details
+        #' The end row represents the final row of data that satisfies the end cutoff
+        #' condition, which is useful for subsetting time series or other sequential data
+        #' in coral index calculations.
+        #'
+        #' @return
+        #' Integer index representing the row number that meets the end cutoff criteria.
+        #'
+        #' @seealso
+        #' Other CO modeling functions in CI_35_models_CO_functions.R
+        #'
+        #' @keywords internal
           ## end row is the row that meets end cutoff
           endRow <- which(as.numeric(row.names(commData)) >= timecutoff[2])[1]
           ## but must be less than n

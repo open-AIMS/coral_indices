@@ -115,7 +115,7 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
 
         ## Number of reefs below 0.5
         mods <- mods %>%
-            filter(!REEF.d %in% c("Rat shallow slope", "Farmers shallow slope")) #they don't really qualify as 'coral reefs'.
+            filter(if (Indicator != 'MA') !REEF.d %in% c("Manning shallow slope","Facing shallow slope","Rat shallow slope", "Farmers shallow slope") else TRUE)
             #                                                                    #Don't want them influencing condition grades at broad spatial aggregations
                                                                                  #but still want to be able to report on them at the reef level
 
@@ -330,4 +330,39 @@ CI_models_aggregation <- function(Indicator = 'CC', level = 'NRM') {
 
 my_rescale <- function(x, to = c(0,1), from = range(x, na.rm = TRUE, finite = TRUE)) {
     (x - from[[1]])/(from[[2]] - from[[1]]) * diff(to) + to[1]
+}
+
+logistic_cap_scaling <- function(value, baseline, upper_cap, lower_cap, T, lambda = 1, reverse = FALSE) {
+
+  R <- ifelse(value >= baseline,
+        -1 * (baseline / value - 1),
+        (value / baseline) - 1)
+
+  R_u_c <- -1 * (baseline / upper_cap - 1)
+  R_l_c <- (lower_cap / baseline) - 1
+
+  R2 <- ifelse(R >= R_u_c, R_u_c,
+         ifelse(R <= R_l_c, R_l_c, R))
+
+  x <- lambda * R2 * T
+
+  x_low  <- lambda * R_l_c * T
+  x_mid  <- 0
+  x_high <- lambda * R_u_c * T
+
+  f_low  <- plogis(x_low)
+  f_mid  <- plogis(x_mid)
+  f_high <- plogis(x_high)
+
+  score <- ifelse(
+    x <= x_mid,
+    (plogis(x) - f_low) / (f_mid - f_low) * 0.5,
+    0.5 + (plogis(x) - f_mid) / (f_high - f_mid) * 0.5
+  )
+
+  if (reverse) {
+    score <- 1 - score
+  }
+
+  return(pmin(pmax(score, 0), 1))
 }

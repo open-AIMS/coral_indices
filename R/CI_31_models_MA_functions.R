@@ -14,7 +14,7 @@ CI_models_MA_get_baselines <- function() {
         load(file=paste0(DATA_PATH, 'processed/site.location.RData'))
 
         ## Shallow posteriors (reef) ===========================================
-        load(file = paste0(DATA_PATH, "parameters/MA__baseline_shallow.RData"))
+        #load(file = paste0(DATA_PATH, "parameters/MA__baseline_shallow.RData"))
 
         ## Get the set of reefs to predict for and
         ## nest according to whether they should be predicted against:
@@ -686,20 +686,16 @@ CI__index_MA <- function(dat, baselines, consequence) {
         left_join(baselines %>%
                   dplyr::select(-any_of(c("LONGITUDE", "LATITUDE"))) %>%
                   dplyr::rename(baseline = value)) %>%
-        mutate(value.raw=value) %>%
-        dplyr::select(-value) %>%
-        mutate(value = ifelse(value.raw >0.8, 0.8, value.raw), #KC - cap maximum MAp for a score of 0 at 0.8
-            calc.met = plogis(log2(baseline/value)),
-            distance.metric = ifelse(value >= baseline,
-                                     my_rescale(calc.met,
-                                                from = list(plogis(log2(baseline/0.8)), 0.5),
-                                                to = c(0, 0.5)),
-                                     calc.met),
-            critical.distance= plogis(log2(consequence/value)),
-            consequence.metric = ifelse(critical.distance >= 0.5, critical.distance, 0),
+
+        mutate(
+            distance.metric = logistic_cap_scaling(value, baseline, upper_cap = 0.8, lower_cap = 0, T = 1, lambda = 1, reverse = TRUE),
+            consequence.metric = logistic_cap_scaling(value, baseline = 0.224, upper_cap = 0.59, lower_cap = 0, T = 1, lambda = 1, reverse = TRUE),
+            # 0.59 is the hdci_upper of all MA preds
+            consequence.metric.adjusted = ifelse(consequence.metric < 0.5, 0, consequence.metric), #KC - set consequence metric to 0 if below 0.5, as per approach for HC and JU critical metrics
             #KC - the threshold now sets a score of 0.5, as it does for HC and JU critical metrics
-            combined.metric = (distance.metric + consequence.metric)/2 ) %>%
-                        dplyr::select(-calc.met, -value, -value.raw, -critical.distance) |>
+            combined.metric = (distance.metric + consequence.metric)/2,
+            combined.adjusted.metric = (distance.metric + consequence.metric.adjusted)/2) %>%
+                        dplyr::select(-value, -consequence.metric.adjusted) %>%
         pivot_longer(cols = ends_with('metric'), names_to = 'Metric', values_to = '.value') %>%
         filter(!is.na(REEF)) %>% 
         suppressMessages() %>%
@@ -737,7 +733,8 @@ CI_models_MA_distance <- function() {
                                 .f = ~ CI__index_MA(.x, baselines, ma_from_juv_consequence) %>%
                                     filter(Metric %in% c('distance.metric',
                                                          'consequence.metric',
-                                                         'combined.metric')) %>% #KC - adding combined metric
+                                                         'combined.metric',
+                                                         'combined.adjusted.metric')) %>% #KC - adding combined metric
                                     mutate(fYEAR = factor(fYEAR, levels = unique(fYEAR))) %>%
                                     arrange(fYEAR, .draw)
                                )) %>%
